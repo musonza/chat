@@ -6,7 +6,6 @@ use Illuminate\Support\ServiceProvider;
 
 class ChatServiceProvider extends ServiceProvider
 {
-
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -34,9 +33,8 @@ class ChatServiceProvider extends ServiceProvider
     public function registerAssets()
     {
         $this->publishes([
-            __DIR__ . '/migrations' => database_path('/migrations'),
-            __DIR__ . '/config' => config_path(),
+            __DIR__.'/migrations' => database_path('/migrations'),
+            __DIR__.'/config'     => config_path(),
         ]);
-
     }
 }

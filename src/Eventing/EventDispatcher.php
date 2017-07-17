@@ -20,7 +20,6 @@ class EventDispatcher
     public function dispatch(array $events)
     {
         foreach ($events as $event) {
-
             $eventName = $this->getEventName($event);
 
             $this->event->fire($eventName, $event);

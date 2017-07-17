@@ -29,29 +29,28 @@ class MessageNotification extends Eloquent
     }
 
     /**
-     * Creates a new notification
+     * Creates a new notification.
      *
-     * @param      Message       $message
-     * @param      Conversation  $conversation
+     * @param Message      $message
+     * @param Conversation $conversation
      */
     public static function make(Message $message, Conversation $conversation)
     {
         $notification = [];
 
         foreach ($conversation->users as $user) {
-
             $is_sender = ($message->user_id == $user->id) ? 1 : 0;
 
             $notification[] = [
-                'user_id' => $user->id,
-                'message_id' => $message->id,
+                'user_id'         => $user->id,
+                'message_id'      => $message->id,
                 'conversation_id' => $conversation->id,
-                'is_seen' => $is_sender,
-                'is_sender' => $is_sender,
-                'created_at' => $message->created_at,
+                'is_seen'         => $is_sender,
+                'is_sender'       => $is_sender,
+                'created_at'      => $message->created_at,
             ];
         }
 
-        MessageNotification::insert($notification);
+        self::insert($notification);
     }
 }

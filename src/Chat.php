@@ -22,7 +22,7 @@ class Chat
     }
 
     /**
-     * Creates a new conversation
+     * Creates a new conversation.
      *
      * @param array $participants
      *
@@ -34,7 +34,7 @@ class Chat
     }
 
     /**
-     * Returns a new conversation
+     * Returns a new conversation.
      *
      * @param int $conversationId
      *
@@ -46,10 +46,10 @@ class Chat
     }
 
     /**
-     * Add user(s) to a conversation
+     * Add user(s) to a conversation.
      *
-     * @param int $conversationId
-     * @param mixed $userId / array of user ids or an integer
+     * @param int   $conversationId
+     * @param mixed $userId         / array of user ids or an integer
      *
      * @return Conversation
      */
@@ -59,11 +59,11 @@ class Chat
     }
 
     /**
-     * Sends a message
+     * Sends a message.
      *
-     * @param int $conversationId
+     * @param int    $conversationId
      * @param string $body
-     * @param int $senderId
+     * @param int    $senderId
      *
      * @return
      */
@@ -77,10 +77,10 @@ class Chat
     }
 
     /**
-     * Remove user(s) from a conversation
+     * Remove user(s) from a conversation.
      *
-     * @param int $conversationId
-     * @param mixed $userId / array of user ids or an integer
+     * @param int   $conversationId
+     * @param mixed $userId         / array of user ids or an integer
      *
      * @return Coonversation
      */
@@ -90,7 +90,7 @@ class Chat
     }
 
     /**
-     * Get recent user messages for each conversation
+     * Get recent user messages for each conversation.
      *
      * @param int $userId
      *
@@ -107,27 +107,25 @@ class Chat
         $messages = [];
 
         foreach ($c as $user) {
-
             $recent_message = $user->conversation->messages()->orderBy('id', 'desc')->first()->toArray();
 
             $notification = MessageNotification::where('user_id', $userId)
                 ->where('message_id', $user->id)
                 ->get(['message_notification.id',
                     'message_notification.is_seen',
-                    'message_notification.is_sender']
+                    'message_notification.is_sender', ]
                 );
 
             $messages[] = array_merge(
                 $recent_message, ['notification' => $notification]
             );
-
         }
 
         return $messages;
     }
 
     /**
-     * Get messages in a conversation
+     * Get messages in a conversation.
      *
      * @param int $userId
      * @param int $conversationId
@@ -142,12 +140,12 @@ class Chat
     }
 
     /**
-     * Deletes message
+     * Deletes message.
      *
-     * @param      int  $messageId
-     * @param      int  $userId     user id
+     * @param int $messageId
+     * @param int $userId    user id
      *
-     * @return     void
+     * @return void
      */
     public function trash($messageId, $userId)
     {
@@ -155,10 +153,10 @@ class Chat
     }
 
     /**
-     * clears conversation
+     * clears conversation.
      *
-     * @param      int  $conversationId
-     * @param      int  $userId
+     * @param int $conversationId
+     * @param int $userId
      */
     public function clear($conversationId, $userId)
     {
@@ -183,8 +181,8 @@ class Chat
 
         $common_conversations = $this->getConversationsInCommon($conversation1, $conversation2);
 
-        if(!$common_conversations){
-            return null;
+        if (!$common_conversations) {
+            return;
         }
 
         return $this->conversation->findOrFail($common_conversations[0]);
@@ -199,5 +197,4 @@ class Chat
     {
         return config('chat.user_model');
     }
-
 }
