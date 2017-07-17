@@ -11,7 +11,6 @@ class ChatTest extends TestCase
     public function __construct()
     {
         parent::__construct();
-
     }
 
     public function setUp()
@@ -245,8 +244,8 @@ class ChatTest extends TestCase
         $conversation = Chat::createConversation([$users[0]->id, $users[1]->id]);
 
         for ($i = 0; $i < 50; $i++) {
-            Chat::send($conversation->id, 'Hello ' . $i, $users[0]->id);
-            Chat::send($conversation->id, 'Hello Man ' . $i, $users[1]->id);
+            Chat::send($conversation->id, 'Hello '.$i, $users[0]->id);
+            Chat::send($conversation->id, 'Hello Man '.$i, $users[1]->id);
         }
 
         Chat::send($conversation->id, 'Hello Man', $users[1]->id);

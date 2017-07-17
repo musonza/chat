@@ -11,7 +11,7 @@ class Conversation extends Eloquent
     protected $fillable = [];
 
     /**
-     * Conversation participants
+     * Conversation participants.
      *
      * @return User
      */
@@ -21,7 +21,7 @@ class Conversation extends Eloquent
     }
 
     /**
-     * Messages in conversation
+     * Messages in conversation.
      *
      * @return Message
      */
@@ -31,16 +31,16 @@ class Conversation extends Eloquent
     }
 
     /**
-     * Get recent user messages for each conversation
+     * Get recent user messages for each conversation.
      *
-     * @param      integer   $userId
-     * @param      integer  $perPage
-     * @param      integer  $page
-     * @param      string   $sorting
-     * @param      array    $columns
-     * @param      string   $pageName
+     * @param int    $userId
+     * @param int    $perPage
+     * @param int    $page
+     * @param string $sorting
+     * @param array  $columns
+     * @param string $pageName
      *
-     * @return     <type>
+     * @return <type>
      */
     public function getMessages($userId, $perPage = 25, $page = 1, $sorting = 'asc', $columns = ['*'], $pageName = 'page')
     {
@@ -53,9 +53,10 @@ class Conversation extends Eloquent
     }
 
     /**
-     * Add user to conversation
+     * Add user to conversation.
      *
-     * @param  integer  $userId
+     * @param int $userId
+     *
      * @return void
      */
     public function addParticipants($userIds)
@@ -77,9 +78,10 @@ class Conversation extends Eloquent
     }
 
     /**
-     * Remove user from conversation
+     * Remove user from conversation.
      *
-     * @param  User  $userId
+     * @param User $userId
+     *
      * @return void
      */
     public function removeUsers($userId)
@@ -98,11 +100,11 @@ class Conversation extends Eloquent
     }
 
     /**
-     * Starts a new conversation
+     * Starts a new conversation.
      *
-     * @param      array  $participants  users
+     * @param array $participants users
      *
-     * @return     Conversation
+     * @return Conversation
      */
     public function start($participants)
     {
@@ -116,9 +118,9 @@ class Conversation extends Eloquent
     }
 
     /**
-     * Get number of users in a conversation
+     * Get number of users in a conversation.
      *
-     * @return     integer
+     * @return int
      */
     public function userCount()
     {
@@ -126,11 +128,11 @@ class Conversation extends Eloquent
     }
 
     /**
-     * Gets conversations for a specific user
+     * Gets conversations for a specific user.
      *
-     * @param      integer  $userId
+     * @param int $userId
      *
-     * @return     array
+     * @return array
      */
     public function userConversations($userId)
     {
@@ -141,10 +143,10 @@ class Conversation extends Eloquent
     }
 
     /**
-     * Clears user conversation
+     * Clears user conversation.
      *
-     * @param      integer  $conversationId
-     * @param      integer  $userId
+     * @param int $conversationId
+     * @param int $userId
      *
      * @return
      */

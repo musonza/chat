@@ -3,9 +3,9 @@
 namespace Musonza\Chat\Messages;
 
 use Eloquent;
+use Musonza\Chat\Chat;
 use Musonza\Chat\Conversations\Conversation;
 use Musonza\Chat\Eventing\EventGenerator;
-use Musonza\Chat\Chat;
 use Musonza\Chat\Notifications\MessageNotification;
 
 class Message extends Eloquent
@@ -13,7 +13,7 @@ class Message extends Eloquent
     protected $fillable = ['body', 'user_id', 'type'];
 
     protected $table = 'messages';
-    
+
     protected $touches = ['conversation'];
 
     use EventGenerator;
@@ -29,21 +29,21 @@ class Message extends Eloquent
     }
 
     /**
-     * Adds a message to a conversation
+     * Adds a message to a conversation.
      *
-     * @param      Conversation  $conversation
-     * @param      string        $body
-     * @param      integer        $userId
-     * @param      string        $type
+     * @param Conversation $conversation
+     * @param string       $body
+     * @param int          $userId
+     * @param string       $type
      *
-     * @return     Message
+     * @return Message
      */
     public function send(Conversation $conversation, $body, $userId, $type = 'text')
     {
         $message = $conversation->messages()->create([
-            'body' => $body,
+            'body'    => $body,
             'user_id' => $userId,
-            'type' => $type,
+            'type'    => $type,
         ]);
 
         $this->raise(new MessageWasSent($message));
@@ -52,10 +52,10 @@ class Message extends Eloquent
     }
 
     /**
-     * Deletes a message
+     * Deletes a message.
      *
-     * @param      integer  $messageId
-     * @param      integer  $userId
+     * @param int $messageId
+     * @param int $userId
      *
      * @return
      */
@@ -67,10 +67,10 @@ class Message extends Eloquent
     }
 
     /**
-     * marks message as read
+     * marks message as read.
      *
-     * @param      integer  $messageId
-     * @param      integer  $userId
+     * @param int $messageId
+     * @param int $userId
      *
      * @return
      */

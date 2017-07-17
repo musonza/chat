@@ -17,7 +17,7 @@ class MessageWasSent
 
     /**
      * Creates an entry in the message_notification table for each participant
-     * This will be used to determine if a message is read or deleted
+     * This will be used to determine if a message is read or deleted.
      */
     public function createNotifications()
     {

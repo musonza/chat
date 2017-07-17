@@ -1,19 +1,19 @@
 <?php
 
-return array(
+return [
 
-	'fetch' => PDO::FETCH_CLASS,
+    'fetch' => PDO::FETCH_CLASS,
 
     'default' => 'sqlite',
 
-    'connections' => array(
+    'connections' => [
 
-        'sqlite' => array(
+        'sqlite' => [
             'driver'   => 'sqlite',
             'database' => __DIR__.'/../database/testing.sqlite',
             'prefix'   => '',
-        ),
+        ],
 
-    ),
+    ],
 
-);
+];
