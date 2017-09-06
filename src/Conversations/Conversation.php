@@ -23,7 +23,8 @@ class Conversation extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(Chat::userModel(), 'mc_conversation_user')->withTimestamps();
+        return $this->belongsToMany(Chat::userModel(), 'mc_conversation_user', 'conversation_id', 'user_id')
+                    ->withTimestamps();
     }
 
     /**
