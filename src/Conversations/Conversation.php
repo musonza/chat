@@ -2,6 +2,7 @@
 
 namespace Musonza\Chat\Conversations;
 
+use DB;
 use Musonza\Chat\Chat;
 use Musonza\Chat\Messages\Message;
 use Musonza\Chat\Model;
