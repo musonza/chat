@@ -2,6 +2,7 @@
 
 namespace Musonza\Chat\Messages;
 
+use DB;
 use Eloquent;
 use Illuminate\Notifications\Notification;
 use Musonza\Chat\Chat;
@@ -71,8 +72,11 @@ class Message extends Eloquent
      */
     public function trash($user)
     {
+        $connection = config('database.default');
+        $driver = config("database.connections.{$connection}.driver");
+
         return $user->notifications()
-            ->where('data->message_id', $this->id)
+            ->where($driver == 'sqlsrv' ? DB::raw('JSON_VALUE(data, \'$.message_id\')') : 'data->message_id', $this->id)
             ->delete();
     }
 

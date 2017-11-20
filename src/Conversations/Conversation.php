@@ -2,6 +2,7 @@
 
 namespace Musonza\Chat\Conversations;
 
+use DB;
 use Musonza\Chat\Chat;
 use Musonza\Chat\Messages\Message;
 use Musonza\Chat\Model;
@@ -23,7 +24,8 @@ class Conversation extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(Chat::userModel(), 'mc_conversation_user')->withTimestamps();
+        return $this->belongsToMany(Chat::userModel(), 'mc_conversation_user', 'conversation_id', 'user_id')
+                    ->withTimestamps();
     }
 
     /**
@@ -58,20 +60,29 @@ class Conversation extends Model
      *
      * @return Message
      */
-    public function getMessages($user, $perPage = 25, $page = 1, $sorting = 'asc', $columns = ['*'], $pageName = 'page')
-    {
-        return $this->messages()
-            ->join('notifications', 'notifications.data->message_id', '=', 'mc_messages.id')
-            ->where('notifications.notifiable_id', $user->id)
-            ->orderBy('mc_messages.id', $sorting)
-            ->paginate(
-                $perPage,
-                ['notifications.read_at', 'notifications.notifiable_id', 'notifications.id as notification_id',
-                    'mc_messages.*', ],
-                $pageName,
-                $page
-            );
-    }
+     public function getMessages($user, $perPage = 25, $page = 1, $sorting = 'asc', $columns = ['*'], $pageName = 'page')
+     {
+         $connection = config('database.default');
+         $driver = config("database.connections.{$connection}.driver");
+ 
+         $query  = $this->messages()
+             ->join('notifications', function($join) use ($driver) {
+                 $join->where('notifications.type', 'Musonza\Chat\Notifications\MessageSent')
+                      ->on($driver == 'sqlsrv' ? DB::raw('JSON_VALUE(data, \'$.message_id\')') :
+                          'notifications.data->message_id', '=', 'mc_messages.id');
+             })
+             ->where('notifications.notifiable_id', $user->user_id)
+             ->orderBy('mc_messages.id', $sorting)
+             ->paginate(
+                 $perPage,
+                 ['notifications.read_at', 'notifications.notifiable_id', 'notifications.id as notification_id',
+                     'mc_messages.*', ],
+                 $pageName,
+                 $page
+             );
+ 
+         return $query;
+     }
 
     /**
      * Gets the list of conversations.
