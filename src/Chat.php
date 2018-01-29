@@ -383,4 +383,9 @@ class Chat
     {
         return config('musonza_chat.event_dispatcher');
     }
+
+    public static function laravelNotifications()
+    {
+        return config('musonza_chat.laravel_notifications');
+    }
 }

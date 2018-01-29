@@ -1,10 +1,9 @@
 <?php
 
-namespace Tests\Unit;
+namespace Musonza\Chat\Tests;
 
-use Chat;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\TestCase;
+use \Chat;
 
 class ChatTest extends TestCase
 {
@@ -391,17 +390,12 @@ class ChatTest extends TestCase
         Chat::message('Hello Man 6')->from($users[0])->to($conversation3)->send();
         Chat::message('Hello Man 3')->from($users[2])->to($conversation2)->send();
 
-        $users = \App\User::whereIn('id', [1, 2, 4])->get();
+        $users = \Musonza\Chat\User::whereIn('id', [1, 2, 4])->get();
 
         $conversations = Chat::commonConversations($users);
 
         $this->assertCount(1, $conversations);
 
         $this->assertEquals(3, $conversations->first()->id);
-    }
-
-    public function createUsers($count = 1)
-    {
-        return factory('App\User', $count)->create();
     }
 }
