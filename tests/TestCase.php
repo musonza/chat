@@ -47,6 +47,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
         $app['config']->set('musonza_chat.user_model', 'Musonza\Chat\User');
         $app['config']->set('musonza_chat.laravel_notifications', false);
+        $app['config']->set('musonza_chat.broadcasts', false);
     }
 
     protected function getPackageProviders($app)

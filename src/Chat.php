@@ -243,7 +243,7 @@ class Chat
         if (!$this->to) {
             throw new \Exception('Message receiver has not been set');
         }
-
+        
         $command = new SendMessageCommand($this->to, $this->body, $this->from, $this->type);
 
         return $this->commandBus->execute($command);
@@ -379,9 +379,9 @@ class Chat
         return config('musonza_chat.user_model');
     }
 
-    public static function eventDispatcher()
+    public static function broadcasts()
     {
-        return config('musonza_chat.event_dispatcher');
+        return config('musonza_chat.broadcasts');
     }
 
     public static function laravelNotifications()

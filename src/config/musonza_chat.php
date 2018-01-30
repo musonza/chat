@@ -2,6 +2,6 @@
 
 return [
     'user_model'       => 'App\User',
-    'event_dispatcher' => '',
+    'broadcasts' => true,
     'laravel_notifications' => false
 ];
