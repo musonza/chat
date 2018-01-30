@@ -224,7 +224,7 @@ class Conversation extends Model
      */
     public function readAll($user)
     {
-        $this->getNotifications($user, true);
+        return $this->getNotifications($user, true);
     }
 
     private function getConversationMessages($user, $perPage, $page, $sorting, $columns, $pageName)
@@ -291,21 +291,27 @@ class Conversation extends Model
     private function notifications($user, $readAll)
     {
         if (Chat::laravelNotifications()) {
-            return $user->notifications->filter(function ($item) use ($user) {
+            $notifications = $user->notifications->filter(function ($item) use ($user) {
                 return $item->type == 'Musonza\Chat\Notifications\MessageSent' &&
                     $item->data['conversation_id'] == $this->id &&
                     $item->notifiable_id == $user->id;
             });
+
+            if ($readAll) {
+                return $notifications->markAsRead();
+            } 
+            
+            return $notifications;
         }
 
         $notifications = MessageNotification::where('user_id', $user->id)
             ->where('conversation_id', $this->id);
 
         if ($readAll) {
-            $notifications->update(['is_seen' => 1]);
-        } else {
-            return $notifications->get();
-        }
+            return $notifications->update(['is_seen' => 1]);
+        } 
+        
+        return $notifications->get();
     }
 
     private function clearConversation($user)

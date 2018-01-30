@@ -25,11 +25,11 @@ class CreateMessageNotificationTable extends Migration
             $table->index(['user_id', 'message_id']);
 
             $table->foreign('message_id')
-                ->references('id')->on('messages')
+                ->references('id')->on('mc_messages')
                 ->onDelete('cascade');
 
             $table->foreign('conversation_id')
-                ->references('id')->on('conversations')
+                ->references('id')->on('mc_conversations')
                 ->onDelete('cascade');
 
             $table->foreign('user_id')

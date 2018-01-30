@@ -77,9 +77,4 @@ class MessageNotification extends Eloquent
         $this->update(['is_seen' => 1]);
         $this->save();
     }
-
-    public static function readAll($notifications)
-    {
-        dd($notifications->toArray());
-    }
 }
