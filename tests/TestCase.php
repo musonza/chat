@@ -2,12 +2,10 @@
 
 namespace Musonza\Chat\Tests;
 
-use \Illuminate\Database\Eloquent\Model;
 use Musonza\Chat\User;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
-
     public function __construct()
     {
         parent::__construct();
@@ -18,8 +16,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
         parent::setUp();
 
         $this->artisan('migrate', ['--database' => 'testbench']);
-        $this->loadMigrationsFrom(__DIR__ . '/../src/migrations');
-        $this->withFactories(__DIR__ . '/../src/database/factories');
+        $this->loadMigrationsFrom(__DIR__.'/../src/migrations');
+        $this->withFactories(__DIR__.'/../src/database/factories');
     }
 
     public function tearDown()
@@ -30,7 +28,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
     /**
      * Define environment setup.
      *
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param \Illuminate\Foundation\Application $app
+     *
      * @return void
      */
     protected function getEnvironmentSetUp($app)
@@ -40,9 +39,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
-            'driver' => 'sqlite',
+            'driver'   => 'sqlite',
             'database' => ':memory:',
-            'prefix' => '',
+            'prefix'   => '',
         ]);
 
         $app['config']->set('musonza_chat.user_model', 'Musonza\Chat\User');
@@ -54,14 +53,14 @@ class TestCase extends \Orchestra\Testbench\TestCase
     {
         return [
             \Orchestra\Database\ConsoleServiceProvider::class,
-            \Musonza\Chat\ChatServiceProvider::class
+            \Musonza\Chat\ChatServiceProvider::class,
         ];
     }
 
     protected function getPackageAliases($app)
     {
         return [
-            'Chat' => \Musonza\Chat\Facades\ChatFacade::class
+            'Chat' => \Musonza\Chat\Facades\ChatFacade::class,
         ];
     }
 
@@ -70,5 +69,3 @@ class TestCase extends \Orchestra\Testbench\TestCase
         return factory(User::class, $count)->create();
     }
 }
-
-
