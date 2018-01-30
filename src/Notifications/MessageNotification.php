@@ -5,17 +5,14 @@ namespace Musonza\Chat\Notifications;
 use Illuminate\Support\Facades\Notification;
 use Musonza\Chat\Conversations\Conversation;
 use Eloquent;
-// use Illuminate\Database\Eloquent\SoftDeletes;
 use Musonza\Chat\Messages\Message;
 use Musonza\Chat\Chat;
 
 class MessageNotification extends Eloquent
 {
-    // use SoftDeletes;
-
     protected $fillable = ['user_id', 'message_id', 'conversation_id'];
 
-    protected $table = 'message_notification';
+    protected $table = 'mc_message_notification';
 
     protected $dates = ['deleted_at'];
     

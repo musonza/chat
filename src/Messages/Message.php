@@ -103,7 +103,7 @@ class Message extends Eloquent
 
         return MessageNotification::where('user_id', $user->id)
             ->where('message_id', $this->id)
-            ->select(['message_notification.*', 'message_notification.updated_at as read_at'])
+            ->select(['mc_message_notification.*', 'mc_message_notification.updated_at as read_at'])
             ->first();
     }
 

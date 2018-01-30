@@ -12,7 +12,7 @@ class CreateMessageNotificationTable extends Migration
      */
     public function up()
     {
-        Schema::create('message_notification', function (Blueprint $table) {
+        Schema::create('mc_message_notification', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('message_id')->unsigned();
             $table->integer('conversation_id')->unsigned();
@@ -45,6 +45,6 @@ class CreateMessageNotificationTable extends Migration
      */
     public function down()
     {
-        Schema::drop('message_notification');
+        Schema::drop('mc_message_notification');
     }
 }
