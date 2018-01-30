@@ -2,8 +2,8 @@
 
 namespace Musonza\Chat\Tests;
 
+use Chat;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use \Chat;
 
 class ChatTest extends TestCase
 {

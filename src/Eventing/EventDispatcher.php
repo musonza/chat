@@ -2,13 +2,13 @@
 
 namespace Musonza\Chat\Eventing;
 
-use Musonza\Chat\Chat;
 use Illuminate\Events\Dispatcher;
+use Musonza\Chat\Chat;
 
 class EventDispatcher
 {
     protected $event;
-    
+
     public function __construct(Dispatcher $event)
     {
         $this->event = $event;
@@ -20,7 +20,7 @@ class EventDispatcher
             foreach ($events as $event) {
                 $eventName = $this->getEventName($event);
                 $this->event->fire($eventName, $event);
-            }  
+            }
         }
     }
 
