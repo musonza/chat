@@ -299,8 +299,8 @@ class Conversation extends Model
 
             if ($readAll) {
                 return $notifications->markAsRead();
-            } 
-            
+            }
+
             return $notifications;
         }
 
@@ -309,8 +309,8 @@ class Conversation extends Model
 
         if ($readAll) {
             return $notifications->update(['is_seen' => 1]);
-        } 
-        
+        }
+
         return $notifications->get();
     }
 
