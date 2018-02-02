@@ -155,6 +155,12 @@ Chat::messages($message)->for($user)->markRead();
 Chat::conversations($conversation)->for($user)->readAll();
 ```	
 
+### Unread messages count
+
+```php
+$unreadCount = Chat::for($user)->unreadCount();
+```
+
 #### Delete a message
 
 ```php

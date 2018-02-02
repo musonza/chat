@@ -369,6 +369,11 @@ class Chat
         return array_values(array_intersect($conversation1, $conversation2));
     }
 
+    public function unreadCount()
+    {
+       return $this->message->unreadCount($this->user);
+    }
+
     /**
      * Returns the User Model class.
      *

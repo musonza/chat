@@ -29,9 +29,20 @@ class Message extends Eloquent
         return $this->belongsTo(Chat::userModel(), 'user_id');
     }
 
-    public function notifications()
+    public function unreadCount($user)
     {
-        return \DB::table('notifications')->all();
+        if (Chat::laravelNotifications()) {
+            return \DB::table('notifications')
+                ->where('notifiable_id', $user->id)
+                ->where('type', 'Musonza\Chat\Notifications\MessageSent')
+                ->whereNull('read_at')
+                ->whereNull('notifications.data->outgoing')
+                ->count();
+        }
+
+        return MessageNotification::where('user_id', $user->id)
+            ->where('is_seen', 0)
+            ->count();
     }
 
     public function conversation()

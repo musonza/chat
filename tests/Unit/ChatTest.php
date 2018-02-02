@@ -398,4 +398,22 @@ class ChatTest extends TestCase
 
         $this->assertEquals(3, $conversations->first()->id);
     }
+
+    /** @test */
+    public function it_return_unread_messages_count_for_user()
+    {
+        $users = $this->createUsers(4);
+
+        $conversation = Chat::createConversation([$users[0]->id, $users[1]->id]);
+        Chat::message('Hello 1')->from($users[1])->to($conversation)->send();
+        Chat::message('Hello 2')->from($users[0])->to($conversation)->send();
+        $message = Chat::message('Hello 2')->from($users[0])->to($conversation)->send();
+
+        $this->assertEquals(2, Chat::for($users[1])->unreadCount());
+        $this->assertEquals(1, Chat::for($users[0])->unreadCount());
+
+        Chat::messages($message)->for($users[1])->markRead();
+
+        $this->assertEquals(1, Chat::for($users[1])->unreadCount());
+    }
 }
