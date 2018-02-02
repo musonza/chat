@@ -2,9 +2,11 @@
 
 namespace Musonza\Chat\Messages;
 
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Musonza\Chat\Notifications\MessageNotification;
 
-class MessageWasSent
+class MessageWasSent implements ShouldBroadcast
 {
     public $message;
 
@@ -22,5 +24,15 @@ class MessageWasSent
     public function createNotifications()
     {
         MessageNotification::make($this->message, $this->message->conversation);
+    }
+
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return array
+     */
+    public function broadcastOn()
+    {
+        return new PrivateChannel('mc-chat-conversation.'.$this->message->conversation->id);
     }
 }

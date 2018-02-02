@@ -2,18 +2,30 @@
 
 namespace Musonza\Chat\Eventing;
 
+use Illuminate\Events\Dispatcher;
 use Musonza\Chat\Chat;
 
 class EventDispatcher
 {
     protected $event;
 
+    public function __construct(Dispatcher $event)
+    {
+        $this->event = $event;
+    }
+
     public function dispatch(array $events)
     {
-        $customDispatcher = Chat::eventDispatcher();
-
-        if ($customDispatcher && class_exists($customDispatcher)) {
-            app($customDispatcher)->dispatch($events);
+        if (Chat::broadcasts()) {
+            foreach ($events as $event) {
+                $eventName = $this->getEventName($event);
+                $this->event->fire($eventName, $event);
+            }
         }
+    }
+
+    public function getEventName($event)
+    {
+        return str_replace('\\', '.', get_class($event));
     }
 }

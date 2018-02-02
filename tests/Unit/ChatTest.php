@@ -1,10 +1,9 @@
 <?php
 
-namespace Tests\Unit;
+namespace Musonza\Chat\Tests;
 
 use Chat;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\TestCase;
 
 class ChatTest extends TestCase
 {
@@ -391,7 +390,7 @@ class ChatTest extends TestCase
         Chat::message('Hello Man 6')->from($users[0])->to($conversation3)->send();
         Chat::message('Hello Man 3')->from($users[2])->to($conversation2)->send();
 
-        $users = \App\User::whereIn('id', [1, 2, 4])->get();
+        $users = \Musonza\Chat\User::whereIn('id', [1, 2, 4])->get();
 
         $conversations = Chat::commonConversations($users);
 
@@ -400,8 +399,21 @@ class ChatTest extends TestCase
         $this->assertEquals(3, $conversations->first()->id);
     }
 
-    public function createUsers($count = 1)
+    /** @test */
+    public function it_return_unread_messages_count_for_user()
     {
-        return factory('App\User', $count)->create();
+        $users = $this->createUsers(4);
+
+        $conversation = Chat::createConversation([$users[0]->id, $users[1]->id]);
+        Chat::message('Hello 1')->from($users[1])->to($conversation)->send();
+        Chat::message('Hello 2')->from($users[0])->to($conversation)->send();
+        $message = Chat::message('Hello 2')->from($users[0])->to($conversation)->send();
+
+        $this->assertEquals(2, Chat::for($users[1])->unreadCount());
+        $this->assertEquals(1, Chat::for($users[0])->unreadCount());
+
+        Chat::messages($message)->for($users[1])->markRead();
+
+        $this->assertEquals(1, Chat::for($users[1])->unreadCount());
     }
 }

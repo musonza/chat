@@ -5,6 +5,7 @@ namespace Musonza\Chat\Conversations;
 use Musonza\Chat\Chat;
 use Musonza\Chat\Messages\Message;
 use Musonza\Chat\Model;
+use Musonza\Chat\Notifications\MessageNotification;
 
 class Conversation extends Model
 {
@@ -60,17 +61,7 @@ class Conversation extends Model
      */
     public function getMessages($user, $perPage = 25, $page = 1, $sorting = 'asc', $columns = ['*'], $pageName = 'page')
     {
-        return $this->messages()
-            ->join('notifications', 'notifications.data->message_id', '=', 'mc_messages.id')
-            ->where('notifications.notifiable_id', $user->id)
-            ->orderBy('mc_messages.id', $sorting)
-            ->paginate(
-                $perPage,
-                ['notifications.read_at', 'notifications.notifiable_id', 'notifications.id as notification_id',
-                    'mc_messages.*', ],
-                $pageName,
-                $page
-            );
+        return $this->getConversationMessages($user, $perPage, $page, $sorting, $columns, $pageName);
     }
 
     /**
@@ -85,17 +76,7 @@ class Conversation extends Model
      */
     public function getList($user, $perPage = 25, $page = 1, $pageName = 'page')
     {
-        return $this->join('mc_conversation_user', 'mc_conversation_user.conversation_id', '=', 'mc_conversations.id')
-            ->with([
-                'last_message' => function ($query) {
-                    $query->join('notifications', 'notifications.data->message_id', '=', 'mc_messages.id')
-                        ->select('notifications.*', 'mc_messages.*');
-                },
-            ])
-            ->where('mc_conversation_user.user_id', $user->id)
-            ->orderBy('mc_conversations.updated_at', 'DESC')
-            ->distinct('mc_conversations.id')
-            ->paginate($perPage, ['mc_conversations.*'], $pageName, $page);
+        return $this->getConversationsList($user, $perPage, $page, $pageName);
     }
 
     /**
@@ -219,13 +200,9 @@ class Conversation extends Model
      *
      * @return Notifications The notifications.
      */
-    public function getNotifications($user)
+    public function getNotifications($user, $readAll = false)
     {
-        return $user->notifications->filter(function ($item) use ($user) {
-            return $item->type == 'Musonza\Chat\Notifications\MessageSent' &&
-            $item->data['conversation_id'] == $this->id &&
-            $item->notifiable_id == $user->id;
-        });
+        return $this->notifications($user, $readAll);
     }
 
     /**
@@ -237,9 +214,7 @@ class Conversation extends Model
      */
     public function clear($user)
     {
-        return $user->notifications()
-            ->where('data->conversation_id', $this->id)
-            ->delete();
+        return $this->clearConversation($user);
     }
 
     /**
@@ -249,6 +224,106 @@ class Conversation extends Model
      */
     public function readAll($user)
     {
-        $this->getNotifications($user)->markAsRead();
+        return $this->getNotifications($user, true);
+    }
+
+    private function getConversationMessages($user, $perPage, $page, $sorting, $columns, $pageName)
+    {
+        if (Chat::laravelNotifications()) {
+            return $this->messages()
+                ->join('notifications', 'notifications.data->message_id', '=', 'mc_messages.id')
+                ->where('notifications.notifiable_id', $user->id)
+                ->orderBy('mc_messages.id', $sorting)
+                ->paginate(
+                    $perPage,
+                    [
+                        'notifications.read_at', 'notifications.notifiable_id', 'notifications.id as notification_id',
+                        'mc_messages.*',
+                    ],
+                    $pageName,
+                    $page
+                );
+        }
+
+        return $this->messages()
+            ->join('mc_message_notification', 'mc_message_notification.message_id', '=', 'mc_messages.id')
+            ->where('mc_message_notification.user_id', $user->id)
+            ->orderBy('mc_messages.id', $sorting)
+            ->paginate(
+                $perPage,
+                [
+                    'mc_message_notification.updated_at as read_at', 'mc_message_notification.user_id', 'mc_message_notification.id as notification_id',
+                    'mc_messages.*',
+                ],
+                $pageName,
+                $page
+            );
+    }
+
+    private function getConversationsList($user, $perPage, $page, $pageName)
+    {
+        if (Chat::laravelNotifications()) {
+            return $this->join('mc_conversation_user', 'mc_conversation_user.conversation_id', '=', 'mc_conversations.id')
+                ->with([
+                    'last_message' => function ($query) {
+                        $query->join('notifications', 'notifications.data->message_id', '=', 'mc_messages.id')
+                            ->select('notifications.*', 'mc_messages.*');
+                    },
+                ])
+                ->where('mc_conversation_user.user_id', $user->id)
+                ->orderBy('mc_conversations.updated_at', 'DESC')
+                ->distinct('mc_conversations.id')
+                ->paginate($perPage, ['mc_conversations.*'], $pageName, $page);
+        }
+
+        return $this->join('mc_conversation_user', 'mc_conversation_user.conversation_id', '=', 'mc_conversations.id')
+            ->with([
+                'last_message' => function ($query) {
+                    $query->join('mc_message_notification', 'mc_message_notification.message_id', '=', 'mc_messages.id')
+                        ->select('mc_message_notification.*', 'mc_messages.*');
+                },
+            ])->where('mc_conversation_user.user_id', $user->id)
+            ->orderBy('mc_conversations.updated_at', 'DESC')
+            ->distinct('mc_conversations.id')
+            ->paginate($perPage, ['mc_conversations.*'], $pageName, $page);
+    }
+
+    private function notifications($user, $readAll)
+    {
+        if (Chat::laravelNotifications()) {
+            $notifications = $user->notifications->filter(function ($item) use ($user) {
+                return $item->type == 'Musonza\Chat\Notifications\MessageSent' &&
+                    $item->data['conversation_id'] == $this->id &&
+                    $item->notifiable_id == $user->id;
+            });
+
+            if ($readAll) {
+                return $notifications->markAsRead();
+            } 
+            
+            return $notifications;
+        }
+
+        $notifications = MessageNotification::where('user_id', $user->id)
+            ->where('conversation_id', $this->id);
+
+        if ($readAll) {
+            return $notifications->update(['is_seen' => 1]);
+        } 
+        
+        return $notifications->get();
+    }
+
+    private function clearConversation($user)
+    {
+        if (Chat::laravelNotifications()) {
+            return $user->notifications()
+                ->where('data->conversation_id', $this->id)
+                ->delete();
+        }
+
+        return MessageNotification::where('user_id', $user->id)
+            ->where('conversation_id', $this->id)
+            ->delete();
     }
 }
