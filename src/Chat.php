@@ -383,7 +383,7 @@ class Chat
 
     public function unreadCount()
     {
-       return $this->message->unreadCount($this->user);
+        return $this->message->unreadCount($this->user);
     }
 
     /**

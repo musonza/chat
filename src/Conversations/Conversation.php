@@ -300,7 +300,7 @@ class Conversation extends Model
             if ($readAll) {
                 return $notifications->markAsRead();
             } 
-            
+          
             return $notifications;
         }
 
