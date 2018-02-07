@@ -295,6 +295,18 @@ class Chat
     }
 
     /**
+     * Get messages by id.
+     *
+     * @param int $id
+     *
+     * @return Message
+     */
+    public function messageById($id)
+    {
+        return $this->message->findOrFail($id);
+    }
+
+    /**
      * Deletes message.
      *
      * @return void

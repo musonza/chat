@@ -11,8 +11,10 @@
   - [Update conversation details](#update-conversation-details)
   - [Send a text message](#send-a-text-message)
   - [Send a message of custom type](#send-a-message-of-custom-type)
+  - [Get a message by id](#get-a-message-by-id)
   - [Mark a message as read](#mark-a-message-as-read)
   - [Mark whole conversation as read](#mark-whole-conversation-as-read)
+  - [Unread messages count](#unread-messages-count)
   - [Delete a message](#delete-a-message)
   - [Clear a conversation](#clear-a-conversation)
   - [Get a conversation between two users](#get-a-conversation-between-two-users)
@@ -142,6 +144,12 @@ $message = Chat::message('http://example.com/img')
 		->send(); 
 ```
 
+### Get a message by id
+
+```php
+$message = Chat::messageById($id);
+```
+
 
 #### Mark a message as read
 
@@ -155,7 +163,7 @@ Chat::messages($message)->for($user)->markRead();
 Chat::conversations($conversation)->for($user)->readAll();
 ```	
 
-### Unread messages count
+#### Unread messages count
 
 ```php
 $unreadCount = Chat::for($user)->unreadCount();
