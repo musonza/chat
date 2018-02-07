@@ -425,7 +425,7 @@ class ChatTest extends TestCase
         $conversation = Chat::createConversation([$users[0]->id, $users[1]->id]);
 
         Chat::message('Hello 1')->from($users[1])->to($conversation)->send();
-        
+
         $message = Chat::messageById(1);
 
         $this->assertInstanceOf('Musonza\Chat\Messages\Message', $message);
