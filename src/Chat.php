@@ -85,7 +85,7 @@ class Chat
      *
      * @return array
      */
-    public function conversationsForUser($userId)
+    public function userConversations($userId)
     {
         return $this->conversation->userConversations($userId);
     }
