@@ -158,17 +158,17 @@ class Conversation extends Model
      * Gets conversations for a specific user.
      *
      * @param User | int $user
+     * @param bool $returnIds
      *
      * @return array
      */
-    public function userConversations($user)
+    public function userConversations($user, $returnIds = true)
     {
         $userId = is_object($user) ? $user->id : $user;
-
-        return $this->join('mc_conversation_user', 'mc_conversation_user.conversation_id', '=', 'mc_conversations.id')
+        $query = $this->join('mc_conversation_user', 'mc_conversation_user.conversation_id', '=', 'mc_conversations.id')
             ->where('mc_conversation_user.user_id', $userId)
-            ->where('private', true)
-            ->pluck('mc_conversations.id');
+            ->where('private', true);
+        return $returnIds ? $query->pluck('mc_conversations.id') : $query->get();
     }
 
     /**
