@@ -63,7 +63,7 @@ class Chat
      */
     public function createConversation(array $participants, array $data = null)
     {
-        return $this->conversation->start($participants, false);
+        return $this->conversation->start($participants);
     }
 
     /**
@@ -87,7 +87,7 @@ class Chat
      */
     public function userConversations($userId)
     {
-        return $this->conversation->userConversations($userId);
+        return $this->conversation->userConversations($userId, false);
     }
 
     /**
