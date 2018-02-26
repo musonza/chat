@@ -79,6 +79,18 @@ class Chat
     }
 
     /**
+     * Returns conversations for a user.
+     *
+     * @param int $userId
+     *
+     * @return array
+     */
+    public function conversationsForUser($userId)
+    {
+        return $this->conversation->userConversations($userId);
+    }
+
+    /**
      * Returns a message.
      *
      * @param int $messageId
