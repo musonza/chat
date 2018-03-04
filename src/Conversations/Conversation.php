@@ -231,7 +231,7 @@ class Conversation extends Model
     {
         if (Chat::laravelNotifications()) {
             return $this->messages()
-                ->join('notifications', 'notifications.data->message_id', '=', 'mc_messages.id')
+                ->join('notifications', 'notifications.message_id', '=', 'mc_messages.id')
                 ->where('notifications.notifiable_id', $user->id)
                 ->orderBy('mc_messages.id', $sorting)
                 ->paginate(
