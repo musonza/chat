@@ -387,7 +387,6 @@ class ChatTest extends TestCase
         //Read message from from convo
         Chat::messages($conversation1->messages()->first())->for($this->users[0])->markRead();
         $this->assertEquals(2, Chat::for($this->users[0])->unreadCount());
-
     }
 
     /** @test */
