@@ -172,6 +172,19 @@ class Conversation extends Model
     }
 
     /**
+     * Get unread notifications
+     *
+     * @param User $user
+     * @return void
+     */
+    public function unReadNotifications($user)
+    {
+       $notifications = MessageNotification::where([['user_id', '=', $user->id], ['conversation_id', '=', $this->id], ['is_seen', '=', 0]])->get();
+
+       return $notifications;
+    }
+
+    /**
      * Gets conversations that are common for a list of users.
      *
      * @param \Illuminate\Database\Eloquent\Collection | array $users ids
