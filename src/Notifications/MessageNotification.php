@@ -31,6 +31,14 @@ class MessageNotification extends Eloquent
         }
     }
 
+    public function unReadNotifications($user)
+    {
+        return MessageNotification::where([
+            ['user_id', '=', $user->id],
+            ['is_seen', '=', 0]
+        ])->get();
+    }
+
     public static function createCustomNotifications($message, $conversation)
     {
         $notification = [];

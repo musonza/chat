@@ -372,7 +372,20 @@ class ChatTest extends TestCase
     }
 
     /** @test */
-    public function it_gets_unread_messages_per_conversation()
+    public function it_gets_unread_notifications()
+    {
+        $conversation1 = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
+        Chat::message('Hello 1')->from($this->users[1])->to($conversation1)->send();
+        Chat::message('Hello 2')->from($this->users[1])->to($conversation1)->send();
+        $conversation2 = Chat::createConversation([$this->users[2]->id, $this->users[0]->id]);
+        Chat::message('Hello 3')->from($this->users[2])->to($conversation2)->send();
+
+        $notifications = Chat::for($this->users[0])->unReadNotifications();
+        $this->assertEquals(3, $notifications->count());
+    }
+
+    /** @test */
+    public function it_gets_unread_notifications_per_conversation()
     {
         $conversation1 = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
         Chat::message('Hello 1')->from($this->users[1])->to($conversation1)->send();
