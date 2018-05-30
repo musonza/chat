@@ -45,7 +45,7 @@ composer require musonza/chat
 Add the service provider to your `config\app.php` the providers array
 
 ```
-Musonza\Chat\ChatServiceProvider
+Musonza\Chat\ChatServiceProvider::class
 ```
 
 Add the Facade to your aliases:
