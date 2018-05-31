@@ -24,11 +24,7 @@ class MessageNotification extends Eloquent
      */
     public static function make(Message $message, Conversation $conversation)
     {
-        if (Chat::laravelNotifications()) {
-            self::createLaravelNotifications($message, $conversation);
-        } else {
-            self::createCustomNotifications($message, $conversation);
-        }
+        self::createCustomNotifications($message, $conversation);
     }
 
     public function unReadNotifications($user)
@@ -57,26 +53,6 @@ class MessageNotification extends Eloquent
         }
 
         self::insert($notification);
-    }
-
-    public static function createLaravelNotifications($message, $conversation)
-    {
-        $recipients = $conversation->users->filter(function ($user) use ($message, $conversation) {
-            if ($message->user_id === $user->id) {
-                $user->notify(new MessageSent([
-                    'message_id'      => $message->id,
-                    'conversation_id' => $conversation->id,
-                    'outgoing'        => true,
-                ]));
-            }
-
-            return $message->user_id !== $user->id;
-        });
-
-        Notification::send($recipients, new MessageSent([
-            'message_id'      => $message->id,
-            'conversation_id' => $conversation->id,
-        ]));
     }
 
     public function markAsRead()

@@ -7,5 +7,4 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Eloquent
 {
-    use Notifiable;
 }

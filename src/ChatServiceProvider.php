@@ -13,16 +13,32 @@ class ChatServiceProvider extends ServiceProvider
      */
     protected $defer = false;
 
+    /**
+     * Bootstrap application services.
+     *
+     * @return void
+     */
     public function boot()
     {
-        $this->registerAssets();
+        $this->publishMigrations();
+        $this->publishConfig();
     }
 
+    /**
+     * Register application services.
+     *
+     * @return void
+     */
     public function register()
     {
         $this->registerChat();
     }
 
+    /**
+     * Registers Chat.
+     *
+     * @return void
+     */
     private function registerChat()
     {
         $this->app->bind('chat', function () {
@@ -30,11 +46,29 @@ class ChatServiceProvider extends ServiceProvider
         });
     }
 
-    public function registerAssets()
+    /**
+     * Publish package's migrations.
+     *
+     * @return void
+     */
+    public function publishMigrations()
+    {
+        $timestamp = date('Y_m_d_His', time());
+        $stub = __DIR__.'/../database/migrations/create_chat_tables.php';
+        $target = $this->app->databasePath(). '/migrations/' . $timestamp . '_create_chat_tables.php';
+
+        $this->publishes([$stub => $target], 'chat.migrations');
+    }
+
+    /**
+     * Publish package's config file.
+     *
+     * @return void
+     */
+    public function publishConfig()
     {
         $this->publishes([
-            __DIR__.'/migrations' => database_path('/migrations'),
-            __DIR__.'/config'     => config_path(),
-        ]);
+            __DIR__.'/../config'     => config_path(),
+        ], 'chat.config');
     }
 }
