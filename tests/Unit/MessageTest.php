@@ -84,6 +84,26 @@ class MessageTest extends TestCase
     }
 
     /** @test */
+    public function it_can_list_deleted_messages()
+    {
+        $conversation = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
+        $message = Chat::message('Hello there 0')->from($this->users[0])->to($conversation)->send();
+
+        $messageId = 1;
+        $perPage = 5;
+        $page = 1;
+
+        Chat::messages($message)->for($this->users[1])->delete();
+
+        $messages = Chat::conversations($conversation)
+            ->for($this->users[1])
+            ->deleted()
+            ->getMessages($perPage, $page);
+
+        $this->assertEquals(1, $messages->count());
+    }
+
+    /** @test */
     public function it_can_tell_message_sender()
     {
         $conversation = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
@@ -111,10 +131,11 @@ class MessageTest extends TestCase
 
         $page = 1;
 
-        $this->assertEquals(3, Chat::conversations($conversation)->for($this->users[0])->getMessages($perPage, $page)->count());
-        $this->assertEquals(3, Chat::conversations($conversation)->for($this->users[0])->getMessages($perPage, 2)->count());
-        $this->assertEquals(1, Chat::conversations($conversation)->for($this->users[0])->getMessages($perPage, 3)->count());
-        $this->assertEquals(0, Chat::conversations($conversation)->for($this->users[0])->getMessages($perPage, 4)->count());
+        $this->assertEquals(3, Chat::conversations($conversation)->for($this->users[0])->perPage(3)->getMessages()->count());
+
+        $this->assertEquals(3, Chat::conversations($conversation)->for($this->users[0])->perPage(3)->page(2)->getMessages()->count());
+        $this->assertEquals(1, Chat::conversations($conversation)->for($this->users[0])->perPage(3)->page(3)->getMessages()->count());
+        $this->assertEquals(0, Chat::conversations($conversation)->for($this->users[0])->perPage(3)->page(4)->getMessages()->count());
     }
 
     /** @test */

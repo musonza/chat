@@ -51,17 +51,14 @@ class Conversation extends Model
      * Get messages for a conversation.
      *
      * @param User   $user
-     * @param int    $perPage
-     * @param int    $page
-     * @param string $sorting
-     * @param array  $columns
-     * @param string $pageName
+     * @param array    $paginationParams
+     * @param boolean $deleted
      *
      * @return Message
      */
-    public function getMessages($user, $perPage = 25, $page = 1, $sorting = 'asc', $columns = ['*'], $pageName = 'page')
+    public function getMessages($user, $paginationParams, $deleted = false)
     {
-        return $this->getConversationMessages($user, $perPage, $page, $sorting, $columns, $pageName);
+        return $this->getConversationMessages($user, $paginationParams, $deleted);
     }
 
     /**
@@ -240,22 +237,27 @@ class Conversation extends Model
         return $this->getNotifications($user, true);
     }
 
-    private function getConversationMessages($user, $perPage, $page, $sorting, $columns, $pageName)
+    private function getConversationMessages($user, $paginationParams, $deleted)
     {
-        return $this->messages()
+        $messages = $this->messages()
             ->join('mc_message_notification', 'mc_message_notification.message_id', '=', 'mc_messages.id')
-            ->where('mc_message_notification.user_id', $user->id)
-            ->where('mc_message_notification.deleted_at', null)
-            ->orderBy('mc_messages.id', $sorting)
+            ->where('mc_message_notification.user_id', $user->id);
+        $messages = $deleted ? $messages->whereNotNull('mc_message_notification.deleted_at') : $messages->whereNull('mc_message_notification.deleted_at');
+        $messages = $messages->orderBy('mc_messages.id', $paginationParams['sorting'])
             ->paginate(
-                $perPage,
+                $paginationParams['perPage'],
                 [
-                    'mc_message_notification.updated_at as read_at', 'mc_message_notification.user_id', 'mc_message_notification.id as notification_id',
+                    'mc_message_notification.updated_at as read_at',
+                    'mc_message_notification.deleted_at as deleted_at',
+                    'mc_message_notification.user_id',
+                    'mc_message_notification.id as notification_id',
                     'mc_messages.*',
                 ],
-                $pageName,
-                $page
+                $paginationParams['pageName'],
+                $paginationParams['page']
             );
+
+        return $messages;
     }
 
     private function getConversationsList($user, $perPage, $page, $pageName)

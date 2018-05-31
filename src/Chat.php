@@ -16,31 +16,31 @@ class Chat
      * @var string
      */
     protected $type = 'text';
-
     /**
      * Message sender.
      *
      * @var int | User
      */
     protected $from;
-
     /**
      * Message recipient.
      *
      * @var Conversation id
      */
     protected $to;
-
     /**
      * Message content.
      *
      * @var string
      */
     protected $body;
+    protected $deleted = false;
 
     protected $perPage = 25;
-
     protected $page = 1;
+    protected $sorting = 'asc';
+    protected $columns = ['*'];
+    protected $pageName = 'page';
 
     /**
      * @param Conversation $conversation The conversation
@@ -145,9 +145,16 @@ class Chat
      *
      * @return $this
      */
-    public function page($page)
+    public function page(int $page)
     {
         $this->page = $page ? $page : $this->page;
+
+        return $this;
+    }
+
+    public function perPage(int $perPage)
+    {
+        $this->perPage = $perPage;
 
         return $this;
     }
@@ -232,6 +239,13 @@ class Chat
         return $this;
     }
 
+    public function deleted()
+    {
+        $this->deleted = true;
+
+        return $this;
+    }
+
     /**
      * Sends the message.
      *
@@ -298,7 +312,15 @@ class Chat
      */
     public function getMessages($perPage = null, $page = null)
     {
-        return $this->conversation->getMessages($this->user, $perPage, $page);
+        $paginationParams = [
+            'page' => $this->page,
+            'perPage' => $this->perPage,
+            'sorting' => $this->sorting,
+            'columns' => $this->columns,
+            'pageName' => $this->pageName
+        ];
+
+        return $this->conversation->getMessages($this->user, $paginationParams, $this->deleted);
     }
 
     /**
