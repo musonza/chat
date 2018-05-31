@@ -245,6 +245,7 @@ class Conversation extends Model
         return $this->messages()
             ->join('mc_message_notification', 'mc_message_notification.message_id', '=', 'mc_messages.id')
             ->where('mc_message_notification.user_id', $user->id)
+            ->where('mc_message_notification.deleted_at', null)
             ->orderBy('mc_messages.id', $sorting)
             ->paginate(
                 $perPage,

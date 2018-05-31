@@ -12,6 +12,9 @@ use Illuminate\Database\Migrations\Migration;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
+    protected $conversation;
+    protected $prefix = 'mc_';
+
     public function __construct()
     {
         parent::__construct();

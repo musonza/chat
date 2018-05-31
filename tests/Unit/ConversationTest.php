@@ -9,9 +9,6 @@ class ConversationTest extends TestCase
 {
     use DatabaseMigrations;
 
-    protected $conversation;
-    protected $prefix = 'mc_';
-
     /** @test */
     public function it_creates_a_conversation()
     {

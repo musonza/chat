@@ -9,9 +9,6 @@ class MessageTest extends TestCase
 {
     use DatabaseMigrations;
 
-    protected $conversation;
-    protected $prefix = 'mc_';
-
     /** @test */
     public function it_can_send_a_message()
     {
@@ -79,11 +76,11 @@ class MessageTest extends TestCase
         $perPage = 5;
         $page = 1;
 
-        Chat::messages($message)->for($this->users[0])->delete();
+        Chat::messages($message)->for($this->users[1])->delete();
 
-        $messages = Chat::conversations($conversation)->for($this->users[0])->getMessages($perPage, $page);
+        $messages = Chat::conversations($conversation)->for($this->users[1])->getMessages($perPage, $page);
 
-        $this->assertEquals($messages->count(), 0);
+        $this->assertEquals(0, $messages->count());
     }
 
     /** @test */

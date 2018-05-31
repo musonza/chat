@@ -60,7 +60,7 @@ class CreateChatTables extends Migration
             $table->boolean('is_seen')->default(false);
             $table->boolean('is_sender')->default(false);
             $table->timestamps();
-            $table->timestamp('deleted_at')->nullable();
+            $table->softDeletes();
 
             $table->index(['user_id', 'message_id']);
 
