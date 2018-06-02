@@ -12,7 +12,7 @@ class PaginationTest extends TestCase
     /** @test */
     public function it_can_set_pagination_params()
     {
-        $chat = Chat::setPaginationParams([
+        $chat = Chat::conversations()->setPaginationParams([
                 'perPage' => 30,
                 'page' => 3,
                 'pageName' => 'test',

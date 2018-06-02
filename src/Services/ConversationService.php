@@ -113,6 +113,32 @@ class ConversationService
     }
 
     /**
+     * Add user(s) to a conversation.
+     *
+     * @param Conversation $conversation
+     * @param int | array  $userId       / array of user ids or an integer
+     *
+     * @return Conversation
+     */
+    public function addParticipants($userId)
+    {
+        return $this->conversation->addParticipants($userId);
+    }
+
+    /**
+     * Remove user(s) from a conversation.
+     *
+     * @param Conversation $conversation
+     * @param $users / array of user ids or an integer
+     *
+     * @return Conversation
+     */
+    public function removeParticipants($users)
+    {
+        return $this->conversation->removeUsers($users);
+    }
+
+    /**
      * Gets the conversations in common.
      *
      * @param array $conversation1 The conversations for user one

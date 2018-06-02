@@ -33,7 +33,7 @@ class MessageTest extends TestCase
             ->to($conversation)
             ->send();
 
-        $m = Chat::getMessage($message->id);
+        $m = Chat::messages()->getById($message->id);
 
         $this->assertEquals($message->id, $m->id);
     }
@@ -175,7 +175,7 @@ class MessageTest extends TestCase
     {
         $conversation = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
         Chat::message('Hello 1')->from($this->users[1])->to($conversation)->send();
-        $message = Chat::messageById(1);
+        $message = Chat::messages()->getById(1);
 
         $this->assertInstanceOf(Message::class, $message);
         $this->assertEquals(1, $message->id);

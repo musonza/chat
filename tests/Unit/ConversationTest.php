@@ -101,7 +101,7 @@ class ConversationTest extends TestCase
     {
         $conversation = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
 
-        $conversation = Chat::removeParticipants($conversation, $this->users[0]);
+        $conversation = Chat::conversation($conversation)->removeParticipants($this->users[0]);
 
         $this->assertEquals(1, $conversation->fresh()->users()->count());
     }
@@ -111,7 +111,7 @@ class ConversationTest extends TestCase
     {
         $conversation = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
 
-        $conversation = Chat::removeParticipants($conversation, [$this->users[0], $this->users[1]]);
+        $conversation = Chat::conversation($conversation)->removeParticipants([$this->users[0], $this->users[1]]);
 
         $this->assertEquals(0, $conversation->fresh()->users->count());
     }
@@ -125,7 +125,7 @@ class ConversationTest extends TestCase
 
         $userThree = $this->createUsers(1);
 
-        Chat::addParticipants($conversation, $userThree[0]);
+        Chat::conversation($conversation)->addParticipants($userThree[0]);
 
         $this->assertEquals($conversation->fresh()->users->count(), 3);
     }
@@ -139,7 +139,7 @@ class ConversationTest extends TestCase
 
         $otherUsers = $this->createUsers(5);
 
-        Chat::addParticipants($conversation, $otherUsers);
+        Chat::conversation($conversation)->addParticipants($otherUsers);
 
         $this->assertEquals($conversation->fresh()->users->count(), 7);
     }
