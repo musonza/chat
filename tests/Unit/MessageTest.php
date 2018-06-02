@@ -153,13 +153,15 @@ class MessageTest extends TestCase
         $this->assertCount(3, $recent_messages);
 
         $recent_messages = Chat::conversations()->for($this->users[0])->setPaginationParams([
-                'perPage' => 2,
+                'perPage' => 1,
                 'page' => 1,
                 'pageName' => 'test',
                 'sorting' => 'desc'
             ])->get();
 
-        $this->assertCount(2, $recent_messages);
+        dd(get_class($recent_messages));
+
+        $this->assertCount(1, $recent_messages);
     }
 
     /** @test */

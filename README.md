@@ -227,7 +227,7 @@ $messages = Chat::conversations()->for($user)->limit(25)->page(1)->get();
 There are a few ways you can achieve pagination
 You can specify the `limit` and `page` as above using the respective functions or as below:
 ```
-        $chat = Chat::conversations()->for($user)
+   $paginated = Chat::conversations()->for($user)
             ->setPaginationParams([
                 'page' => 3,
                 'perPage' => 10,
@@ -240,6 +240,8 @@ You can specify the `limit` and `page` as above using the respective functions o
             ->get();
 ```
 You don't have to specify all the parameters. If you leave the parameters out, default values will be used.
+`$paginated` above will return `Illuminate\Pagination\LengthAwarePaginator`
+To get the `conversations` simply call `$paginated->items()`
 
 
 #### Get users in a conversation
