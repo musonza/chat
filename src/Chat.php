@@ -2,62 +2,33 @@
 
 namespace Musonza\Chat;
 
-//use Musonza\Chat\Models\Message;
+use Musonza\Chat\Traits\Paginates;
+use Musonza\Chat\Services\MessageService;
 use Musonza\Chat\Models\Conversation;
 use Musonza\Chat\Commanding\CommandBus;
+use Musonza\Chat\Traits\IdentifiesUsers;
 use Musonza\Chat\Models\MessageNotification;
 use Musonza\Chat\Messages\SendMessageCommand;
 
-use Musonza\Chat\Messages\Message;
-
 class Chat
 {
-    /**
-     * Type of message being sent.
-     *
-     * @var string
-     */
-    protected $type = 'text';
-    /**
-     * Message sender.
-     *
-     * @var int | User
-     */
-    protected $from;
-    /**
-     * Message recipient.
-     *
-     * @var Conversation id
-     */
-    protected $to;
-    /**
-     * Message content.
-     *
-     * @var string
-     */
-    protected $body;
-    protected $deleted = false;
+    use IdentifiesUsers, Paginates;
 
-    protected $perPage = 25;
-    protected $page = 1;
-    protected $sorting = 'asc';
-    protected $columns = ['*'];
-    protected $pageName = 'page';
+    protected $deleted = false;
 
     /**
      * @param Conversation $conversation The conversation
-     * @param Message           $message      The message
      * @param CommandBus      $commandBus   The command bus
      * @param MessageNotification      $messageNotification   Notifications
      */
     public function __construct(
+        MessageService $messageService,
         Conversation $conversation,
-        Message $message,
         CommandBus $commandBus,
         MessageNotification $messageNotification)
     {
+        $this->messageService = $messageService;
         $this->conversation = $conversation;
-        $this->message = $message;
         $this->commandBus = $commandBus;
         $this->messageNotification = $messageNotification;
     }
@@ -73,6 +44,18 @@ class Chat
     public function createConversation(array $participants, array $data = null)
     {
         return $this->conversation->start($participants);
+    }
+
+    /**
+     * Sets message.
+     *
+     * @param string | Musonza\Chat\Models\Message  $message
+     *
+     * @return Musonza\Chat\Messages\Message
+     */
+    public function message($message)
+    {
+        return $this->messageService->setMessage($message);
     }
 
     /**
@@ -94,9 +77,9 @@ class Chat
      *
      * @return Message
      */
-    public function messageWithId($messageId)
+    public function getMessage($messageId)
     {
-        return $this->message->findOrFail($messageId);
+        return $this->messageService->getById($messageId);
     }
 
     /**
@@ -112,131 +95,9 @@ class Chat
         $conversation->addParticipants($userId);
     }
 
-    /**
-     * Set the message.
-     *
-     * @param Message $message
-     *
-     * @return $this
-     */
-    public function messages(Message $message)
+    public function messages()
     {
-        $this->message = $message;
-
-        return $this;
-    }
-
-    /**
-     * Set the limit.
-     *
-     * @param int $limit
-     *
-     * @return $this
-     */
-    public function limit($limit)
-    {
-        $this->perPage = $limit ? $limit : $this->perPage;
-
-        return $this;
-    }
-
-    /**
-     * Set current page for pagination.
-     *
-     * @param int $page
-     *
-     * @return $this
-     */
-    public function page(int $page)
-    {
-        $this->page = $page ? $page : $this->page;
-
-        return $this;
-    }
-
-    public function perPage(int $perPage)
-    {
-        $this->perPage = $perPage;
-
-        return $this;
-    }
-
-    /**
-     * Sets user.
-     *
-     * @param object $user
-     *
-     * @return $this
-     */
-    public function for($user)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Mark a message as read.
-     *
-     * @return void
-     */
-    public function markRead()
-    {
-        $this->message->markRead($this->user);
-    }
-
-    /**
-     * Set Sender.
-     *
-     * @param int $from
-     *
-     * @return $this
-     */
-    public function from($from)
-    {
-        $this->from = is_object($from) ? $from->id : $from;
-
-        return $this;
-    }
-
-    /**
-     * Set Message type.
-     *
-     * @param string type
-     *
-     * @return $this
-     */
-    public function type(String $type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Sets Receiver.
-     *
-     * @param Conversation $to
-     *
-     * @return $this
-     */
-    public function to(Conversation $to)
-    {
-        $this->to = $to;
-
-        return $this;
-    }
-
-    /**
-     * Sets message body.
-     *
-     * @param string $body
-     *
-     * @return $this
-     */
-    public function message(String $body)
-    {
-        return new Message($body);
+        return $this->messageService;
     }
 
     public function deleted()
@@ -244,30 +105,6 @@ class Chat
         $this->deleted = true;
 
         return $this;
-    }
-
-    /**
-     * Sends the message.
-     *
-     * @return void
-     */
-    public function send()
-    {
-        if (!$this->from) {
-            throw new \Exception('Message sender has not been set');
-        }
-
-        if (!$this->body) {
-            throw new \Exception('Message body has not been set');
-        }
-
-        if (!$this->to) {
-            throw new \Exception('Message receiver has not been set');
-        }
-
-        $command = new SendMessageCommand($this->to, $this->body, $this->from, $this->type);
-
-        return $this->commandBus->execute($command);
     }
 
     /**
@@ -315,26 +152,6 @@ class Chat
         return $this->conversation->getMessages($this->user, $this->getPaginationParams(), $this->deleted);
     }
 
-    public function setPaginationParams($params)
-    {
-        foreach ($params as $key => $value) {
-            $this->{$key} = $value;
-        }
-
-        return $this;
-    }
-
-    public function getPaginationParams()
-    {
-        return [
-            'page' => $this->page,
-            'perPage' => $this->perPage,
-            'sorting' => $this->sorting,
-            'columns' => $this->columns,
-            'pageName' => $this->pageName
-        ];
-    }
-
     /**
      * Get messages by id.
      *
@@ -344,17 +161,7 @@ class Chat
      */
     public function messageById($id)
     {
-        return $this->message->findOrFail($id);
-    }
-
-    /**
-     * Deletes message.
-     *
-     * @return void
-     */
-    public function delete()
-    {
-        $this->message->trash($this->user);
+        return $this->messageService->getById($id);
     }
 
     /**
@@ -420,16 +227,6 @@ class Chat
     private function getConversationsInCommon($conversation1, $conversation2)
     {
         return array_values(array_intersect($conversation1, $conversation2));
-    }
-
-    /**
-     * Get count for unread messages.
-     *
-     * @return void
-     */
-    public function unreadCount()
-    {
-        return $this->message->unreadCount($this->user);
     }
 
     /**

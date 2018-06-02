@@ -33,7 +33,7 @@ class MessageTest extends TestCase
             ->to($conversation)
             ->send();
 
-        $m = Chat::messageWithId($message->id);
+        $m = Chat::getMessage($message->id);
 
         $this->assertEquals($message->id, $m->id);
     }
@@ -62,7 +62,7 @@ class MessageTest extends TestCase
             ->to($conversation)
             ->send();
 
-        Chat::messages($message)->for($this->users[0])->markRead();
+        Chat::message($message)->for($this->users[0])->markRead();
 
         $this->assertNotNull($message->getNotification($this->users[0])->read_at);
     }
@@ -77,7 +77,7 @@ class MessageTest extends TestCase
         $perPage = 5;
         $page = 1;
 
-        Chat::messages($message)->for($this->users[1])->delete();
+        Chat::message($message)->for($this->users[1])->delete();
 
         $messages = Chat::conversations($conversation)->for($this->users[1])->getMessages($perPage, $page);
 
@@ -94,7 +94,7 @@ class MessageTest extends TestCase
         $perPage = 5;
         $page = 1;
 
-        Chat::messages($message)->for($this->users[1])->delete();
+        Chat::message($message)->for($this->users[1])->delete();
 
         $messages = Chat::conversations($conversation)
             ->for($this->users[1])
@@ -162,12 +162,12 @@ class MessageTest extends TestCase
         Chat::message('Hello 2')->from($this->users[0])->to($conversation)->send();
         $message = Chat::message('Hello 2')->from($this->users[0])->to($conversation)->send();
 
-        $this->assertEquals(2, Chat::for($this->users[1])->unreadCount());
-        $this->assertEquals(1, Chat::for($this->users[0])->unreadCount());
+        $this->assertEquals(2, Chat::messages()->for($this->users[1])->unreadCount());
+        $this->assertEquals(1, Chat::messages()->for($this->users[0])->unreadCount());
 
-        Chat::messages($message)->for($this->users[1])->markRead();
+        Chat::message($message)->for($this->users[1])->markRead();
 
-        $this->assertEquals(1, Chat::for($this->users[1])->unreadCount());
+        $this->assertEquals(1, Chat::messages()->for($this->users[1])->unreadCount());
     }
 
     /** @test */
