@@ -2,11 +2,13 @@
 
 namespace Musonza\Chat;
 
+//use Musonza\Chat\Models\Message;
+use Musonza\Chat\Models\Conversation;
 use Musonza\Chat\Commanding\CommandBus;
-use Musonza\Chat\Conversations\Conversation;
-use Musonza\Chat\Messages\Message;
+use Musonza\Chat\Models\MessageNotification;
 use Musonza\Chat\Messages\SendMessageCommand;
-use Musonza\Chat\Notifications\MessageNotification;
+
+use Musonza\Chat\Messages\Message;
 
 class Chat
 {
@@ -234,9 +236,7 @@ class Chat
      */
     public function message(String $body)
     {
-        $this->body = $body;
-
-        return $this;
+        return new Message($body);
     }
 
     public function deleted()
@@ -312,15 +312,27 @@ class Chat
      */
     public function getMessages($perPage = null, $page = null)
     {
-        $paginationParams = [
+        return $this->conversation->getMessages($this->user, $this->getPaginationParams(), $this->deleted);
+    }
+
+    public function setPaginationParams($params)
+    {
+        foreach ($params as $key => $value) {
+            $this->{$key} = $value;
+        }
+
+        return $this;
+    }
+
+    public function getPaginationParams()
+    {
+        return [
             'page' => $this->page,
             'perPage' => $this->perPage,
             'sorting' => $this->sorting,
             'columns' => $this->columns,
             'pageName' => $this->pageName
         ];
-
-        return $this->conversation->getMessages($this->user, $paginationParams, $this->deleted);
     }
 
     /**

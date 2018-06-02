@@ -19,7 +19,6 @@ class CommandBus
     public function execute($command)
     {
         $handler = $this->commandTranslator->toCommandHandler($command);
-
         return $this->app->make($handler)->handle($command);
     }
 }

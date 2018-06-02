@@ -59,6 +59,7 @@ class CreateChatTables extends Migration
             $table->integer('user_id')->unsigned();
             $table->boolean('is_seen')->default(false);
             $table->boolean('is_sender')->default(false);
+            $table->boolean('flagged')->default(false);
             $table->timestamps();
             $table->softDeletes();
 

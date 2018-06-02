@@ -2,7 +2,7 @@
 
 namespace Musonza\Chat\Messages;
 
-use Musonza\Chat\Conversations\Conversation;
+use Musonza\Chat\Models\Conversation;
 
 class SendMessageCommand
 {
@@ -11,10 +11,10 @@ class SendMessageCommand
     public $conversation;
 
     /**
-     * @param \Musonza\Chat\Conversations\Conversation $conversation The conversation
-     * @param string                                   $body         The body
-     * @param int                                      $senderId     The sender identifier
-     * @param string                                   $type         The type
+     * @param Conversation $conversation The conversation
+     * @param string $body The message body
+     * @param int $senderId The sender identifier
+     * @param string $type The message type
      */
     public function __construct(Conversation $conversation, $body, $senderId, $type = 'text')
     {

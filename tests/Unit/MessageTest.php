@@ -3,6 +3,7 @@
 namespace Musonza\Chat\Tests;
 
 use Chat;
+use Musonza\Chat\Models\Message;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class MessageTest extends TestCase
@@ -126,13 +127,7 @@ class MessageTest extends TestCase
         Chat::message('Hello Man')->from($this->users[1])->to($conversation)->send();
 
         $this->assertEquals($conversation->messages->count(), 7);
-
-        $perPage = 3;
-
-        $page = 1;
-
         $this->assertEquals(3, Chat::conversations($conversation)->for($this->users[0])->perPage(3)->getMessages()->count());
-
         $this->assertEquals(3, Chat::conversations($conversation)->for($this->users[0])->perPage(3)->page(2)->getMessages()->count());
         $this->assertEquals(1, Chat::conversations($conversation)->for($this->users[0])->perPage(3)->page(3)->getMessages()->count());
         $this->assertEquals(0, Chat::conversations($conversation)->for($this->users[0])->perPage(3)->page(4)->getMessages()->count());
@@ -182,7 +177,25 @@ class MessageTest extends TestCase
         Chat::message('Hello 1')->from($this->users[1])->to($conversation)->send();
         $message = Chat::messageById(1);
 
-        $this->assertInstanceOf('Musonza\Chat\Messages\Message', $message);
+        $this->assertInstanceOf(Message::class, $message);
         $this->assertEquals(1, $message->id);
     }
+
+    // /** @test */
+    // public function it_flags_a_message()
+    // {
+    //     // $conversation = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
+    //     // $message = Chat::message('Hello')
+    //     //     ->from($this->users[0])
+    //     //     ->to($conversation)
+    //     //     ->send();
+
+    //     // $m = Chat::message($id)
+
+    //     // $m = Chat::messageWithId($message->id)->toggleFlag($this->users[1]);
+    //     // $this->assertTrue($m->flagged);
+
+    //     // $m->toggleFlag($this->users[1]);
+    //     // $this->assertFalse($m->flagged);
+    // }
 }

@@ -1,18 +1,16 @@
 <?php
 
-namespace Musonza\Chat\Conversations;
+namespace Musonza\Chat\Models;
 
 use Musonza\Chat\Chat;
-use Musonza\Chat\Messages\Message;
+use Musonza\Chat\Models\Message;
 use Musonza\Chat\Model;
-use Musonza\Chat\Notifications\MessageNotification;
+use Musonza\Chat\Models\MessageNotification;
 
 class Conversation extends Model
 {
     protected $table = 'mc_conversations';
-
     protected $fillable = ['data'];
-
     protected $casts = [
         'data' => 'array',
     ];

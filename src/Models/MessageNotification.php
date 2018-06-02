@@ -1,12 +1,12 @@
 <?php
 
-namespace Musonza\Chat\Notifications;
+namespace Musonza\Chat\Models;
 
 use Eloquent;
 use Musonza\Chat\Chat;
-use Musonza\Chat\Messages\Message;
+use Musonza\Chat\Models\Message;
 use Illuminate\Support\Facades\Notification;
-use Musonza\Chat\Conversations\Conversation;
+use Musonza\Chat\Models\Conversation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MessageNotification extends Eloquent

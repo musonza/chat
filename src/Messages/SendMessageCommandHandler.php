@@ -2,8 +2,9 @@
 
 namespace Musonza\Chat\Messages;
 
-use Musonza\Chat\Commanding\CommandHandler;
 use Musonza\Chat\Eventing\EventDispatcher;
+use Musonza\Chat\Models\Message;
+use Musonza\Chat\Commanding\CommandHandler;
 
 class SendMessageCommandHandler implements CommandHandler
 {
@@ -11,8 +12,8 @@ class SendMessageCommandHandler implements CommandHandler
     protected $dispatcher;
 
     /**
-     * @param \Musonza\Chat\Eventing\EventDispatcher $dispatcher The dispatcher
-     * @param Message                                $message    The message
+     * @param EventDispatcher $dispatcher The dispatcher
+     * @param Message $message    The message
      */
     public function __construct(EventDispatcher $dispatcher, Message $message)
     {
