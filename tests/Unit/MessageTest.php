@@ -79,7 +79,7 @@ class MessageTest extends TestCase
 
         Chat::message($message)->for($this->users[1])->delete();
 
-        $messages = Chat::conversations($conversation)->for($this->users[1])->getMessages($perPage, $page);
+        $messages = Chat::conversation($conversation)->for($this->users[1])->getMessages($perPage, $page);
 
         $this->assertEquals(0, $messages->count());
     }
@@ -96,7 +96,7 @@ class MessageTest extends TestCase
 
         Chat::message($message)->for($this->users[1])->delete();
 
-        $messages = Chat::conversations($conversation)
+        $messages = Chat::conversation($conversation)
             ->for($this->users[1])
             ->deleted()
             ->getMessages($perPage, $page);
@@ -127,10 +127,10 @@ class MessageTest extends TestCase
         Chat::message('Hello Man')->from($this->users[1])->to($conversation)->send();
 
         $this->assertEquals($conversation->messages->count(), 7);
-        $this->assertEquals(3, Chat::conversations($conversation)->for($this->users[0])->perPage(3)->getMessages()->count());
-        $this->assertEquals(3, Chat::conversations($conversation)->for($this->users[0])->perPage(3)->page(2)->getMessages()->count());
-        $this->assertEquals(1, Chat::conversations($conversation)->for($this->users[0])->perPage(3)->page(3)->getMessages()->count());
-        $this->assertEquals(0, Chat::conversations($conversation)->for($this->users[0])->perPage(3)->page(4)->getMessages()->count());
+        $this->assertEquals(3, Chat::conversation($conversation)->for($this->users[0])->perPage(3)->getMessages()->count());
+        $this->assertEquals(3, Chat::conversation($conversation)->for($this->users[0])->perPage(3)->page(2)->getMessages()->count());
+        $this->assertEquals(1, Chat::conversation($conversation)->for($this->users[0])->perPage(3)->page(3)->getMessages()->count());
+        $this->assertEquals(0, Chat::conversation($conversation)->for($this->users[0])->perPage(3)->page(4)->getMessages()->count());
     }
 
     /** @test */

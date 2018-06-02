@@ -22,7 +22,7 @@ class ConversationTest extends TestCase
     {
         $conversation = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
 
-        $c = Chat::conversation($conversation->id);
+        $c = Chat::getConversation($conversation->id);
 
         $this->assertEquals($conversation->id, $c->id);
     }
@@ -36,7 +36,7 @@ class ConversationTest extends TestCase
         Chat::message('Hello there 0')->from($this->users[1])->to($conversation)->send();
         Chat::message('Hello there 0')->from($this->users[1])->to($conversation)->send();
 
-        Chat::conversations($conversation)->for($this->users[0])->readAll();
+        Chat::conversation($conversation)->for($this->users[0])->readAll();
         $this->assertEquals(0, $conversation->unReadNotifications($this->users[0])->count());
     }
 
@@ -65,9 +65,9 @@ class ConversationTest extends TestCase
         $perPage = 5;
         $page = 1;
 
-        Chat::conversations($conversation)->for($this->users[0])->clear();
+        Chat::conversation($conversation)->for($this->users[0])->clear();
 
-        $messages = Chat::conversations($conversation)->for($this->users[0])->getMessages($perPage, $page);
+        $messages = Chat::conversation($conversation)->for($this->users[0])->getMessages($perPage, $page);
 
         $this->assertEquals($messages->count(), 0);
     }
@@ -84,16 +84,14 @@ class ConversationTest extends TestCase
     public function it_can_return_a_conversation_between_users()
     {
         $conversation = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
-
         $conversation2 = Chat::createConversation([$this->users[0]->id, $this->users[2]->id]);
-
         $conversation3 = Chat::createConversation([$this->users[0]->id, $this->users[3]->id]);
 
-        $c1 = Chat::getConversationBetween($this->users[0], $this->users[1]);
+        $c1 = Chat::conversations()->between($this->users[0], $this->users[1]);
 
         $this->assertEquals($conversation->id, $c1->id);
 
-        $c3 = Chat::getConversationBetween($this->users[0], $this->users[3]);
+        $c3 = Chat::conversations()->between($this->users[0], $this->users[3]);
 
         $this->assertEquals($conversation3->id, $c3->id);
     }
@@ -163,7 +161,7 @@ class ConversationTest extends TestCase
 
         $users = \Musonza\Chat\User::whereIn('id', [1, 2, 4])->get();
 
-        $conversations = Chat::commonConversations($users);
+        $conversations = Chat::conversations()->common($users);
 
         $this->assertCount(1, $conversations);
 

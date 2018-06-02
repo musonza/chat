@@ -9,6 +9,7 @@ trait Paginates
     protected $sorting = 'asc';
     protected $columns = ['*'];
     protected $pageName = 'page';
+    protected $deleted = false;
 
     /**
      * Set the limit.
@@ -41,6 +42,13 @@ trait Paginates
     public function perPage(int $perPage)
     {
         $this->perPage = $perPage;
+
+        return $this;
+    }
+
+    public function deleted()
+    {
+        $this->deleted = true;
 
         return $this;
     }
