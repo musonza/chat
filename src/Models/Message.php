@@ -113,22 +113,19 @@ class Message extends Eloquent
         $this->getNotification($user)->markAsRead();
     }
 
-    public function getFlaggedAttribute()
+    public function flagged($user)
     {
-        MessageNotification::where('user_id', $user->id)
-            ->where('message_id', $this->id);
-    }
-
-    public function setFlaggedAttribute($value)
-    {
-        return true;
+        return !! MessageNotification::where('user_id', $user->id)
+            ->where('message_id', $this->id)
+            ->where('flagged', 1)
+            ->first();
     }
 
     public function toggleFlag($user)
     {
         MessageNotification::where('user_id', $user->id)
             ->where('message_id', $this->id)
-            ->update(['flagged' => $this->flagged ? false : true]);
+            ->update(['flagged' => $this->flagged($user) ? false : true]);
 
         return $this;
     }

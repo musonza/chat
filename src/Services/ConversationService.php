@@ -3,7 +3,7 @@
 namespace Musonza\Chat\Services;
 
 use Musonza\Chat\Commanding\CommandBus;
-use Musonza\Chat\Traits\IdentifiesUsers;
+use Musonza\Chat\Traits\SetsParticipants;
 use Musonza\Chat\Traits\Paginates;
 use Musonza\Chat\Messages\SendMessageCommand;
 use Musonza\Chat\Models\Message;
@@ -11,7 +11,7 @@ use Musonza\Chat\Models\Conversation;
 
 class ConversationService
 {
-    use IdentifiesUsers, Paginates;
+    use SetsParticipants, Paginates;
 
     public function __construct(Conversation $conversation)
     {
@@ -35,15 +35,12 @@ class ConversationService
         return $this->conversation->findOrFail($id);
     }
 
-        /**
+    /**
      * Get messages in a conversation.
-     *
-     * @param int $perPage
-     * @param int $page
      *
      * @return Message
      */
-    public function getMessages($perPage = null, $page = null)
+    public function getMessages()
     {
         return $this->conversation->getMessages($this->user, $this->getPaginationParams(), $this->deleted);
     }

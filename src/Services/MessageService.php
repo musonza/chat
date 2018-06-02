@@ -3,13 +3,13 @@
 namespace Musonza\Chat\Services;
 
 use Musonza\Chat\Commanding\CommandBus;
-use Musonza\Chat\Traits\IdentifiesUsers;
+use Musonza\Chat\Traits\SetsParticipants;
 use Musonza\Chat\Messages\SendMessageCommand;
 use Musonza\Chat\Models\Message;
 
 class MessageService
 {
-    use IdentifiesUsers;
+    use SetsParticipants;
 
     protected $type = 'text';
     protected $body;
@@ -78,6 +78,16 @@ class MessageService
     public function unreadCount()
     {
         return $this->message->unreadCount($this->user);
+    }
+
+    public function toggleFlag()
+    {
+        return $this->message->toggleFlag($this->user);
+    }
+
+    public function flagged()
+    {
+        return $this->message->flagged($this->user);
     }
 
     /**

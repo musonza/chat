@@ -150,8 +150,16 @@ class MessageTest extends TestCase
         Chat::message('Hello Man 10')->from($this->users[0])->to($conversation2)->send();
 
         $recent_messages = Chat::conversations()->for($this->users[0])->limit(5)->page(1)->get();
-
         $this->assertCount(3, $recent_messages);
+
+        $recent_messages = Chat::conversations()->for($this->users[0])->setPaginationParams([
+                'perPage' => 2,
+                'page' => 1,
+                'pageName' => 'test',
+                'sorting' => 'desc'
+            ])->get();
+
+        $this->assertCount(2, $recent_messages);
     }
 
     /** @test */
@@ -181,21 +189,19 @@ class MessageTest extends TestCase
         $this->assertEquals(1, $message->id);
     }
 
-    // /** @test */
-    // public function it_flags_a_message()
-    // {
-    //     // $conversation = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
-    //     // $message = Chat::message('Hello')
-    //     //     ->from($this->users[0])
-    //     //     ->to($conversation)
-    //     //     ->send();
+    /** @test */
+    public function it_flags_a_message()
+    {
+        $conversation = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
+        $message = Chat::message('Hello')
+            ->from($this->users[0])
+            ->to($conversation)
+            ->send();
 
-    //     // $m = Chat::message($id)
+        Chat::message($message)->for($this->users[1])->toggleFlag();
+        $this->assertTrue(Chat::message($message)->for($this->users[1])->flagged());
 
-    //     // $m = Chat::messageWithId($message->id)->toggleFlag($this->users[1]);
-    //     // $this->assertTrue($m->flagged);
-
-    //     // $m->toggleFlag($this->users[1]);
-    //     // $this->assertFalse($m->flagged);
-    // }
+        Chat::message($message)->for($this->users[1])->toggleFlag();
+        $this->assertFalse(Chat::message($message)->for($this->users[1])->flagged());
+    }
 }

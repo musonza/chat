@@ -2,10 +2,11 @@
 
 namespace Musonza\Chat\Traits;
 
-trait IdentifiesUsers
+trait SetsParticipants
 {
     protected $from;
     protected $to;
+    protected $user;
 
     /**
      * Sets user.

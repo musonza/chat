@@ -43,7 +43,7 @@ composer require musonza/chat
 Add the service provider to your `config\app.php` the providers array
 
 ```
-Musonza\Chat\ChatServiceProvider
+Musonza\Chat\ChatServiceProvider::class
 ```
 
 Add the Facade to your aliases:
@@ -103,7 +103,7 @@ $conversation = Chat::createConversation($participants);
 
 #### Get a conversation by id
 ```php
-$conversation = Chat::conversation($conversation_id);
+$conversation = Chat::conversations()->getById($id);
 ```
 
 #### Update conversation details
@@ -136,50 +136,50 @@ $message = Chat::message('http://example.com/img')
 ### Get a message by id
 
 ```php
-$message = Chat::messageById($id);
+$message = Chat::messages()->getById($id);
 ```
 
 
 #### Mark a message as read
 
 ```php
-Chat::messages($message)->for($user)->markRead();
+Chat::message($message)->for($user)->markRead();
 ```
 
 #### Mark whole conversation as read
 
 ```php
-Chat::conversations($conversation)->for($user)->readAll();
+Chat::conversation($conversation)->for($user)->readAll();
 ```
 
 #### Unread messages count
 
 ```php
-$unreadCount = Chat::for($user)->unreadCount();
+$unreadCount = Chat::messages()->for($user)->unreadCount();
 ```
 
 #### Delete a message
 
 ```php
-Chat::messages($message)->for($user)->delete();
+Chat::message($message)->for($user)->delete();
 ```
 
 #### Clear a conversation
 
 ```php
-Chat::conversations($conversation)->for($user)->clear();
+Chat::conversation($conversation)->for($user)->clear();
 ```
 
 #### Get a conversation between two users
 
 ```php
-Chat::getConversationBetween($user1, $user2);
+$conversation = Chat::conversations()->between($user1, $user2);
 ```
 
 #### Get common conversations among users
 
 ```php
-$conversations = Chat::commonConversations($users);
+$conversations = Chat::conversations()->common($users);
 ```
 `$users` can be an array of user ids ex. `[1,4,6]` or a collection `(\Illuminate\Database\Eloquent\Collection)` of users
 
@@ -187,24 +187,24 @@ $conversations = Chat::commonConversations($users);
 
 ```php
 /* removing one user */
-Chat::removeParticipants($conversation, $user);
+Chat::conversation($conversation)->removeParticipants($user);
 ```
 
 ```php
 /* removing multiple users */
-Chat::removeParticipants($conversation, [$user1, $user2, $user3,...,$userN]);
+Chat::conversation($conversation)->removeParticipants([$user1, $user2, $user3,...,$userN]);
 ```
 
 #### Add users to a conversation
 
 ```php
 /* add one user */
-Chat::addParticipants($conversation, $user);
+Chat::conversation($conversation)->addParticipants($user);
 ```
 
 ```php
 /* add multiple users */
-Chat::addParticipants($conversation, [$user3, $user4]);
+Chat::conversation($conversation)->addParticipants([$user3, $user4]);
 ```
 
 <b>Note:</b> A third user will classify the conversation as not private if it was.
@@ -213,7 +213,7 @@ Chat::addParticipants($conversation, [$user3, $user4]);
 #### Get messages in a conversation
 
 ```php
-Chat::conversations($conversation)->for($user)->getMessages($perPage, $page)
+Chat::conversation($conversation)->for($user)->getMessages()
 ```
 
 #### Get recent messages
@@ -221,6 +221,26 @@ Chat::conversations($conversation)->for($user)->getMessages($perPage, $page)
 ```php
 $messages = Chat::conversations()->for($user)->limit(25)->page(1)->get();
 ```
+
+#### Pagination
+
+There are a few ways you can achieve pagination
+You can specify the `limit` and `page` as above using the respective functions or as below:
+```
+        $chat = Chat::conversations()->for($user)
+            ->setPaginationParams([
+                'page' => 3,
+                'perPage' => 10,
+                'sorting' => "desc",
+                'columns' => [
+                    '*'
+                ],
+                'pageName' => 'test'
+            ])
+            ->get();
+```
+You don't have to specify all the parameters. If you leave the parameters out, default values will be used.
+
 
 #### Get users in a conversation
 

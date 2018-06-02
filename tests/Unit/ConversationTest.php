@@ -60,12 +60,9 @@ class ConversationTest extends TestCase
         Chat::message('Hello there 1')->from($this->users[0])->to($conversation)->send();
         Chat::message('Hello there 2')->from($this->users[0])->to($conversation)->send();
 
-        $perPage = 5;
-        $page = 1;
-
         Chat::conversation($conversation)->for($this->users[0])->clear();
 
-        $messages = Chat::conversation($conversation)->for($this->users[0])->getMessages($perPage, $page);
+        $messages = Chat::conversation($conversation)->for($this->users[0])->getMessages();
 
         $this->assertEquals($messages->count(), 0);
     }

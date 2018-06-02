@@ -2,15 +2,21 @@
 
 namespace Musonza\Chat;
 
-use Musonza\Chat\Traits\IdentifiesUsers;
+use Musonza\Chat\Models\Conversation;
+use Musonza\Chat\Traits\SetsParticipants;
 use Musonza\Chat\Services\MessageService;
 use Musonza\Chat\Models\MessageNotification;
 use Musonza\Chat\Services\ConversationService;
 
 class Chat
 {
-    use IdentifiesUsers;
+    use SetsParticipants;
 
+    /**
+     * @param MessageService $messageService
+     * @param ConversationService $conversationService
+     * @param MessageNotification $messageNotification
+     */
     public function __construct(MessageService $messageService, ConversationService $conversationService, MessageNotification $messageNotification)
     {
         $this->messageService = $messageService;
@@ -36,30 +42,46 @@ class Chat
      *
      * @param string | Musonza\Chat\Models\Message  $message
      *
-     * @return Musonza\Chat\Messages\Message
+     * @return MessageService
      */
     public function message($message)
     {
         return $this->messageService->setMessage($message);
     }
 
+    /**
+     * Gets MessageService.
+     *
+     * @return MessageService
+     */
     public function messages()
     {
         return $this->messageService;
     }
 
-    public function conversation($conversation)
+    /**
+     * Sets Conversation.
+     *
+     * @param  Conversation $conversation
+     * @return ConversationService
+     */
+    public function conversation(Conversation $conversation)
     {
         return $this->conversationService->setConversation($conversation);
     }
 
+    /**
+     * Gets ConversationService.
+     *
+     * @return ConversationService
+     */
     public function conversations()
     {
         return $this->conversationService;
     }
 
     /**
-     * Get unread notifications
+     * Get unread notifications.
      *
      * @return MessageNotification
      */
@@ -78,6 +100,11 @@ class Chat
         return config('musonza_chat.user_model');
     }
 
+    /**
+     * Should the messages be broadcasted.
+     *
+     * @return boolean
+     */
     public static function broadcasts()
     {
         return config('musonza_chat.broadcasts');
