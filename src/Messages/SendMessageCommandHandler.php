@@ -2,9 +2,9 @@
 
 namespace Musonza\Chat\Messages;
 
+use Musonza\Chat\Commanding\CommandHandler;
 use Musonza\Chat\Eventing\EventDispatcher;
 use Musonza\Chat\Models\Message;
-use Musonza\Chat\Commanding\CommandHandler;
 
 class SendMessageCommandHandler implements CommandHandler
 {

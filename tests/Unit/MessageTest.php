@@ -3,8 +3,8 @@
 namespace Musonza\Chat\Tests;
 
 use Chat;
-use Musonza\Chat\Models\Message;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Musonza\Chat\Models\Message;
 
 class MessageTest extends TestCase
 {
@@ -120,8 +120,8 @@ class MessageTest extends TestCase
         $conversation = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
 
         for ($i = 0; $i < 3; $i++) {
-            Chat::message('Hello '.$i)->from($this->users[0])->to($conversation)->send();
-            Chat::message('Hello Man '.$i)->from($this->users[1])->to($conversation)->send();
+            Chat::message('Hello ' . $i)->from($this->users[0])->to($conversation)->send();
+            Chat::message('Hello Man ' . $i)->from($this->users[1])->to($conversation)->send();
         }
 
         Chat::message('Hello Man')->from($this->users[1])->to($conversation)->send();
@@ -153,13 +153,11 @@ class MessageTest extends TestCase
         $this->assertCount(3, $recent_messages);
 
         $recent_messages = Chat::conversations()->for($this->users[0])->setPaginationParams([
-                'perPage' => 1,
-                'page' => 1,
-                'pageName' => 'test',
-                'sorting' => 'desc'
-            ])->get();
-
-        dd(get_class($recent_messages));
+            'perPage' => 1,
+            'page' => 1,
+            'pageName' => 'test',
+            'sorting' => 'desc',
+        ])->get();
 
         $this->assertCount(1, $recent_messages);
     }

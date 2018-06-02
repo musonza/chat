@@ -3,9 +3,9 @@
 namespace Musonza\Chat\Services;
 
 use Musonza\Chat\Commanding\CommandBus;
-use Musonza\Chat\Traits\SetsParticipants;
 use Musonza\Chat\Messages\SendMessageCommand;
 use Musonza\Chat\Models\Message;
+use Musonza\Chat\Traits\SetsParticipants;
 
 class MessageService
 {
@@ -22,7 +22,7 @@ class MessageService
 
     public function setMessage($message)
     {
-        if(is_object($message)) {
+        if (is_object($message)) {
             $this->message = $message;
         } else {
             $this->body = $message;

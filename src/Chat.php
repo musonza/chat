@@ -3,10 +3,10 @@
 namespace Musonza\Chat;
 
 use Musonza\Chat\Models\Conversation;
-use Musonza\Chat\Traits\SetsParticipants;
-use Musonza\Chat\Services\MessageService;
 use Musonza\Chat\Models\MessageNotification;
 use Musonza\Chat\Services\ConversationService;
+use Musonza\Chat\Services\MessageService;
+use Musonza\Chat\Traits\SetsParticipants;
 
 class Chat
 {
@@ -87,7 +87,7 @@ class Chat
      */
     public function unReadNotifications()
     {
-       return $this->messageNotification->unReadNotifications($this->user);
+        return $this->messageNotification->unReadNotifications($this->user);
     }
 
     /**

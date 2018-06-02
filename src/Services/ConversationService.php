@@ -2,12 +2,10 @@
 
 namespace Musonza\Chat\Services;
 
-use Musonza\Chat\Commanding\CommandBus;
-use Musonza\Chat\Traits\SetsParticipants;
-use Musonza\Chat\Traits\Paginates;
-use Musonza\Chat\Messages\SendMessageCommand;
-use Musonza\Chat\Models\Message;
 use Musonza\Chat\Models\Conversation;
+use Musonza\Chat\Models\Message;
+use Musonza\Chat\Traits\Paginates;
+use Musonza\Chat\Traits\SetsParticipants;
 
 class ConversationService
 {
@@ -133,6 +131,16 @@ class ConversationService
     public function removeParticipants($users)
     {
         return $this->conversation->removeUsers($users);
+    }
+
+    /**
+     * Get count for unread messages.
+     *
+     * @return void
+     */
+    public function unreadCount()
+    {
+        return $this->conversation->unReadNotifications($this->user)->count();
     }
 
     /**

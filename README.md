@@ -146,6 +146,14 @@ $message = Chat::messages()->getById($id);
 Chat::message($message)->for($user)->markRead();
 ```
 
+#### Flag / mark a message
+
+```php
+Chat::message($message)->for($user)->toggleFlag();
+
+Chat::message($message)->for($user)->flagged(); // true
+```
+
 #### Mark whole conversation as read
 
 ```php
@@ -156,6 +164,12 @@ Chat::conversation($conversation)->for($user)->readAll();
 
 ```php
 $unreadCount = Chat::messages()->for($user)->unreadCount();
+```
+
+#### Unread messages count per Conversation
+
+```php
+Chat::conversation($conversation)->for($user)->unreadCount();
 ```
 
 #### Delete a message
@@ -220,6 +234,37 @@ Chat::conversation($conversation)->for($user)->getMessages()
 
 ```php
 $messages = Chat::conversations()->for($user)->limit(25)->page(1)->get();
+```
+
+Example
+
+```
+[
+      "id" => 1
+      "private" => "1"
+      "data" => []
+      "created_at" => "2018-06-02 21:35:52"
+      "updated_at" => "2018-06-02 21:35:52"
+      "last_message" => array:13 [
+        "id" => 2
+        "message_id" => "2"
+        "conversation_id" => "1"
+        "user_id" => "1"
+        "is_seen" => "1"
+        "is_sender" => "1"
+        "flagged" => false
+        "created_at" => "2018-06-02 21:35:52"
+        "updated_at" => "2018-06-02 21:35:52"
+        "deleted_at" => null
+        "body" => "Hello 2"
+        "type" => "text"
+        "sender" => array:7 [
+          "id" => 1
+          "name" => "Jalyn Ernser"
+          "email" => "colt.howell@example.com"
+        ]
+      ]
+    ]
 ```
 
 #### Pagination

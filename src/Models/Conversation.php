@@ -3,8 +3,8 @@
 namespace Musonza\Chat\Models;
 
 use Musonza\Chat\Chat;
-use Musonza\Chat\Models\Message;
 use Musonza\Chat\Model;
+use Musonza\Chat\Models\Message;
 use Musonza\Chat\Models\MessageNotification;
 
 class Conversation extends Model
