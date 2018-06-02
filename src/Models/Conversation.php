@@ -128,9 +128,9 @@ class Conversation extends Model
      *
      * @return Conversation
      */
-    public function start($participants)
+    public function start($participants, $data = [])
     {
-        $conversation = $this->create();
+        $conversation = $this->create(['data' => $data]);
 
         if ($participants) {
             $conversation->addParticipants($participants);

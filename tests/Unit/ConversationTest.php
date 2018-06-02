@@ -22,7 +22,7 @@ class ConversationTest extends TestCase
     {
         $conversation = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
 
-        $c = Chat::getConversation($conversation->id);
+        $c = Chat::conversations()->getById($conversation->id);
 
         $this->assertEquals($conversation->id, $c->id);
     }
@@ -44,9 +44,7 @@ class ConversationTest extends TestCase
     public function it_can_update_conversation_details()
     {
         $conversation = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
-
         $data = ['title' => 'PHP Channel', 'description' => 'PHP Channel Description'];
-
         $conversation->update(['data' => $data]);
 
         $this->assertEquals('PHP Channel', $conversation->data['title']);

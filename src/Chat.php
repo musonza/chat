@@ -2,7 +2,6 @@
 
 namespace Musonza\Chat;
 
-use Musonza\Chat\Models\Conversation;
 use Musonza\Chat\Traits\IdentifiesUsers;
 use Musonza\Chat\Services\MessageService;
 use Musonza\Chat\Models\MessageNotification;
@@ -12,14 +11,7 @@ class Chat
 {
     use IdentifiesUsers;
 
-    /**
-     * @param Conversation $conversation The conversation
-     * @param MessageNotification      $messageNotification   Notifications
-     */
-    public function __construct(
-        MessageService $messageService,
-        ConversationService $conversationService,
-        MessageNotification $messageNotification)
+    public function __construct(MessageService $messageService, ConversationService $conversationService, MessageNotification $messageNotification)
     {
         $this->messageService = $messageService;
         $this->conversationService = $conversationService;
@@ -34,9 +26,9 @@ class Chat
      *
      * @return Conversation
      */
-    public function createConversation(array $participants, array $data = null)
+    public function createConversation(array $participants, array $data = [])
     {
-        return $this->conversationService->start($participants);
+        return $this->conversationService->start($participants, $data);
     }
 
     /**
@@ -49,18 +41,6 @@ class Chat
     public function message($message)
     {
         return $this->messageService->setMessage($message);
-    }
-
-    /**
-     * Returns a conversation.
-     *
-     * @param int $conversationId
-     *
-     * @return Conversation
-     */
-    public function getConversation($conversationId)
-    {
-        return $this->conversationService->getById($conversationId);
     }
 
     public function messages()
