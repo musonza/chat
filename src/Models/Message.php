@@ -2,14 +2,14 @@
 
 namespace Musonza\Chat\Models;
 
-use Eloquent;
+use Illuminate\Database\Eloquent\Model;
 use Musonza\Chat\Chat;
 use Musonza\Chat\Eventing\EventGenerator;
 use Musonza\Chat\Eventing\MessageWasSent;
 use Musonza\Chat\Models\Conversation;
 use Musonza\Chat\Models\MessageNotification;
 
-class Message extends Eloquent
+class Message extends Model
 {
     use EventGenerator;
 

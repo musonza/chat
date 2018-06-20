@@ -2,9 +2,9 @@
 
 namespace Musonza\Chat;
 
-use Eloquent;
+use Illuminate\Database\Eloquent\Model;
 
-class Model extends Eloquent
+class Model extends Model
 {
     protected $prefix = 'mc_';
 }

@@ -2,8 +2,8 @@
 
 namespace Musonza\Chat;
 
-use Eloquent;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Eloquent
+class User extends Model
 {
 }

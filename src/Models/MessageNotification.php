@@ -2,14 +2,14 @@
 
 namespace Musonza\Chat\Models;
 
-use Eloquent;
+use Illuminate\Database\Eloquent\Model;
 use Musonza\Chat\Chat;
 use Musonza\Chat\Models\Message;
 use Illuminate\Support\Facades\Notification;
 use Musonza\Chat\Models\Conversation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class MessageNotification extends Eloquent
+class MessageNotification extends Model
 {
     use SoftDeletes;
 

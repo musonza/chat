@@ -2,9 +2,9 @@
 
 namespace Musonza\Chat\Models;
 
-use Eloquent;
+use Illuminate\Database\Eloquent\Model;
 
-class ConversationUser extends Eloquent
+class ConversationUser extends Model
 {
     protected $table = 'mc_conversation_user';
 
