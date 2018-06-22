@@ -9,7 +9,7 @@ use Musonza\Chat\Models\MessageNotification;
 
 class Conversation extends BaseModel
 {
-    protected $table = 'conversations';
+    protected $table = 'mc_conversations';
     protected $fillable = ['data'];
     protected $casts = [
         'data' => 'array',

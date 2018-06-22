@@ -14,7 +14,7 @@ class MessageNotification extends BaseModel
     use SoftDeletes;
 
     protected $fillable = ['user_id', 'message_id', 'conversation_id'];
-    protected $table = 'message_notification';
+    protected $table = 'mc_message_notification';
     protected $dates = ['deleted_at'];
 
     /**

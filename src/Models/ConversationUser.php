@@ -6,7 +6,7 @@ use Musonza\Chat\BaseModel;
 
 class ConversationUser extends BaseModel
 {
-    protected $table = 'conversation_user';
+    protected $table = 'mc_conversation_user';
 
     /**
      * Conversation.
