@@ -4,7 +4,7 @@ namespace Musonza\Chat;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Model extends Model
+class BaseModel extends Model
 {
     protected $prefix = 'mc_';
 }

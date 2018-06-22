@@ -2,11 +2,11 @@
 
 namespace Musonza\Chat\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Musonza\Chat\BaseModel;
 
-class ConversationUser extends Model
+class ConversationUser extends BaseModel
 {
-    protected $table = 'mc_conversation_user';
+    protected $table = 'conversation_user';
 
     /**
      * Conversation.

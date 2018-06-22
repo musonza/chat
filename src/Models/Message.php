@@ -2,19 +2,19 @@
 
 namespace Musonza\Chat\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Musonza\Chat\BaseModel;
 use Musonza\Chat\Chat;
 use Musonza\Chat\Eventing\EventGenerator;
 use Musonza\Chat\Eventing\MessageWasSent;
 use Musonza\Chat\Models\Conversation;
 use Musonza\Chat\Models\MessageNotification;
 
-class Message extends Model
+class Message extends BaseModel
 {
     use EventGenerator;
 
     protected $fillable = ['body', 'user_id', 'type'];
-    protected $table = 'mc_messages';
+    protected $table = 'messages';
     /**
      * All of the relationships to be touched.
      *

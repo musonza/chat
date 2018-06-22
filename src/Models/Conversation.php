@@ -3,13 +3,13 @@
 namespace Musonza\Chat\Models;
 
 use Musonza\Chat\Chat;
-use Musonza\Chat\Model;
+use Musonza\Chat\BaseModel;
 use Musonza\Chat\Models\Message;
 use Musonza\Chat\Models\MessageNotification;
 
-class Conversation extends Model
+class Conversation extends BaseModel
 {
-    protected $table = 'mc_conversations';
+    protected $table = 'conversations';
     protected $fillable = ['data'];
     protected $casts = [
         'data' => 'array',
