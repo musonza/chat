@@ -4,6 +4,7 @@
     "type": "library",
     "keywords": [
         "laravel",
+        "lumen",
         "chat",
         "messaging",
         "conversation"
