@@ -40,16 +40,20 @@ From the command line, run:
 composer require musonza/chat
 ```
 
-Add the service provider to your `config\app.php` the providers array
+Register the service provider in `bootstrap\app.php`
 
 ```
-Musonza\Chat\ChatServiceProvider::class
+$app->register(Musonza\Chat\ChatServiceProvider::class);
 ```
 
-Add the Facade to your aliases:
+You need to enable `withFacades` in your `bootstra\app.php` if it is not already enabled and add the Facade
 
 ```
-'Chat' => Musonza\Chat\Facades\ChatFacade::class to your `config\app.php`
+$app->withFacades(true, [
+
+  ... 
+  Musonza\Chat\Facades\ChatFacade::class => 'Chat',
+]);
 ```
 
 The class is bound to the ioC as chat
@@ -80,6 +84,12 @@ This will publish database migrations and a configuration file `musonza_chat.php
      */
     'broadcasts'            => false,
 ];
+```
+
+Enable the config file in `bootstrap\app.php`
+
+```
+$app->configure('musonza_chat');
 ```
 
 Run the migrations:
