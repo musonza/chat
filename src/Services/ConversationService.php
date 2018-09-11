@@ -16,9 +16,9 @@ class ConversationService
         $this->conversation = $conversation;
     }
 
-    public function start($participants)
+    public function start($participants, $data = [])
     {
-        return $this->conversation->start($participants);
+        return $this->conversation->start($participants, $data);
     }
 
     public function setConversation($conversation)
