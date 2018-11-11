@@ -2,10 +2,8 @@
 
 namespace Musonza\Chat\Models;
 
-use Musonza\Chat\Chat;
 use Musonza\Chat\BaseModel;
-use Musonza\Chat\Models\Message;
-use Musonza\Chat\Models\MessageNotification;
+use Musonza\Chat\Chat;
 
 class Conversation extends BaseModel
 {
@@ -48,9 +46,9 @@ class Conversation extends BaseModel
     /**
      * Get messages for a conversation.
      *
-     * @param User   $user
-     * @param array    $paginationParams
-     * @param boolean $deleted
+     * @param User  $user
+     * @param array $paginationParams
+     * @param bool  $deleted
      *
      * @return Message
      */
@@ -170,6 +168,7 @@ class Conversation extends BaseModel
      * Get unread notifications.
      *
      * @param User $user
+     *
      * @return void
      */
     public function unReadNotifications($user)
