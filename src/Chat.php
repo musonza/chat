@@ -109,4 +109,9 @@ class Chat
     {
         return config('musonza_chat.broadcasts');
     }
+
+    public static function sentMessageEvent()
+    {
+        return config('musonza_chat.sent_message_event');
+    }
 }
