@@ -15,5 +15,5 @@ return [
      * The event to fire when a message is sent
      * See Musonza\Chat\Eventing\MessageWasSent if you want to customize.
      */
-    'sent_message_event' => 'Musonza\Chat\Messages\MessageWasSent',
+    'sent_message_event' => 'Musonza\Chat\Eventing\MessageWasSent',
 ];

@@ -2,13 +2,12 @@
 
 namespace Musonza\Chat\Tests;
 
-require __DIR__.'/../database/migrations/create_chat_tables.php';
+require __DIR__ . '/../database/migrations/create_chat_tables.php';
 
 use CreateChatTables;
-use Musonza\Chat\User;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
+use Musonza\Chat\User;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -25,7 +24,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         parent::setUp();
 
         $this->artisan('migrate', ['--database' => 'testbench']);
-        $this->withFactories(__DIR__.'/../database/factories');
+        $this->withFactories(__DIR__ . '/../database/factories');
         $this->migrate();
         $this->users = $this->createUsers(6);
     }
@@ -62,9 +61,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
 
         // $app['config']->set('database.default', 'testbench');
@@ -78,6 +77,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         // ]);
 
         $app['config']->set('musonza_chat.user_model', 'Musonza\Chat\User');
+        $app['config']->set('musonza_chat.sent_message_event', 'Musonza\Chat\Eventing\MessageWasSent');
         $app['config']->set('musonza_chat.broadcasts', false);
     }
 
