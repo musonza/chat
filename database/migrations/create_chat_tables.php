@@ -88,9 +88,9 @@ class CreateChatTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mc_conversations');
-        Schema::dropIfExists('mc_messages');
         Schema::dropIfExists('mc_conversation_user');
         Schema::dropIfExists('mc_message_notification');
+        Schema::dropIfExists('mc_messages');
+        Schema::dropIfExists('mc_conversations');
     }
 }
