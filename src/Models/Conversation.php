@@ -261,10 +261,10 @@ class Conversation extends BaseModel
     {
         return $this->join('mc_conversation_user', 'mc_conversation_user.conversation_id', '=', 'mc_conversations.id')
             ->with([
-                'last_message' => function ($query) use($user) {
+                'last_message' => function ($query) use ($user) {
                     $query->join('mc_message_notification', 'mc_message_notification.message_id', '=', 'mc_messages.id')
                         ->select('mc_message_notification.*', 'mc_messages.*')
-                        ->where('mc_message_notification.user_id',$user->id)
+                        ->where('mc_message_notification.user_id', $user->id)
                         ->whereNull('mc_message_notification.deleted_at');
                 },
             ])->where('mc_conversation_user.user_id', $user->id)

@@ -184,30 +184,29 @@ class ConversationTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_last_message_as_null_when_the_very_last_message_was_deleted() 
+    public function it_returns_last_message_as_null_when_the_very_last_message_was_deleted()
     {
         $conversation = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
         $message = Chat::message('Hello & Bye')->from($this->users[0])->to($conversation)->send();
         Chat::message($message)->for($this->users[0])->delete();
 
         $conversations = Chat::conversations()->for($this->users[0])->get();
-        
+
         $this->assertNull($conversations->get(0)->last_message);
     }
 
     /** @test */
-    public function it_returns_correct_attributes_in_last_message() 
+    public function it_returns_correct_attributes_in_last_message()
     {
         $conversation = Chat::createConversation([$this->users[0]->id, $this->users[1]->id]);
         Chat::message('Hello')->from($this->users[0])->to($conversation)->send();
 
         $conversations = Chat::conversations()->for($this->users[0])->get();
 
-        $this->assertTrue(!! $conversations->get(0)->last_message->is_seen);
+        $this->assertTrue((bool) $conversations->get(0)->last_message->is_seen);
 
         $conversations = Chat::conversations()->for($this->users[1])->get();
 
-        $this->assertFalse(!! $conversations->get(0)->last_message->is_seen);
-
+        $this->assertFalse((bool) $conversations->get(0)->last_message->is_seen);
     }
 }
