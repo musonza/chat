@@ -211,20 +211,20 @@ class ConversationTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_the_correct_order_of_conversations_when_updated_at_is_duplicated() 
+    public function it_returns_the_correct_order_of_conversations_when_updated_at_is_duplicated()
     {
         $auth = $this->users[0];
 
         $conversation = Chat::createConversation([$auth->id, $this->users[1]->id]);
-        Chat::message('Hello-'. $conversation->id)->from($auth)->to($conversation)->send();
+        Chat::message('Hello-'.$conversation->id)->from($auth)->to($conversation)->send();
 
         $conversation = Chat::createConversation([$auth->id, $this->users[2]->id]);
-        Chat::message('Hello-'. $conversation->id)->from($auth)->to($conversation)->send();
+        Chat::message('Hello-'.$conversation->id)->from($auth)->to($conversation)->send();
 
         $conversation = Chat::createConversation([$auth->id, $this->users[3]->id]);
-        Chat::message('Hello-'. $conversation->id)->from($auth)->to($conversation)->send();
+        Chat::message('Hello-'.$conversation->id)->from($auth)->to($conversation)->send();
 
- 
+
         $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->for($auth)->limit(1)->page(1)->get();
         $this->assertEquals('Hello-3', $conversations->items()[0]->last_message->body);
 
@@ -233,7 +233,7 @@ class ConversationTest extends TestCase
 
         $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->for($auth)->limit(1)->page(3)->get();
         $this->assertEquals('Hello-1', $conversations->items()[0]->last_message->body);
-        
+ 
     }
 
     /** @test */
@@ -241,7 +241,7 @@ class ConversationTest extends TestCase
     {
         $conversation = Chat::createConversation([
           $this->users[0]->id,
-          $this->users[1]->id
+          $this->users[1]->id,
         ])
         ->makePrivate();
 
@@ -257,7 +257,7 @@ class ConversationTest extends TestCase
     {
         $conversation = Chat::createConversation([
           $this->users[0]->id,
-          $this->users[1]->id
+          $this->users[1]->id,
         ])
         ->makePrivate();
 
@@ -275,7 +275,7 @@ class ConversationTest extends TestCase
 
         $conversation = Chat::createConversation([
           $this->users[0]->id,
-          $this->users[1]->id
+          $this->users[1]->id,
         ])
         ->makePrivate();
 
