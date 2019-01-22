@@ -211,6 +211,32 @@ class ConversationTest extends TestCase
     }
 
     /** @test */
+    public function it_returns_the_correct_order_of_conversations_when_updated_at_is_duplicated() 
+    {
+        $auth = $this->users[0];
+
+        $conversation = Chat::createConversation([$auth->id, $this->users[1]->id]);
+        Chat::message('Hello-'. $conversation->id)->from($auth)->to($conversation)->send();
+
+        $conversation = Chat::createConversation([$auth->id, $this->users[2]->id]);
+        Chat::message('Hello-'. $conversation->id)->from($auth)->to($conversation)->send();
+
+        $conversation = Chat::createConversation([$auth->id, $this->users[3]->id]);
+        Chat::message('Hello-'. $conversation->id)->from($auth)->to($conversation)->send();
+
+ 
+        $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->for($auth)->limit(1)->page(1)->get();
+        $this->assertEquals('Hello-3', $conversations->items()[0]->last_message->body);
+
+        $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->for($auth)->limit(1)->page(2)->get();
+        $this->assertEquals('Hello-2', $conversations->items()[0]->last_message->body);
+
+        $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->for($auth)->limit(1)->page(3)->get();
+        $this->assertEquals('Hello-1', $conversations->items()[0]->last_message->body);
+        
+    }
+
+    /** @test */
     public function it_allows_setting_private_or_public_conversation()
     {
         $conversation = Chat::createConversation([
@@ -276,4 +302,5 @@ class ConversationTest extends TestCase
         $publicConversations = Chat::conversations()->for($this->users[0])->isPrivate(false)->get();
         $this->assertCount(1, $publicConversations);
     }
+
 }

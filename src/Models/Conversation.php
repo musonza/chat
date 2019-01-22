@@ -300,6 +300,7 @@ class Conversation extends BaseModel
         }
 
         return $paginator->orderBy('mc_conversations.updated_at', 'DESC')
+            ->orderBy('mc_conversations.id', 'DESC')
             ->distinct('mc_conversations.id')
             ->paginate($perPage, ['mc_conversations.*'], $pageName, $page);
     }
