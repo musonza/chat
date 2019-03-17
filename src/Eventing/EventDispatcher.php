@@ -19,7 +19,7 @@ class EventDispatcher
         if (Chat::broadcasts()) {
             foreach ($events as $event) {
                 $eventName = $this->getEventName($event);
-                $this->event->fire($eventName, $event);
+                $this->event->dispatch($eventName, $event);
             }
         }
     }
