@@ -6,6 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateChatTables extends Migration
 {
+    protected $userModelPrimaryKey = 'id';
+    protected $userModelTable = 'users';
+
+    public function __construct()
+    {
+        $config = config('musonza_chat');
+        $userModel = app($config['user_model']);
+
+        $this->userModelPrimaryKey = $userModel->getKeyName();
+        $this->userModelTable = $userModel->getTable();
+    }
+
     /**
      * Run the migrations.
      *
@@ -29,8 +41,8 @@ class CreateChatTables extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
+                ->references($this->userModelPrimaryKey)
+                ->on($this->userModelTable)
                 ->onDelete('cascade');
 
             $table->foreign('conversation_id')
@@ -50,7 +62,8 @@ class CreateChatTables extends Migration
                 ->onDelete('cascade');
 
             $table->foreign('user_id')
-                ->references('id')->on('users')
+                ->references($this->userModelPrimaryKey)
+                ->on($this->userModelTable)
                 ->onDelete('cascade');
         });
 
@@ -76,7 +89,8 @@ class CreateChatTables extends Migration
                 ->onDelete('cascade');
 
             $table->foreign('user_id')
-                ->references('id')->on('users')
+                ->references($this->userModelPrimaryKey)
+                ->on($this->userModelTable)
                 ->onDelete('cascade');
         });
     }
