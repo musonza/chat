@@ -106,7 +106,7 @@ class Chat
      */
     public static function userModelPrimaryKey()
     {
-        return config('musonza_chat.user_model_primary_key', app(self::userModel())->getKeyName());
+        return config('musonza_chat.user_model_primary_key') ?: app(self::userModel())->getKeyName();
     }
 
     /**
