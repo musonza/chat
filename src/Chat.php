@@ -101,6 +101,15 @@ class Chat
     }
 
     /**
+     * Returns primary key for the User model
+     * @return string
+     */
+    public static function userModelPrimaryKey()
+    {
+        return config('musonza_chat.user_model_primary_key', app(self::userModel())->getKeyName());
+    }
+
+    /**
      * Should the messages be broadcasted.
      *
      * @return boolean

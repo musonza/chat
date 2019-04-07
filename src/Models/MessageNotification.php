@@ -2,12 +2,12 @@
 
 namespace Musonza\Chat\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Notification;
 use Musonza\Chat\BaseModel;
 use Musonza\Chat\Chat;
-use Musonza\Chat\Models\Message;
-use Illuminate\Support\Facades\Notification;
 use Musonza\Chat\Models\Conversation;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Musonza\Chat\Models\Message;
 
 class MessageNotification extends BaseModel
 {
@@ -31,8 +31,8 @@ class MessageNotification extends BaseModel
     public function unReadNotifications($user)
     {
         return MessageNotification::where([
-            ['user_id', '=', $user->id],
-            ['is_seen', '=', 0]
+            ['user_id', '=', $user->getKey()],
+            ['is_seen', '=', 0],
         ])->get();
     }
 
@@ -41,15 +41,15 @@ class MessageNotification extends BaseModel
         $notification = [];
 
         foreach ($conversation->users as $user) {
-            $is_sender = ($message->user_id == $user->id) ? 1 : 0;
+            $is_sender = ($message->user_id == $user->getKey()) ? 1 : 0;
 
             $notification[] = [
-                'user_id'         => $user->id,
-                'message_id'      => $message->id,
+                'user_id' => $user->getKey(),
+                'message_id' => $message->id,
                 'conversation_id' => $conversation->id,
-                'is_seen'         => $is_sender,
-                'is_sender'       => $is_sender,
-                'created_at'      => $message->created_at,
+                'is_seen' => $is_sender,
+                'is_sender' => $is_sender,
+                'created_at' => $message->created_at,
             ];
         }
 

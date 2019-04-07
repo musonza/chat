@@ -15,8 +15,7 @@ trait SetsParticipants
      *
      * @return $this
      */
-    public function for($user)
-    {
+    function for ($user) {
         $this->user = $user;
 
         return $this;
@@ -31,7 +30,7 @@ trait SetsParticipants
      */
     public function from($from)
     {
-        $this->from = is_object($from) ? $from->id : $from;
+        $this->from = is_object($from) ? $from->getKey() : $from;
 
         return $this;
     }

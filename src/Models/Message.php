@@ -37,7 +37,7 @@ class Message extends BaseModel
 
     public function unreadCount($user)
     {
-        return MessageNotification::where('user_id', $user->id)
+        return MessageNotification::where('user_id', $user->getKey())
             ->where('is_seen', 0)
             ->count();
     }
@@ -82,7 +82,7 @@ class Message extends BaseModel
      */
     public function trash($user)
     {
-        return MessageNotification::where('user_id', $user->id)
+        return MessageNotification::where('user_id', $user->getKey())
             ->where('message_id', $this->id)
             ->delete();
     }
@@ -96,7 +96,7 @@ class Message extends BaseModel
      */
     public function getNotification($user)
     {
-        return MessageNotification::where('user_id', $user->id)
+        return MessageNotification::where('user_id', $user->getKey())
             ->where('message_id', $this->id)
             ->select(['mc_message_notification.*', 'mc_message_notification.updated_at as read_at'])
             ->first();
@@ -116,7 +116,7 @@ class Message extends BaseModel
 
     public function flagged($user)
     {
-        return !!MessageNotification::where('user_id', $user->id)
+        return !!MessageNotification::where('user_id', $user->getKey())
             ->where('message_id', $this->id)
             ->where('flagged', 1)
             ->first();
@@ -124,7 +124,7 @@ class Message extends BaseModel
 
     public function toggleFlag($user)
     {
-        MessageNotification::where('user_id', $user->id)
+        MessageNotification::where('user_id', $user->getKey())
             ->where('message_id', $this->id)
             ->update(['flagged' => $this->flagged($user) ? false : true]);
 
