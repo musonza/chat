@@ -62,7 +62,7 @@ class MessageTest extends TestCase
             ->to($conversation)
             ->send();
 
-        Chat::message($message)->for($this->users[0])->markRead();
+        Chat::message($message)->setUser($this->users[0])->markRead();
 
         $this->assertNotNull($message->getNotification($this->users[0])->read_at);
     }
@@ -77,9 +77,9 @@ class MessageTest extends TestCase
         $perPage = 5;
         $page = 1;
 
-        Chat::message($message)->for($this->users[1])->delete();
+        Chat::message($message)->setUser($this->users[1])->delete();
 
-        $messages = Chat::conversation($conversation)->for($this->users[1])->getMessages($perPage, $page);
+        $messages = Chat::conversation($conversation)->setUser($this->users[1])->getMessages($perPage, $page);
 
         $this->assertEquals(0, $messages->count());
     }
@@ -94,10 +94,10 @@ class MessageTest extends TestCase
         $perPage = 5;
         $page = 1;
 
-        Chat::message($message)->for($this->users[1])->delete();
+        Chat::message($message)->setUser($this->users[1])->delete();
 
         $messages = Chat::conversation($conversation)
-            ->for($this->users[1])
+            ->setUser($this->users[1])
             ->deleted()
             ->getMessages($perPage, $page);
 
@@ -127,10 +127,10 @@ class MessageTest extends TestCase
         Chat::message('Hello Man')->from($this->users[1])->to($conversation)->send();
 
         $this->assertEquals($conversation->messages->count(), 7);
-        $this->assertEquals(3, Chat::conversation($conversation)->for($this->users[0])->perPage(3)->getMessages()->count());
-        $this->assertEquals(3, Chat::conversation($conversation)->for($this->users[0])->perPage(3)->page(2)->getMessages()->count());
-        $this->assertEquals(1, Chat::conversation($conversation)->for($this->users[0])->perPage(3)->page(3)->getMessages()->count());
-        $this->assertEquals(0, Chat::conversation($conversation)->for($this->users[0])->perPage(3)->page(4)->getMessages()->count());
+        $this->assertEquals(3, Chat::conversation($conversation)->setUser($this->users[0])->perPage(3)->getMessages()->count());
+        $this->assertEquals(3, Chat::conversation($conversation)->setUser($this->users[0])->perPage(3)->page(2)->getMessages()->count());
+        $this->assertEquals(1, Chat::conversation($conversation)->setUser($this->users[0])->perPage(3)->page(3)->getMessages()->count());
+        $this->assertEquals(0, Chat::conversation($conversation)->setUser($this->users[0])->perPage(3)->page(4)->getMessages()->count());
     }
 
     /** @test */
@@ -149,10 +149,10 @@ class MessageTest extends TestCase
         Chat::message('Hello Man 3')->from($this->users[2])->to($conversation2)->send();
         Chat::message('Hello Man 10')->from($this->users[0])->to($conversation2)->send();
 
-        $recent_messages = Chat::conversations()->for($this->users[0])->limit(5)->page(1)->get();
+        $recent_messages = Chat::conversations()->setUser($this->users[0])->limit(5)->page(1)->get();
         $this->assertCount(3, $recent_messages);
 
-        $recent_messages = Chat::conversations()->for($this->users[0])->setPaginationParams([
+        $recent_messages = Chat::conversations()->setUser($this->users[0])->setPaginationParams([
             'perPage' => 1,
             'page' => 1,
             'pageName' => 'test',
@@ -170,12 +170,12 @@ class MessageTest extends TestCase
         Chat::message('Hello 2')->from($this->users[0])->to($conversation)->send();
         $message = Chat::message('Hello 2')->from($this->users[0])->to($conversation)->send();
 
-        $this->assertEquals(2, Chat::messages()->for($this->users[1])->unreadCount());
-        $this->assertEquals(1, Chat::messages()->for($this->users[0])->unreadCount());
+        $this->assertEquals(2, Chat::messages()->setUser($this->users[1])->unreadCount());
+        $this->assertEquals(1, Chat::messages()->setUser($this->users[0])->unreadCount());
 
-        Chat::message($message)->for($this->users[1])->markRead();
+        Chat::message($message)->setUser($this->users[1])->markRead();
 
-        $this->assertEquals(1, Chat::messages()->for($this->users[1])->unreadCount());
+        $this->assertEquals(1, Chat::messages()->setUser($this->users[1])->unreadCount());
     }
 
     /** @test */
@@ -198,10 +198,10 @@ class MessageTest extends TestCase
             ->to($conversation)
             ->send();
 
-        Chat::message($message)->for($this->users[1])->toggleFlag();
-        $this->assertTrue(Chat::message($message)->for($this->users[1])->flagged());
+        Chat::message($message)->setUser($this->users[1])->toggleFlag();
+        $this->assertTrue(Chat::message($message)->setUser($this->users[1])->flagged());
 
-        Chat::message($message)->for($this->users[1])->toggleFlag();
-        $this->assertFalse(Chat::message($message)->for($this->users[1])->flagged());
+        Chat::message($message)->setUser($this->users[1])->toggleFlag();
+        $this->assertFalse(Chat::message($message)->setUser($this->users[1])->flagged());
     }
 }
