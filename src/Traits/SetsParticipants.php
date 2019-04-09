@@ -15,7 +15,22 @@ trait SetsParticipants
      *
      * @return $this
      */
-    function for ($user) {
+    public function for($user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Sets user.
+     *
+     * @param object $user
+     *
+     * @return $this
+     */
+    public function setUser($user)
+    {
         $this->user = $user;
 
         return $this;

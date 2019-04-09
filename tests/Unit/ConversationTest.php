@@ -36,7 +36,7 @@ class ConversationTest extends TestCase
         Chat::message('Hello there 0')->from($this->users[1])->to($conversation)->send();
         Chat::message('Hello there 0')->from($this->users[1])->to($conversation)->send();
 
-        Chat::conversation($conversation)->for($this->users[0])->readAll();
+        Chat::conversation($conversation)->setUser($this->users[0])->readAll();
         $this->assertEquals(0, $conversation->unReadNotifications($this->users[0])->count());
     }
 
@@ -60,9 +60,9 @@ class ConversationTest extends TestCase
         Chat::message('Hello there 1')->from($this->users[0])->to($conversation)->send();
         Chat::message('Hello there 2')->from($this->users[0])->to($conversation)->send();
 
-        Chat::conversation($conversation)->for($this->users[0])->clear();
+        Chat::conversation($conversation)->setUser($this->users[0])->clear();
 
-        $messages = Chat::conversation($conversation)->for($this->users[0])->getMessages();
+        $messages = Chat::conversation($conversation)->setUser($this->users[0])->getMessages();
 
         $this->assertEquals($messages->count(), 0);
     }
@@ -192,9 +192,9 @@ class ConversationTest extends TestCase
     {
         $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
         $message = Chat::message('Hello & Bye')->from($this->users[0])->to($conversation)->send();
-        Chat::message($message)->for($this->users[0])->delete();
+        Chat::message($message)->setUser($this->users[0])->delete();
 
-        $conversations = Chat::conversations()->for($this->users[0])->get();
+        $conversations = Chat::conversations()->setUser($this->users[0])->get();
 
         $this->assertNull($conversations->get(0)->last_message);
     }
@@ -205,11 +205,11 @@ class ConversationTest extends TestCase
         $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
         Chat::message('Hello')->from($this->users[0])->to($conversation)->send();
 
-        $conversations = Chat::conversations()->for($this->users[0])->get();
+        $conversations = Chat::conversations()->setUser($this->users[0])->get();
 
         $this->assertTrue((bool) $conversations->get(0)->last_message->is_seen);
 
-        $conversations = Chat::conversations()->for($this->users[1])->get();
+        $conversations = Chat::conversations()->setUser($this->users[1])->get();
 
         $this->assertFalse((bool) $conversations->get(0)->last_message->is_seen);
     }
@@ -228,15 +228,14 @@ class ConversationTest extends TestCase
         $conversation = Chat::createConversation([$auth->getKey(), $this->users[3]->getKey()]);
         Chat::message('Hello-' . $conversation->id)->from($auth)->to($conversation)->send();
 
-        $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->for($auth)->limit(1)->page(1)->get();
+        $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->setUser($auth)->limit(1)->page(1)->get();
         $this->assertEquals('Hello-3', $conversations->items()[0]->last_message->body);
 
-        $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->for($auth)->limit(1)->page(2)->get();
+        $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->setUser($auth)->limit(1)->page(2)->get();
         $this->assertEquals('Hello-2', $conversations->items()[0]->last_message->body);
 
-        $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->for($auth)->limit(1)->page(3)->get();
+        $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->setUser($auth)->limit(1)->page(3)->get();
         $this->assertEquals('Hello-1', $conversations->items()[0]->last_message->body);
-
     }
 
     /** @test */
@@ -296,14 +295,13 @@ class ConversationTest extends TestCase
         Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()])->makePrivate(false);
         Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()])->makePrivate();
 
-        $allConversations = Chat::conversations()->for($this->users[0])->get();
+        $allConversations = Chat::conversations()->setUser($this->users[0])->get();
         $this->assertCount(3, $allConversations);
 
-        $privateConversations = Chat::conversations()->for($this->users[0])->isPrivate()->get();
+        $privateConversations = Chat::conversations()->setUser($this->users[0])->isPrivate()->get();
         $this->assertCount(2, $privateConversations);
 
-        $publicConversations = Chat::conversations()->for($this->users[0])->isPrivate(false)->get();
+        $publicConversations = Chat::conversations()->setUser($this->users[0])->isPrivate(false)->get();
         $this->assertCount(1, $publicConversations);
     }
-
 }
