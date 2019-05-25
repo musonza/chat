@@ -181,12 +181,21 @@ class Conversation extends BaseModel
      * Gets conversations for a specific user.
      *
      * @param User | int $user
+     * @param string $type
      *
      * @return array
      */
-    public function userConversations($user)
+    public function userConversations($user, $type = false)
     {
         $userId = is_object($user) ? $user->getKey() : $user;
+
+        if($type || is_null($type)){
+            return $this->join('mc_conversation_user', 'mc_conversation_user.conversation_id', '=', 'mc_conversations.id')
+                ->where('mc_conversation_user.user_id', $userId)
+                ->where('private', true)
+                ->where('type', $type)
+                ->pluck('mc_conversations.id');
+        }
 
         return $this->join('mc_conversation_user', 'mc_conversation_user.conversation_id', '=', 'mc_conversations.id')
             ->where('mc_conversation_user.user_id', $userId)

@@ -78,8 +78,8 @@ class ConversationService
             $this->conversation->where('type', $type);
         }
         
-        $conversation1 = $this->conversation->userConversations($userOne)->toArray();
-        $conversation2 = $this->conversation->userConversations($userTwo)->toArray();
+        $conversation1 = $this->conversation->userConversations($userOne, $type)->toArray();
+        $conversation2 = $this->conversation->userConversations($userTwo, $type)->toArray();
 
         $common_conversations = $this->getConversationsInCommon($conversation1, $conversation2);
 
