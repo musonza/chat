@@ -18,9 +18,9 @@ class ConversationService
         $this->conversation = $conversation;
     }
 
-    public function start($participants, $data = [])
+    public function start($participants, $data = [], $type = null)
     {
-        return $this->conversation->start($participants, $data);
+        return $this->conversation->start($participants, $data, $type);
     }
 
     public function setConversation($conversation)
@@ -75,7 +75,7 @@ class ConversationService
     public function between($userOne, $userTwo, $type = false)
     {
         if($type || is_null($type)){
-            $this->conversation->where('type', $type)
+            $this->conversation->where('type', $type);
         }
         
         $conversation1 = $this->conversation->userConversations($userOne)->toArray();
