@@ -2,6 +2,7 @@
 
 namespace Musonza\Chat\Models;
 
+use App\Models\Member;
 use Musonza\Chat\BaseModel;
 use Musonza\Chat\Chat;
 
@@ -287,15 +288,21 @@ class Conversation extends BaseModel
 
     private function getConversationsList($user, $perPage, $page, $pageName, $isPrivate = null)
     {
+
+        $system_assistent = Member::getSystemAssistent();
         $paginator = $this->join('mc_conversation_user', 'mc_conversation_user.conversation_id', '=', 'mc_conversations.id')
             ->with([
-                'last_message' => function ($query) use ($user) {
+                'last_message' => function ($query) use ($user, $system_assistent) {
                     $query->join('mc_message_notification', 'mc_message_notification.message_id', '=', 'mc_messages.id')
                         ->select('mc_message_notification.*', 'mc_messages.*')
                         ->where('mc_message_notification.user_id', $user->getKey())
                         ->whereNull('mc_message_notification.deleted_at');
                 },
+                'users' => function ($query) use ($user) {
+                    $query->where('user_id', '!=', $system_assistent->id)->where('user_id', '!=',  $user->getKey());
+                },
             ])->where('mc_conversation_user.user_id', $user->getKey());
+
 
         if (!is_null($isPrivate)) {
             $paginator = $paginator->where('mc_conversations.private', $isPrivate);
@@ -306,6 +313,7 @@ class Conversation extends BaseModel
             ->distinct('mc_conversations.id')
             ->paginate($perPage, ['mc_conversations.*'], $pageName, $page);
     }
+
 
     private function notifications($user, $readAll)
     {
