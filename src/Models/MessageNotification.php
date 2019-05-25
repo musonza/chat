@@ -45,10 +45,14 @@ class MessageNotification extends BaseModel
 
             $notification[] = [
                 'user_id' => $user->getKey(),
+                'user_avatar_url' => $user->avatar_url,
                 'message_id' => $message->id,
+                'message_typ' => $message->type,
+                'conversation_typ' => $conversation->type,
                 'conversation_id' => $conversation->id,
                 'is_seen' => $is_sender,
                 'is_sender' => $is_sender,
+                'message' => $message->body,
                 'created_at' => $message->created_at,
             ];
         }
