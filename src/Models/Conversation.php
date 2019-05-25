@@ -298,7 +298,7 @@ class Conversation extends BaseModel
                         ->where('mc_message_notification.user_id', $user->getKey())
                         ->whereNull('mc_message_notification.deleted_at');
                 },
-                'users' => function ($query) use ($user) {
+                'users' => function ($query) use ($user, $system_assistent) {
                     $query->where('user_id', '!=', $system_assistent->id)->where('user_id', '!=',  $user->getKey());
                 },
             ])->where('mc_conversation_user.user_id', $user->getKey());
