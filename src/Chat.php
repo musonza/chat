@@ -29,12 +29,13 @@ class Chat
      *
      * @param array $participants
      * @param array $data
+     * @param string $type
      *
      * @return Conversation
      */
-    public function createConversation(array $participants, array $data = [])
+    public function createConversation(array $participants, array $data = [], $type = null)
     {
-        return $this->conversationService->start($participants, $data);
+        return $this->conversationService->start($participants, $data, $type);
     }
 
     /**
