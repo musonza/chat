@@ -68,11 +68,16 @@ class ConversationService
      *
      * @param int | User $userOne
      * @param int | User $userTwo
+     * @param string $type
      *
      * @return Conversation
      */
-    public function between($userOne, $userTwo)
+    public function between($userOne, $userTwo, $type = false)
     {
+        if($type || is_null($type)){
+            $this->conversation->where('type', $type)
+        }
+        
         $conversation1 = $this->conversation->userConversations($userOne)->toArray();
         $conversation2 = $this->conversation->userConversations($userTwo)->toArray();
 

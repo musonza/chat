@@ -9,7 +9,7 @@ use Musonza\Chat\Chat;
 class Conversation extends BaseModel
 {
     protected $table = 'mc_conversations';
-    protected $fillable = ['data'];
+    protected $fillable = ['data', 'type'];
     protected $casts = [
         'data' => 'array',
     ];
@@ -137,12 +137,13 @@ class Conversation extends BaseModel
      * Starts a new conversation.
      *
      * @param array $participants users
+     * @param string $type
      *
      * @return Conversation
      */
-    public function start($participants, $data = [])
+    public function start($participants, $data = [], $type = null)
     {
-        $conversation = $this->create(['data' => $data]);
+        $conversation = $this->create(['data' => $data, 'type' => $type]);
 
         if ($participants) {
             $conversation->addParticipants($participants);
