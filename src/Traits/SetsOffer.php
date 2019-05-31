@@ -2,7 +2,7 @@
 
 namespace Musonza\Chat\Traits;
 
-trait SetsOfer
+trait SetsOffer
 {
     protected $from;
     protected $to;
