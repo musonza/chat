@@ -5,6 +5,7 @@ namespace Musonza\Chat\Services;
 use Musonza\Chat\Commanding\CommandBus;
 use Musonza\Chat\Messages\SendMessageCommand;
 use Musonza\Chat\Models\Message;
+use Musonza\Chat\Traits\SetsOffer;
 use Musonza\Chat\Traits\SetsParticipants;
 
 class MessageService
