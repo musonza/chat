@@ -29,6 +29,7 @@ class CreateChatTables extends Migration
             $table->increments('id');
             $table->boolean('private')->default(true);
             $table->text('data')->nullable();
+            $table->string('type')->nullable();
             $table->timestamps();
         });
 
@@ -37,6 +38,7 @@ class CreateChatTables extends Migration
             $table->text('body');
             $table->integer('conversation_id')->unsigned();
             $table->integer('user_id')->unsigned();
+            $table->integer('offer_id')->unsigned();
             $table->string('type')->default('text');
             $table->timestamps();
 

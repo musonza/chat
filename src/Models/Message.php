@@ -35,6 +35,12 @@ class Message extends BaseModel
         return $this->belongsTo(Chat::userModel(), 'user_id');
     }
 
+
+    public function offer()
+    {
+        return $this->belongsTo(Chat::offerModel(), 'offer_id');
+    }
+
     public function unreadCount($user)
     {
         return MessageNotification::where('user_id', $user->getKey())

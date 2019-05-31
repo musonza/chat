@@ -2,6 +2,7 @@
 
 return [
     'user_model' => 'App\User',
+    'offer_model' => 'App\Offer',
 
     /**
      * If not set, the package will use getKeyName() on the user_model specified above

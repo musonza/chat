@@ -102,6 +102,16 @@ class Chat
     }
 
     /**
+     * Returns the Offer Model class.
+     *
+     * @return string
+     */
+    public static function offerModel()
+    {
+        return config('musonza_chat.offer_model');
+    }
+
+    /**
      * Returns primary key for the User model
      * @return string
      */

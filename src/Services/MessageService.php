@@ -10,6 +10,7 @@ use Musonza\Chat\Traits\SetsParticipants;
 class MessageService
 {
     use SetsParticipants;
+    use SetsOffer;
 
     protected $type = 'text';
     protected $body;

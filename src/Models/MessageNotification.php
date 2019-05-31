@@ -33,7 +33,7 @@ class MessageNotification extends BaseModel
         return MessageNotification::where([
             ['user_id', '=', $user->getKey()],
             ['is_seen', '=', 0],
-        ])->get();
+        ])->latest()->get();
     }
 
     public static function createCustomNotifications($message, $conversation)
