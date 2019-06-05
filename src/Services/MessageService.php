@@ -14,6 +14,7 @@ class MessageService
     use SetsOffer;
 
     protected $type = 'text';
+    protected $offer;
     protected $body;
 
     public function __construct(CommandBus $commandBus, Message $message)
@@ -43,6 +44,21 @@ class MessageService
     public function type(String $type)
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+
+    /**
+     * Set Message offer.
+     *
+     * @param string type
+     *
+     * @return $this
+     */
+    public function offer($offer)
+    {
+        $this->offer = is_object($offer) ? $offer->getKey() : $offer;
 
         return $this;
     }
@@ -103,15 +119,15 @@ class MessageService
             throw new \Exception('Message sender has not been set');
         }
 
-        if (!$this->body) {
-            throw new \Exception('Message body has not been set');
-        }
+        //if (!$this->body) {
+        //    throw new \Exception('Message body has not been set');
+        //}
 
         if (!$this->to) {
             throw new \Exception('Message receiver has not been set');
         }
 
-        $command = new SendMessageCommand($this->to, $this->body, $this->from, $this->type);
+        $command = new SendMessageCommand($this->to, $this->body, $this->from,  $this->offer,  $this->type);
 
         return $this->commandBus->execute($command);
     }

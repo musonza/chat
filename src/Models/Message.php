@@ -12,7 +12,7 @@ class Message extends BaseModel
 {
     use EventGenerator;
 
-    protected $fillable = ['body', 'user_id', 'type'];
+    protected $fillable = ['body', 'user_id', 'offer_id', 'type'];
     protected $table = 'mc_messages';
     /**
      * All of the relationships to be touched.
@@ -38,7 +38,7 @@ class Message extends BaseModel
 
     public function offer()
     {
-        return $this->belongsTo(Chat::offerModel(), 'offer_id');
+        return $this->belongsTo(Chat::offerModel(), 'offer_id')->with('order');
     }
 
     public function unreadCount($user)
@@ -63,11 +63,12 @@ class Message extends BaseModel
      *
      * @return Message
      */
-    public function send(Conversation $conversation, $body, $userId, $type = 'text')
+    public function send(Conversation $conversation, $body, $userId, $offerId ,$type = 'text')
     {
         $message = $conversation->messages()->create([
             'body' => $body,
             'user_id' => $userId,
+            'offer_id' => $offerId,
             'type' => $type,
         ]);
 

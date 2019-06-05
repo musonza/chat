@@ -13,6 +13,8 @@ class ConversationService
 
     protected $isPrivate = null;
 
+    protected $type = null;
+
     public function __construct(Conversation $conversation)
     {
         $this->conversation = $conversation;
@@ -33,6 +35,20 @@ class ConversationService
     public function getById($id)
     {
         return $this->conversation->findOrFail($id);
+    }
+
+    /**
+     * Set Conversation type.
+     *
+     * @param int $type
+     *
+     * @return $this
+     */
+    public function type($type)
+    {
+        $this->type = is_object($type) ? $type->getKey() : $type;
+
+        return $this;
     }
 
     /**
@@ -112,13 +128,14 @@ class ConversationService
     public function get()
     {
         if (is_null($this->isPrivate)) {
-            return $this->conversation->getList($this->user, $this->perPage, $this->page, $pageName = 'page');
+            return $this->conversation->getList($this->user, $this->perPage, $this->page, $pageName = 'page', $this->type);
         }
 
         return $this->conversation->getUserConversations($this->user, [
           'perPage' => $this->perPage,
           'page' => $this->page,
           'pageName' => 'page',
+            'type' => $this->type,
           'isPrivate' => $this->isPrivate
         ]);
     }

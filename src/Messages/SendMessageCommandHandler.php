@@ -30,7 +30,7 @@ class SendMessageCommandHandler implements CommandHandler
      */
     public function handle($command)
     {
-        $message = $this->message->send($command->conversation, $command->body, $command->senderId, $command->type);
+        $message = $this->message->send($command->conversation, $command->body, $command->senderId, $command->offerId, $command->type);
 
         $this->dispatcher->dispatch($this->message->releaseEvents());
 

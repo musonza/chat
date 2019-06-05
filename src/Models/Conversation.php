@@ -41,7 +41,7 @@ class Conversation extends BaseModel
      */
     public function messages()
     {
-        return $this->hasMany(Message::class, 'conversation_id')->with('sender')->with('offer');
+        return $this->hasMany(Message::class, 'conversation_id')->with('sender')->with('offer.product')->with('offer.task');
     }
 
     /**
@@ -70,9 +70,9 @@ class Conversation extends BaseModel
      *
      * @return Conversations The list.
      */
-    public function getList($user, $perPage = 25, $page = 1, $pageName = 'page')
+    public function getList($user, $perPage = 25, $page = 1, $pageName = 'page', $type)
     {
-        return $this->getConversationsList($user, $perPage, $page, $pageName);
+        return $this->getConversationsList($user, $perPage, $page, $pageName, $type);
     }
 
     public function getUserConversations($user, array $options)
@@ -82,6 +82,7 @@ class Conversation extends BaseModel
             $options['perPage'],
             $options['page'],
             $options['pageName'],
+            $options['type'],
             $options['isPrivate']
         );
     }
@@ -296,7 +297,7 @@ class Conversation extends BaseModel
         return $messages;
     }
 
-    private function getConversationsList($user, $perPage, $page, $pageName, $isPrivate = null)
+    private function getConversationsList($user, $perPage, $page, $pageName, $type = null, $isPrivate = null)
     {
 
         $system_assistent = Member::getSystemAssistent();
@@ -316,6 +317,10 @@ class Conversation extends BaseModel
 
         if (!is_null($isPrivate)) {
             $paginator = $paginator->where('mc_conversations.private', $isPrivate);
+        }
+
+        if (!is_null($type)) {
+            $paginator = $paginator->where('mc_conversations.type', $type);
         }
 
         return $paginator->orderBy('mc_conversations.updated_at', 'DESC')
