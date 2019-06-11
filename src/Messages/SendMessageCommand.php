@@ -12,9 +12,9 @@ class SendMessageCommand
 
     /**
      * @param Conversation $conversation The conversation
-     * @param string $body The message body
-     * @param int $senderId The sender identifier
-     * @param string $type The message type
+     * @param string       $body         The message body
+     * @param int          $senderId     The sender identifier
+     * @param string       $type         The message type
      */
     public function __construct(Conversation $conversation, $body, $senderId, $type = 'text')
     {

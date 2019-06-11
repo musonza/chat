@@ -54,8 +54,8 @@ class ChatServiceProvider extends ServiceProvider
     public function publishMigrations()
     {
         $timestamp = date('Y_m_d_His', time());
-        $stub = __DIR__ . '/../database/migrations/create_chat_tables.php';
-        $target = $this->app->databasePath() . '/migrations/' . $timestamp . '_create_chat_tables.php';
+        $stub = __DIR__.'/../database/migrations/create_chat_tables.php';
+        $target = $this->app->databasePath().'/migrations/'.$timestamp.'_create_chat_tables.php';
 
         $this->publishes([$stub => $target], 'chat.migrations');
     }
@@ -68,7 +68,7 @@ class ChatServiceProvider extends ServiceProvider
     public function publishConfig()
     {
         $this->publishes([
-            __DIR__ . '/../config' => config_path(),
+            __DIR__.'/../config' => config_path(),
         ], 'chat.config');
     }
 }

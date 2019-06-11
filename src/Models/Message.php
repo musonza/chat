@@ -5,8 +5,6 @@ namespace Musonza\Chat\Models;
 use Musonza\Chat\BaseModel;
 use Musonza\Chat\Chat;
 use Musonza\Chat\Eventing\EventGenerator;
-use Musonza\Chat\Models\Conversation;
-use Musonza\Chat\Models\MessageNotification;
 
 class Message extends BaseModel
 {
@@ -60,9 +58,9 @@ class Message extends BaseModel
     public function send(Conversation $conversation, $body, $userId, $type = 'text')
     {
         $message = $conversation->messages()->create([
-            'body' => $body,
+            'body'    => $body,
             'user_id' => $userId,
-            'type' => $type,
+            'type'    => $type,
         ]);
 
         $messageWasSent = Chat::sentMessageEvent();
@@ -116,7 +114,7 @@ class Message extends BaseModel
 
     public function flagged($user)
     {
-        return !!MessageNotification::where('user_id', $user->getKey())
+        return (bool) MessageNotification::where('user_id', $user->getKey())
             ->where('message_id', $this->id)
             ->where('flagged', 1)
             ->first();

@@ -13,7 +13,7 @@ class SendMessageCommandHandler implements CommandHandler
 
     /**
      * @param EventDispatcher $dispatcher The dispatcher
-     * @param Message $message    The message
+     * @param Message         $message    The message
      */
     public function __construct(EventDispatcher $dispatcher, Message $message)
     {

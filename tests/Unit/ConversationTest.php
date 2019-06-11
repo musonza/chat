@@ -14,7 +14,7 @@ class ConversationTest extends TestCase
     {
         $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
 
-        $this->assertDatabaseHas($this->prefix . 'conversations', ['id' => 1]);
+        $this->assertDatabaseHas($this->prefix.'conversations', ['id' => 1]);
     }
 
     /** @test */
@@ -220,13 +220,13 @@ class ConversationTest extends TestCase
         $auth = $this->users[0];
 
         $conversation = Chat::createConversation([$auth->getKey(), $this->users[1]->getKey()]);
-        Chat::message('Hello-' . $conversation->id)->from($auth)->to($conversation)->send();
+        Chat::message('Hello-'.$conversation->id)->from($auth)->to($conversation)->send();
 
         $conversation = Chat::createConversation([$auth->getKey(), $this->users[2]->getKey()]);
-        Chat::message('Hello-' . $conversation->id)->from($auth)->to($conversation)->send();
+        Chat::message('Hello-'.$conversation->id)->from($auth)->to($conversation)->send();
 
         $conversation = Chat::createConversation([$auth->getKey(), $this->users[3]->getKey()]);
-        Chat::message('Hello-' . $conversation->id)->from($auth)->to($conversation)->send();
+        Chat::message('Hello-'.$conversation->id)->from($auth)->to($conversation)->send();
 
         $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->setUser($auth)->limit(1)->page(1)->get();
         $this->assertEquals('Hello-3', $conversations->items()[0]->last_message->body);

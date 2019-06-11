@@ -13,7 +13,7 @@ class Chat
     use SetsParticipants;
 
     /**
-     * @param MessageService $messageService
+     * @param MessageService      $messageService
      * @param ConversationService $conversationService
      * @param MessageNotification $messageNotification
      */
@@ -40,7 +40,7 @@ class Chat
     /**
      * Sets message.
      *
-     * @param string | Musonza\Chat\Models\Message  $message
+     * @param string | Musonza\Chat\Models\Message $message
      *
      * @return MessageService
      */
@@ -62,7 +62,8 @@ class Chat
     /**
      * Sets Conversation.
      *
-     * @param  Conversation $conversation
+     * @param Conversation $conversation
+     *
      * @return ConversationService
      */
     public function conversation(Conversation $conversation)
@@ -101,7 +102,8 @@ class Chat
     }
 
     /**
-     * Returns primary key for the User model
+     * Returns primary key for the User model.
+     *
      * @return string
      */
     public static function userModelPrimaryKey()
@@ -112,7 +114,7 @@ class Chat
     /**
      * Should the messages be broadcasted.
      *
-     * @return boolean
+     * @return bool
      */
     public static function broadcasts()
     {

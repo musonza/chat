@@ -39,6 +39,6 @@ class MessageWasSent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('mc-chat-conversation.' . $this->message->conversation->id);
+        return new Channel('mc-chat-conversation.'.$this->message->conversation->id);
     }
 }
