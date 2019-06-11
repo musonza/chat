@@ -2,14 +2,14 @@
 
 namespace Musonza\Chat\Eventing;
 
-use Illuminate\Events\Dispatcher;
+use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Musonza\Chat\Chat;
 
 class EventDispatcher
 {
     protected $event;
 
-    public function __construct(Dispatcher $event)
+    public function __construct(DispatcherContract $event)
     {
         $this->event = $event;
     }
