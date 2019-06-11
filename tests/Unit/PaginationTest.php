@@ -13,16 +13,16 @@ class PaginationTest extends TestCase
     public function it_can_set_pagination_params()
     {
         $chat = Chat::conversations()->setPaginationParams([
-            'perPage' => 30,
-            'page' => 3,
+            'perPage'  => 30,
+            'page'     => 3,
             'pageName' => 'test',
-            'sorting' => 'desc',
+            'sorting'  => 'desc',
         ]);
 
         $this->assertEquals([
-            'page' => 3,
+            'page'    => 3,
             'perPage' => 30,
-            'sorting' => "desc",
+            'sorting' => 'desc',
             'columns' => [
                 0 => '*',
             ],

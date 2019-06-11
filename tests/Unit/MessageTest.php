@@ -120,8 +120,8 @@ class MessageTest extends TestCase
         $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
 
         for ($i = 0; $i < 3; $i++) {
-            Chat::message('Hello ' . $i)->from($this->users[0])->to($conversation)->send();
-            Chat::message('Hello Man ' . $i)->from($this->users[1])->to($conversation)->send();
+            Chat::message('Hello '.$i)->from($this->users[0])->to($conversation)->send();
+            Chat::message('Hello Man '.$i)->from($this->users[1])->to($conversation)->send();
         }
 
         Chat::message('Hello Man')->from($this->users[1])->to($conversation)->send();
@@ -153,10 +153,10 @@ class MessageTest extends TestCase
         $this->assertCount(3, $recent_messages);
 
         $recent_messages = Chat::conversations()->setUser($this->users[0])->setPaginationParams([
-            'perPage' => 1,
-            'page' => 1,
+            'perPage'  => 1,
+            'page'     => 1,
             'pageName' => 'test',
-            'sorting' => 'desc',
+            'sorting'  => 'desc',
         ])->get();
 
         $this->assertCount(1, $recent_messages);

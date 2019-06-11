@@ -36,7 +36,7 @@ class NotificationsTest extends TestCase
         $conversation2 = Chat::createConversation([$this->users[2]->getKey(), $this->users[0]->getKey()]);
         Chat::message('Hello 3')->from($this->users[2])->to($conversation2)->send();
 
-        $notifications = Chat::for($this->users[0]) ->unReadNotifications();
+        $notifications = Chat::for($this->users[0])->unReadNotifications();
 
         $this->assertEquals(3, $notifications->count());
     }

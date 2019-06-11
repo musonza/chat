@@ -2,7 +2,7 @@
 
 namespace Musonza\Chat\Tests;
 
-require __DIR__ . '/../database/migrations/create_chat_tables.php';
+require __DIR__.'/../database/migrations/create_chat_tables.php';
 
 use CreateChatTables;
 use Illuminate\Database\Schema\Blueprint;
@@ -24,7 +24,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         parent::setUp();
 
         $this->artisan('migrate', ['--database' => 'testbench']);
-        $this->withFactories(__DIR__ . '/../database/factories');
+        $this->withFactories(__DIR__.'/../database/factories');
         $this->migrate();
         $this->users = $this->createUsers(6);
     }
@@ -48,7 +48,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function migrate()
     {
         $this->migrateTestTables();
-        (new CreateChatTables)->up();
+        (new CreateChatTables())->up();
     }
 
     /**
@@ -65,9 +65,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
-            'driver' => 'sqlite',
+            'driver'   => 'sqlite',
             'database' => ':memory:',
-            'prefix' => '',
+            'prefix'   => '',
         ]);
 
         // $app['config']->set('database.default', 'testbench');
@@ -108,7 +108,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     public function tearDown()
     {
-        (new CreateChatTables)->down();
+        (new CreateChatTables())->down();
         $this->rollbackTestTables();
         parent::tearDown();
     }

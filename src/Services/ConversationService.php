@@ -111,10 +111,10 @@ class ConversationService
         }
 
         return $this->conversation->getUserConversations($this->user, [
-          'perPage' => $this->perPage,
-          'page' => $this->page,
-          'pageName' => 'page',
-          'isPrivate' => $this->isPrivate
+          'perPage'   => $this->perPage,
+          'page'      => $this->page,
+          'pageName'  => 'page',
+          'isPrivate' => $this->isPrivate,
         ]);
     }
 
@@ -170,8 +170,9 @@ class ConversationService
     /**
      * Sets the conversation type to query for, public or private.
      *
-     * @param boolean $isPrivate
-     * @return boolean
+     * @param bool $isPrivate
+     *
+     * @return bool
      */
     public function isPrivate($isPrivate = true)
     {
