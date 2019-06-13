@@ -74,6 +74,7 @@ class Message extends BaseModel
 
         $messageWasSent = Chat::sentMessageEvent();
         $message->load('sender');
+        $message->load('offer');
         $this->raise(new $messageWasSent($message));
 
         return $message;
