@@ -4,6 +4,7 @@ namespace Musonza\Chat\Models;
 
 use Musonza\Chat\BaseModel;
 use Musonza\Chat\Chat;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Conversation extends BaseModel
 {
@@ -16,7 +17,7 @@ class Conversation extends BaseModel
     /**
      * Conversation participants.
      *
-     * @return User
+     * @return BelongsToMany
      */
     public function users()
     {
