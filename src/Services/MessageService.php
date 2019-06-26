@@ -38,7 +38,7 @@ class MessageService
      *
      * @return $this
      */
-    public function type(String $type)
+    public function type(string $type)
     {
         $this->type = $type;
 

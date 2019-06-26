@@ -2,9 +2,9 @@
 
 namespace Musonza\Chat\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Musonza\Chat\BaseModel;
 use Musonza\Chat\Chat;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Conversation extends BaseModel
 {
