@@ -17,7 +17,7 @@ trait SetsOffer
      */
     public function offer($offer)
     {
-        $this->offer = $offer;
+        $this->offer = is_object($offer) ? $offer->getKey() : $offer;
 
         return $this;
     }
