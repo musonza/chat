@@ -77,7 +77,7 @@ class MessageWasSent implements ShouldBroadcast
                 'username' =>  $this->message->sender->username,
             ];
         }
-        return [
+        return ['message' => [
             'id' => $this->message->id,
             'body' => $this->message->body,
             'user_id' => $this->message->user_id,
@@ -88,7 +88,7 @@ class MessageWasSent implements ShouldBroadcast
             'created_at' => $this->message->updated_at,
             'sender' => $sender,
             'offer' => $offer
-        ];
+        ]];
     }
     /**
      * Creates an entry in the message_notification table for each participant
