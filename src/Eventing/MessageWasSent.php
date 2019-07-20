@@ -45,6 +45,7 @@ class MessageWasSent implements ShouldBroadcast
 
         if($this->message->offer){
             $offer = [
+                'id' =>  $this->message->offer->id,
                 'owner_type' =>  $this->message->offer->owner_type,
                 'owner_id' =>  $this->message->offer->owner_id,
                 'item_type' =>  $this->message->offer->item_type,
