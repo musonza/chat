@@ -34,7 +34,7 @@ class MessageWasSent implements ShouldBroadcast
         $order = null;
         $offer = null;
         $sender = null;
-        if($this->message->offer->order){
+        if($this->message->offer && $this->message->offer->order){
             $order = [
                  'id' =>  $this->message->offer->order->id,
                  'number' =>  $this->message->offer->order->number,
