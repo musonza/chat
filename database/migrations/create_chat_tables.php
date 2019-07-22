@@ -56,7 +56,7 @@ class CreateChatTables extends Migration
             });
 
             Schema::create('mc_conversation_user', function (Blueprint $table) {
-                $table->bigIncrements('user_id')->unsignedBigIntegers();
+                $table->integer('user_id')->unsignedBigIntegers();
                 $table->integer('conversation_id')->unsignedBigIntegers();
                 $table->primary(['user_id', 'conversation_id']);
                 $table->timestamps();
