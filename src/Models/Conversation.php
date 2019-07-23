@@ -3,6 +3,7 @@
 namespace Musonza\Chat\Models;
 
 use App\Models\Member;
+use App\Models\Order\Order;
 use Musonza\Chat\BaseModel;
 use Musonza\Chat\Chat;
 
@@ -32,6 +33,16 @@ class Conversation extends BaseModel
     public function last_message()
     {
         return $this->hasOne(Message::class)->orderBy('mc_messages.id', 'desc')->with('sender');
+    }
+
+    /**
+     * Return the recent message in a Conversation.
+     *
+     * @return Message
+     */
+    public function order()
+    {
+        return $this->hasOne(Order::class);
     }
 
     /**
