@@ -39,8 +39,8 @@ class CreateChatTables extends Migration
             Schema::create('mc_messages', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->text('body');
-                $table->integer('conversation_id')->unsignedBigIntegers();
-                $table->integer('user_id')->unsignedBigIntegers();
+                $table->bigInteger('conversation_id')->unsigned();
+                $table->bigInteger('user_id')->unsigned();
                 $table->string('type')->default('text');
                 $table->timestamps();
 
@@ -56,8 +56,8 @@ class CreateChatTables extends Migration
             });
 
             Schema::create('mc_conversation_user', function (Blueprint $table) {
-                $table->integer('user_id')->unsignedBigIntegers();
-                $table->integer('conversation_id')->unsignedBigIntegers();
+                $table->bigInteger('user_id')->unsigned();
+                $table->bigInteger('conversation_id')->unsigned();
                 $table->primary(['user_id', 'conversation_id']);
                 $table->timestamps();
 
@@ -73,9 +73,9 @@ class CreateChatTables extends Migration
 
             Schema::create('mc_message_notification', function (Blueprint $table) {
                 $table->bigIncrements('id');
-                $table->integer('message_id')->unsignedBigIntegers();
-                $table->integer('conversation_id')->unsignedBigIntegers();
-                $table->integer('user_id')->unsignedBigIntegers();
+                $table->bigInteger('message_id')->unsigned();
+                $table->bigInteger('conversation_id')->unsigned();
+                $table->bigInteger('user_id')->unsigned();
                 $table->boolean('is_seen')->default(false);
                 $table->boolean('is_sender')->default(false);
                 $table->boolean('flagged')->default(false);
