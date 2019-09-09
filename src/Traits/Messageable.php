@@ -17,25 +17,23 @@ trait Messageable
         return $this->morphMany(ConversationUser::class, 'messageable');
     }
 
-    public function scopeWhereConversation($query, $conversationId)
-    {
-        return $query->whereHas('conversation_user', function ($q) use ($conversationId) {
-            $q->where('conversation_id', $conversationId);
-        });
-    }
-
     public function joinConversation($conversationId)
     {
         $participation = new ConversationUser([
-            'user_id' => $this->getKey(),
+            'messageable_id' => $this->getKey(),
+            'messageable_type' => get_class($this),
             'conversation_id' => $conversationId
         ]);
 
         $this->conversations()->save($participation);
     }
 
-    public function leaveConversation()
+    public function leaveConversation($conversationId)
     {
-
+        $this->conversations()->where([
+            'messageable_id' => $this->getKey(),
+            'messageable_type' => get_class($this),
+            'conversation_id' => $conversationId
+        ])->delete();
     }
 }

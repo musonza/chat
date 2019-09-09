@@ -54,20 +54,14 @@ class CreateChatTables extends Migration
         });
 
         Schema::create('mc_conversation_user', function (Blueprint $table) {
-            $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('conversation_id')->unsigned();
             $table->bigInteger('messageable_id')->unsigned();
             $table->string('messageable_type');
-            $table->primary(['user_id', 'conversation_id']);
+            $table->primary(['conversation_id', 'messageable_id', 'messageable_type']);
             $table->timestamps();
 
             $table->foreign('conversation_id')
                 ->references('id')->on('mc_conversations')
-                ->onDelete('cascade');
-
-            $table->foreign('user_id')
-                ->references($this->userModelPrimaryKey)
-                ->on($this->userModelTable)
                 ->onDelete('cascade');
         });
 
@@ -75,14 +69,15 @@ class CreateChatTables extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('message_id')->unsigned();
             $table->bigInteger('conversation_id')->unsigned();
-            $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('messageable_id')->unsigned();
+            $table->string('messageable_type');
             $table->boolean('is_seen')->default(false);
             $table->boolean('is_sender')->default(false);
             $table->boolean('flagged')->default(false);
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['user_id', 'message_id']);
+            $table->index(['participation_id', 'message_id']);
 
             $table->foreign('message_id')
                 ->references('id')->on('mc_messages')
@@ -90,11 +85,6 @@ class CreateChatTables extends Migration
 
             $table->foreign('conversation_id')
                 ->references('id')->on('mc_conversations')
-                ->onDelete('cascade');
-
-            $table->foreign('user_id')
-                ->references($this->userModelPrimaryKey)
-                ->on($this->userModelTable)
                 ->onDelete('cascade');
         });
     }

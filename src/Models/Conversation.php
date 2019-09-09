@@ -4,7 +4,7 @@ namespace Musonza\Chat\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Musonza\Chat\BaseModel;
 use Musonza\Chat\Chat;
 
@@ -19,17 +19,17 @@ class Conversation extends BaseModel
     /**
      * Conversation participants.
      *
-     * @return BelongsToMany
+     * @return HasMany
      */
     public function users()
     {
-        return $this->belongsToMany(Chat::userModel(), 'mc_conversation_user', 'conversation_id', 'user_id')->withTimestamps();
+        return $this->hasMany(ConversationUser::class);
     }
 
     /**
      * Return the recent message in a Conversation.
      *
-     * @return Message
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function last_message()
     {
@@ -39,7 +39,7 @@ class Conversation extends BaseModel
     /**
      * Messages in conversation.
      *
-     * @return Message
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function messages()
     {
@@ -102,14 +102,14 @@ class Conversation extends BaseModel
     public function removeUsers($users)
     {
         if (is_array($users)) {
-            foreach ($users as $id) {
-                $this->users()->detach($id);
+            foreach ($users as $user) {
+                $user->leaveConversation($this->id);
             }
 
             return $this;
         }
 
-        $this->users()->detach($users);
+        $users->leaveConversation($this->id);
 
         return $this;
     }
@@ -168,7 +168,8 @@ class Conversation extends BaseModel
     public function userConversations(Model $user)
     {
         return $this->join('mc_conversation_user', 'mc_conversation_user.conversation_id', '=', 'mc_conversations.id')
-            ->where('mc_conversation_user.user_id', $user->getKey())
+            ->where('mc_conversation_user.messageable_id', $user->getKey())
+            ->where('mc_conversation_user.messageable_type', get_class($user))
             ->where('private', true)
             ->pluck('mc_conversations.id');
     }
@@ -180,9 +181,14 @@ class Conversation extends BaseModel
      *
      * @return void
      */
-    public function unReadNotifications($user)
+    public function unReadNotifications(Model $user)
     {
-        $notifications = MessageNotification::where([['user_id', '=', $user->getKey()], ['conversation_id', '=', $this->id], ['is_seen', '=', 0]])->get();
+        $notifications = MessageNotification::where([
+            ['messageable_id', '=', $user->getKey()],
+            ['messageable_type', '=', get_class($user)],
+            ['conversation_id', '=', $this->id],
+            ['is_seen', '=', 0]
+        ])->get();
 
         return $notifications;
     }
@@ -247,7 +253,8 @@ class Conversation extends BaseModel
     {
         $messages = $this->messages()
             ->join('mc_message_notification', 'mc_message_notification.message_id', '=', 'mc_messages.id')
-            ->where('mc_message_notification.user_id', $user->getKey());
+            ->where('mc_message_notification.messageable_type', get_class($user))
+            ->where('mc_message_notification.messageable_id', $user->getKey());
         $messages = $deleted ? $messages->whereNotNull('mc_message_notification.deleted_at') : $messages->whereNull('mc_message_notification.deleted_at');
         $messages = $messages->orderBy('mc_messages.id', $paginationParams['sorting'])
             ->paginate(
@@ -255,7 +262,7 @@ class Conversation extends BaseModel
                 [
                     'mc_message_notification.updated_at as read_at',
                     'mc_message_notification.deleted_at as deleted_at',
-                    'mc_message_notification.user_id',
+                    'mc_message_notification.messageable_id',
                     'mc_message_notification.id as notification_id',
                     'mc_messages.*',
                 ],
@@ -273,10 +280,13 @@ class Conversation extends BaseModel
                 'last_message' => function ($query) use ($user) {
                     $query->join('mc_message_notification', 'mc_message_notification.message_id', '=', 'mc_messages.id')
                         ->select('mc_message_notification.*', 'mc_messages.*')
-                        ->where('mc_message_notification.user_id', $user->getKey())
+                        ->where('mc_message_notification.messageable_id', $user->getKey())
+                        ->where('mc_message_notification.messageable_type', get_class($user))
                         ->whereNull('mc_message_notification.deleted_at');
                 },
-            ])->where('mc_conversation_user.user_id', $user->getKey());
+            ])
+            ->where('mc_conversation_user.messageable_id', $user->getKey())
+            ->where('mc_conversation_user.messageable_type', get_class($user));
 
         if (!is_null($isPrivate)) {
             $paginator = $paginator->where('mc_conversations.private', $isPrivate);
@@ -288,9 +298,10 @@ class Conversation extends BaseModel
             ->paginate($perPage, ['mc_conversations.*'], $pageName, $page);
     }
 
-    private function notifications($user, $readAll)
+    private function notifications(Model $user, $readAll)
     {
-        $notifications = MessageNotification::where('user_id', $user->getKey())
+        $notifications = MessageNotification::where('messageable_id', $user->getKey())
+            ->where('mc_message_notification.messageable_type', get_class($user))
             ->where('conversation_id', $this->id);
 
         if ($readAll) {
@@ -302,7 +313,8 @@ class Conversation extends BaseModel
 
     private function clearConversation($user)
     {
-        return MessageNotification::where('user_id', $user->getKey())
+        return MessageNotification::where('messageable_id', $user->getKey())
+            ->where('mc_message_notification.messageable_type', get_class($user))
             ->where('conversation_id', $this->id)
             ->delete();
     }

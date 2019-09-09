@@ -35,8 +35,9 @@ class Message extends BaseModel
 
     public function unreadCount($user)
     {
-        return MessageNotification::where('user_id', $user->getKey())
+        return MessageNotification::where('messageable_id', $user->getKey())
             ->where('is_seen', 0)
+            ->where('messageable_type', get_class($user))
             ->count();
     }
 
@@ -53,7 +54,7 @@ class Message extends BaseModel
      * @param int          $userId
      * @param string       $type
      *
-     * @return Message
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public function send(Conversation $conversation, $body, $userId, $type = 'text')
     {
@@ -80,7 +81,8 @@ class Message extends BaseModel
      */
     public function trash($user)
     {
-        return MessageNotification::where('user_id', $user->getKey())
+        return MessageNotification::where('messageable_id', $user->getKey())
+            ->where('messageable_type', get_class($user))
             ->where('message_id', $this->id)
             ->delete();
     }
@@ -94,7 +96,8 @@ class Message extends BaseModel
      */
     public function getNotification($user)
     {
-        return MessageNotification::where('user_id', $user->getKey())
+        return MessageNotification::where('messageable_id', $user->getKey())
+            ->where('messageable_type', get_class($user))
             ->where('message_id', $this->id)
             ->select(['mc_message_notification.*', 'mc_message_notification.updated_at as read_at'])
             ->first();
@@ -114,16 +117,18 @@ class Message extends BaseModel
 
     public function flagged($user)
     {
-        return (bool) MessageNotification::where('user_id', $user->getKey())
+        return (bool) MessageNotification::where('messageable_id', $user->getKey())
             ->where('message_id', $this->id)
+            ->where('messageable_type', get_class($user))
             ->where('flagged', 1)
             ->first();
     }
 
     public function toggleFlag($user)
     {
-        MessageNotification::where('user_id', $user->getKey())
+        MessageNotification::where('messageable_id', $user->getKey())
             ->where('message_id', $this->id)
+            ->where('messageable_type', get_class($user))
             ->update(['flagged' => $this->flagged($user) ? false : true]);
 
         return $this;

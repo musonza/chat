@@ -2,15 +2,15 @@
 
 namespace Musonza\Chat\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Notification;
 use Musonza\Chat\BaseModel;
 
 class MessageNotification extends BaseModel
 {
     use SoftDeletes;
 
-    protected $fillable = ['user_id', 'message_id', 'conversation_id'];
+    protected $fillable = ['messageable_id', 'messageable_type', 'message_id', 'conversation_id'];
     protected $table = 'mc_message_notification';
     protected $dates = ['deleted_at'];
 
@@ -25,10 +25,11 @@ class MessageNotification extends BaseModel
         self::createCustomNotifications($message, $conversation);
     }
 
-    public function unReadNotifications($user)
+    public function unReadNotifications(Model $participant)
     {
         return self::where([
-            ['user_id', '=', $user->getKey()],
+            ['messageable_id', '=', $participant->getKey()],
+            ['messageable_type', '=', get_class($participant)],
             ['is_seen', '=', 0],
         ])->get();
     }
@@ -37,11 +38,12 @@ class MessageNotification extends BaseModel
     {
         $notification = [];
 
-        foreach ($conversation->users as $user) {
-            $is_sender = ($message->user_id == $user->getKey()) ? 1 : 0;
+        foreach ($conversation->users as $participant) {
+            $is_sender = ($message->user_id == $participant->messageable_id) ? 1 : 0;
 
             $notification[] = [
-                'user_id'         => $user->getKey(),
+                'messageable_id'         => $participant->messageable_id,
+                'messageable_type'       => $participant->messageable_type,
                 'message_id'      => $message->id,
                 'conversation_id' => $conversation->id,
                 'is_seen'         => $is_sender,

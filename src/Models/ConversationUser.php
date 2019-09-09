@@ -9,14 +9,13 @@ class ConversationUser extends BaseModel
     protected $table = 'mc_conversation_user';
 
     protected $fillable = [
-        'user_id',
         'conversation_id'
     ];
 
     /**
      * Conversation.
      *
-     * @return Relationship
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function conversation()
     {

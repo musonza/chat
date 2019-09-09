@@ -72,13 +72,6 @@ This will publish database migrations and a configuration file `musonza_chat.php
 
 ```php
 return [
-    'user_model' => 'App\User',
-
-    /**
-     * If not set, the package will use getKeyName() on the user_model specified above
-     */
-    'user_model_primary_key' => null,
-
     /*
      * This will allow you to broadcast an event when a message is sent
      * Example:
@@ -116,14 +109,14 @@ However, you can update the user model in `musonza_chat.php` published in the `c
 
 #### Creating a conversation
 ```php
-$participants = [$userId, $userId2,...];
+$participants = [$model1, $model2,...];
 
 $conversation = Chat::createConversation($participants);
 ```
 
 #### Creating a conversation of type private / public
 ```php
-$participants = [$userId, $userId2,...];
+$participants = [$model1, $model2,...];
 
 // Create a private conversation
 $conversation = Chat::createConversation($participants)->makePrivate();
@@ -148,7 +141,7 @@ $conversation->update(['data' => $data]);
 
 ```php
 $message = Chat::message('Hello')
-            ->from($user)
+            ->from($model1)
             ->to($conversation)
             ->send();
 ```
@@ -159,7 +152,7 @@ The default message type is `text`. If you want to specify custom type you can c
 ```php
 $message = Chat::message('http://example.com/img')
 		->type('image')
-		->from($user)
+		->from($model1)
 		->to($conversation)
 		->send();
 ```
@@ -174,110 +167,110 @@ $message = Chat::messages()->getById($id);
 #### Mark a message as read
 
 ```php
-Chat::message($message)->setUser($user)->markRead();
+Chat::message($message)->setUser($participantModel)->markRead();
 ```
 
 #### Flag / mark a message
 
 ```php
-Chat::message($message)->setUser($user)->toggleFlag();
+Chat::message($message)->setUser($participantModel)->toggleFlag();
 
-Chat::message($message)->setUser($user)->flagged(); // true
+Chat::message($message)->setUser($participantModel)->flagged(); // true
 ```
 
 #### Mark whole conversation as read
 
 ```php
-Chat::conversation($conversation)->setUser($user)->readAll();
+Chat::conversation($conversation)->setUser($participantModel)->readAll();
 ```
 
 #### Unread messages count
 
 ```php
-$unreadCount = Chat::messages()->setUser($user)->unreadCount();
+$unreadCount = Chat::messages()->setUser($participantModel)->unreadCount();
 ```
 
 #### Unread messages count per Conversation
 
 ```php
-Chat::conversation($conversation)->setUser($user)->unreadCount();
+Chat::conversation($conversation)->setUser($participantModel)->unreadCount();
 ```
 
 #### Delete a message
 
 ```php
-Chat::message($message)->setUser($user)->delete();
+Chat::message($message)->setUser($participantModel)->delete();
 ```
 
 #### Clear a conversation
 
 ```php
-Chat::conversation($conversation)->setUser($user)->clear();
+Chat::conversation($conversation)->setUser($participantModel)->clear();
 ```
 
 #### Get a conversation between two users
 
 ```php
-$conversation = Chat::conversations()->between($user1, $user2);
+$conversation = Chat::conversations()->between($participantModel1, $participantModel2);
 ```
 
 #### Get common conversations among users
 
 ```php
-$conversations = Chat::conversations()->common($users);
+$conversations = Chat::conversations()->common($participants);
 ```
-`$users` can be an array of user ids ex. `[1,4,6]` or a collection `(\Illuminate\Database\Eloquent\Collection)` of users
+`$participants` is an array of participant Models
 
 #### Remove users from a conversation
 
 ```php
 /* removing one user */
-Chat::conversation($conversation)->removeParticipants($user);
+Chat::conversation($conversation)->removeParticipants([$participantModel]);
 ```
 
 ```php
 /* removing multiple users */
-Chat::conversation($conversation)->removeParticipants([$user1, $user2, $user3,...,$userN]);
+Chat::conversation($conversation)->removeParticipants([$participantModel, $participantModel2,...,$participantModelN]);
 ```
 
 #### Add users to a conversation
 
 ```php
 /* add one user */
-Chat::conversation($conversation)->addParticipants($user);
+Chat::conversation($conversation)->addParticipants([$participantModel]);
 ```
 
 ```php
 /* add multiple users */
-Chat::conversation($conversation)->addParticipants([$user3, $user4]);
+Chat::conversation($conversation)->addParticipants([$participantModel, $participantModel2]);
 ```
 
-<b>Note:</b> By default, a third user will classify the conversation as not private if it was. See config on how to change this.
+<b>Note:</b> By default, a third participant will classify the conversation as not private if it was. See config on how to change this.
 
 
 #### Get messages in a conversation
 
 ```php
-Chat::conversation($conversation)->setUser($user)->getMessages()
+Chat::conversation($conversation)->setUser($participantModel)->getMessages()
 ```
 
 #### Get user conversations by type
 
 ```php
 // private conversations
-$conversations = Chat::conversations()->setUser($user)->isPrivate()->get();
+$conversations = Chat::conversations()->setUser($participantModel)->isPrivate()->get();
 
 // public conversations
-$conversations = Chat::conversations()->setUser($user)->isPrivate(false)->get();
+$conversations = Chat::conversations()->setUser($participantModel)->isPrivate(false)->get();
 
 // all conversations
-$conversations = Chat::conversations()->setUser($user)->get();
+$conversations = Chat::conversations()->setUser($participantModel)->get();
 ```
 
 #### Get recent messages
 
 ```php
-$messages = Chat::conversations()->setUser($user)->limit(25)->page(1)->get();
+$messages = Chat::conversations()->setUser($participantModel)->limit(25)->page(1)->get();
 ```
 
 Example
