@@ -2,6 +2,8 @@
 
 namespace Musonza\Chat\Models;
 
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Musonza\Chat\BaseModel;
 use Musonza\Chat\Chat;
@@ -58,23 +60,6 @@ class Conversation extends BaseModel
         return $this->getConversationMessages($user, $paginationParams, $deleted);
     }
 
-    /**
-     * Gets the list of conversations.
-     *
-     * @deprecated This will be deprecated in 4.0
-     *
-     * @param User   $user     The user
-     * @param int    $perPage  The per page
-     * @param int    $page     The page
-     * @param string $pageName The page name
-     *
-     * @return Conversations The list.
-     */
-    public function getList($user, $perPage = 25, $page = 1, $pageName = 'page')
-    {
-        return $this->getConversationsList($user, $perPage, $page, $pageName);
-    }
-
     public function getUserConversations($user, array $options)
     {
         return $this->getConversationsList(
@@ -91,16 +76,12 @@ class Conversation extends BaseModel
      *
      * @param int $userId
      *
-     * @return void
+     * @return Conversation
      */
-    public function addParticipants($userIds)
+    public function addParticipants($users): Conversation
     {
-        if (is_array($userIds)) {
-            foreach ($userIds as $id) {
-                $this->users()->attach($id);
-            }
-        } else {
-            $this->users()->attach($userIds);
+        foreach ($users as $user) {
+            $user->joinConversation($this->id);
         }
 
         if (Chat::makeThreeOrMoreUsersPublic() && $this->fresh()->users->count() > 2) {
@@ -142,6 +123,7 @@ class Conversation extends BaseModel
      */
     public function start($participants, $data = [])
     {
+        /** @var Conversation $conversation */
         $conversation = $this->create(['data' => $data]);
 
         if ($participants) {
@@ -179,16 +161,14 @@ class Conversation extends BaseModel
     /**
      * Gets conversations for a specific user.
      *
-     * @param User | int $user
+     * @param Model $user
      *
      * @return array
      */
-    public function userConversations($user)
+    public function userConversations(Model $user)
     {
-        $userId = is_object($user) ? $user->getKey() : $user;
-
         return $this->join('mc_conversation_user', 'mc_conversation_user.conversation_id', '=', 'mc_conversations.id')
-            ->where('mc_conversation_user.user_id', $userId)
+            ->where('mc_conversation_user.user_id', $user->getKey())
             ->where('private', true)
             ->pluck('mc_conversations.id');
     }
@@ -210,13 +190,13 @@ class Conversation extends BaseModel
     /**
      * Gets conversations that are common for a list of users.
      *
-     * @param \Illuminate\Database\Eloquent\Collection | array $users ids
+     * @param Collection | array $users ids
      *
-     * @return \Illuminate\Database\Eloquent\Collection Conversation
+     * @return Collection Conversation
      */
     public function common($users)
     {
-        if ($users instanceof \Illuminate\Database\Eloquent\Collection) {
+        if ($users instanceof Collection) {
             $users = $users->map(function ($user) {
                 return $user->getKey();
             });

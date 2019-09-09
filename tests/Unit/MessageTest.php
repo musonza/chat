@@ -4,7 +4,9 @@ namespace Musonza\Chat\Tests;
 
 use Chat;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Musonza\Chat\Client;
 use Musonza\Chat\Models\Message;
+use Musonza\Chat\User;
 
 class MessageTest extends TestCase
 {
@@ -13,10 +15,10 @@ class MessageTest extends TestCase
     /** @test */
     public function it_can_send_a_message()
     {
-        $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
 
         Chat::message('Hello')
-            ->from($this->users[0])
+            ->from($this->users[1])
             ->to($conversation)
             ->send();
 
@@ -24,9 +26,27 @@ class MessageTest extends TestCase
     }
 
     /** @test */
+    public function it_can_send_a_message_between_models()
+    {
+        $clientModel = factory(Client::class)->create();
+        $userModel = factory(User::class)->create();
+
+        $conversation = Chat::createConversation([$clientModel, $userModel]);
+
+        Chat::message('Hello')
+            ->from($userModel)
+            ->to($conversation)
+            ->send();
+
+        $this->assertEquals($conversation->messages->count(), 1);
+    }
+
+
+
+    /** @test */
     public function it_returns_a_message_given_the_id()
     {
-        $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
 
         $message = Chat::message('Hello')
             ->from($this->users[0])
@@ -41,7 +61,7 @@ class MessageTest extends TestCase
     /** @test */
     public function it_can_send_a_message_and_specificy_type()
     {
-        $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
 
         $message = Chat::message('http://example.com/my-cool-image')
             ->type('image')
@@ -55,7 +75,7 @@ class MessageTest extends TestCase
     /** @test */
     public function it_can_mark_a_message_as_read()
     {
-        $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
 
         $message = Chat::message('Hello there 0')
             ->from($this->users[1])
@@ -70,7 +90,7 @@ class MessageTest extends TestCase
     /** @test */
     public function it_can_delete_a_message()
     {
-        $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
         $message = Chat::message('Hello there 0')->from($this->users[0])->to($conversation)->send();
 
         $messageId = 1;
@@ -87,7 +107,7 @@ class MessageTest extends TestCase
     /** @test */
     public function it_can_list_deleted_messages()
     {
-        $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
         $message = Chat::message('Hello there 0')->from($this->users[0])->to($conversation)->send();
 
         $messageId = 1;
@@ -107,7 +127,7 @@ class MessageTest extends TestCase
     /** @test */
     public function it_can_tell_message_sender()
     {
-        $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
 
         Chat::message('Hello')->from($this->users[0])->to($conversation)->send();
 
@@ -117,7 +137,7 @@ class MessageTest extends TestCase
     /** @test */
     public function it_can_return_paginated_messages_in_a_conversation()
     {
-        $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
 
         for ($i = 0; $i < 3; $i++) {
             Chat::message('Hello '.$i)->from($this->users[0])->to($conversation)->send();
@@ -136,14 +156,14 @@ class MessageTest extends TestCase
     /** @test */
     public function it_can_return_recent_user_messsages()
     {
-        $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
         Chat::message('Hello 1')->from($this->users[1])->to($conversation)->send();
         Chat::message('Hello 2')->from($this->users[0])->to($conversation)->send();
 
-        $conversation2 = Chat::createConversation([$this->users[0]->getKey(), $this->users[2]->getKey()]);
+        $conversation2 = Chat::createConversation([$this->users[0], $this->users[2]]);
         Chat::message('Hello Man 4')->from($this->users[0])->to($conversation2)->send();
 
-        $conversation3 = Chat::createConversation([$this->users[0]->getKey(), $this->users[3]->getKey()]);
+        $conversation3 = Chat::createConversation([$this->users[0], $this->users[3]]);
         Chat::message('Hello Man 5')->from($this->users[3])->to($conversation3)->send();
         Chat::message('Hello Man 6')->from($this->users[0])->to($conversation3)->send();
         Chat::message('Hello Man 3')->from($this->users[2])->to($conversation2)->send();
@@ -165,7 +185,7 @@ class MessageTest extends TestCase
     /** @test */
     public function it_return_unread_messages_count_for_user()
     {
-        $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
         Chat::message('Hello 1')->from($this->users[1])->to($conversation)->send();
         Chat::message('Hello 2')->from($this->users[0])->to($conversation)->send();
         $message = Chat::message('Hello 2')->from($this->users[0])->to($conversation)->send();
@@ -181,7 +201,7 @@ class MessageTest extends TestCase
     /** @test */
     public function it_gets_a_message_by_id()
     {
-        $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
         Chat::message('Hello 1')->from($this->users[1])->to($conversation)->send();
         $message = Chat::messages()->getById(1);
 
@@ -192,7 +212,7 @@ class MessageTest extends TestCase
     /** @test */
     public function it_flags_a_message()
     {
-        $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
         $message = Chat::message('Hello')
             ->from($this->users[0])
             ->to($conversation)

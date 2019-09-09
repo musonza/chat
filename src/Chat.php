@@ -11,6 +11,18 @@ use Musonza\Chat\Traits\SetsParticipants;
 class Chat
 {
     use SetsParticipants;
+    /**
+     * @var MessageService
+     */
+    protected $messageService;
+    /**
+     * @var ConversationService
+     */
+    protected $conversationService;
+    /**
+     * @var MessageNotification
+     */
+    protected $messageNotification;
 
     /**
      * @param MessageService      $messageService
@@ -40,7 +52,7 @@ class Chat
     /**
      * Sets message.
      *
-     * @param string | Musonza\Chat\Models\Message $message
+     * @param string $message
      *
      * @return MessageService
      */

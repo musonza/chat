@@ -13,6 +13,14 @@ class MessageService
 
     protected $type = 'text';
     protected $body;
+    /**
+     * @var CommandBus
+     */
+    protected $commandBus;
+    /**
+     * @var Message
+     */
+    protected $message;
 
     public function __construct(CommandBus $commandBus, Message $message)
     {
@@ -94,6 +102,7 @@ class MessageService
      * Sends the message.
      *
      * @return void
+     * @throws \Exception
      */
     public function send()
     {

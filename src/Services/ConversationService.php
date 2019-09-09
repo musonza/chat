@@ -2,6 +2,9 @@
 
 namespace Musonza\Chat\Services;
 
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Musonza\Chat\Models\Conversation;
 use Musonza\Chat\Models\Message;
 use Musonza\Chat\Traits\Paginates;
@@ -12,6 +15,10 @@ class ConversationService
     use SetsParticipants, Paginates;
 
     protected $isPrivate = null;
+    /**
+     * @var Conversation
+     */
+    private $conversation;
 
     public function __construct(Conversation $conversation)
     {
@@ -66,20 +73,20 @@ class ConversationService
     /**
      * Get Private Conversation between two users.
      *
-     * @param int | User $userOne
-     * @param int | User $userTwo
+     * @param Model $participantOne
+     * @param Model $participantTwo
      *
      * @return Conversation
      */
-    public function between($userOne, $userTwo)
+    public function between(Model $participantOne, Model $participantTwo)
     {
-        $conversation1 = $this->conversation->userConversations($userOne)->toArray();
-        $conversation2 = $this->conversation->userConversations($userTwo)->toArray();
+        $conversation1 = $this->conversation->userConversations($participantOne)->toArray();
+        $conversation2 = $this->conversation->userConversations($participantTwo)->toArray();
 
         $common_conversations = $this->getConversationsInCommon($conversation1, $conversation2);
 
         if (!$common_conversations) {
-            return;
+            return null;
         }
 
         return $this->conversation->findOrFail($common_conversations[0]);
@@ -88,9 +95,9 @@ class ConversationService
     /**
      * Get conversations that users have in common.
      *
-     *  @param array | collection $users
+     * @param array | collection $users
      *
-     * @return Conversations
+     * @return Collection
      */
     public function common($users)
     {
@@ -98,18 +105,12 @@ class ConversationService
     }
 
     /**
-     * Get Conversations with lastest message.
+     * Get Conversations with latest message.
      *
-     * @param object $user
-     *
-     * @return Illuminate\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
     public function get()
     {
-        if (is_null($this->isPrivate)) {
-            return $this->conversation->getList($this->user, $this->perPage, $this->page, $pageName = 'page');
-        }
-
         return $this->conversation->getUserConversations($this->user, [
           'perPage'   => $this->perPage,
           'page'      => $this->page,
@@ -121,8 +122,7 @@ class ConversationService
     /**
      * Add user(s) to a conversation.
      *
-     * @param Conversation $conversation
-     * @param int | array  $userId       / array of user ids or an integer
+     * @param int | array  $userId / array of user ids or an integer
      *
      * @return Conversation
      */
@@ -134,7 +134,6 @@ class ConversationService
     /**
      * Remove user(s) from a conversation.
      *
-     * @param Conversation $conversation
      * @param $users / array of user ids or an integer
      *
      * @return Conversation
@@ -146,8 +145,6 @@ class ConversationService
 
     /**
      * Get count for unread messages.
-     *
-     * @return void
      */
     public function unreadCount()
     {
@@ -172,7 +169,7 @@ class ConversationService
      *
      * @param bool $isPrivate
      *
-     * @return bool
+     * @return $this
      */
     public function isPrivate($isPrivate = true)
     {

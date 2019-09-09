@@ -2,29 +2,33 @@
 
 namespace Musonza\Chat\Tests;
 
-require __DIR__.'/../database/migrations/create_chat_tables.php';
+require __DIR__ . '/../database/migrations/create_chat_tables.php';
 
 use CreateChatTables;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Musonza\Chat\ChatServiceProvider;
+use Musonza\Chat\Facades\ChatFacade;
 use Musonza\Chat\User;
+use Orchestra\Database\ConsoleServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
     protected $conversation;
     protected $prefix = 'mc_';
+    protected $userModelPrimaryKey;
 
     public function __construct()
     {
         parent::__construct();
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->artisan('migrate', ['--database' => 'testbench']);
-        $this->withFactories(__DIR__.'/../database/factories');
+        $this->withFactories(__DIR__ . '/../database/factories');
         $this->migrate();
         $this->users = $this->createUsers(6);
     }
@@ -35,12 +39,18 @@ class TestCase extends \Orchestra\Testbench\TestCase
         $userModel = app($config['user_model']);
         $this->userModelPrimaryKey = $userModel->getKeyName();
 
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('mc_users', function (Blueprint $table) {
             $table->increments($this->userModelPrimaryKey);
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
             $table->rememberToken();
+            $table->timestamps();
+        });
+
+        Schema::create('mc_clients', function (Blueprint $table) {
+            $table->increments('client_id');
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -65,9 +75,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
 
         // $app['config']->set('database.default', 'testbench');
@@ -89,15 +99,15 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            \Orchestra\Database\ConsoleServiceProvider::class,
-            \Musonza\Chat\ChatServiceProvider::class,
+            ConsoleServiceProvider::class,
+            ChatServiceProvider::class,
         ];
     }
 
     protected function getPackageAliases($app)
     {
         return [
-            'Chat' => \Musonza\Chat\Facades\ChatFacade::class,
+            'Chat' => ChatFacade::class,
         ];
     }
 
@@ -106,7 +116,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         return factory(User::class, $count)->create();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         (new CreateChatTables())->down();
         $this->rollbackTestTables();
@@ -115,6 +125,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function rollbackTestTables()
     {
-        Schema::drop('users');
+        Schema::drop('mc_users');
+        Schema::drop('mc_clients');
     }
 }
