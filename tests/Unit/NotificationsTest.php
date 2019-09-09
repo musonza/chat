@@ -12,7 +12,7 @@ class NotificationsTest extends TestCase
     /** @test */
     public function it_creates_message_notification()
     {
-        $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
 
         Chat::message('Hello there 0')->from($this->users[1])->to($conversation)->send();
         Chat::message('Hello there 1')->from($this->users[0])->to($conversation)->send();
@@ -30,10 +30,10 @@ class NotificationsTest extends TestCase
     /** @test */
     public function it_gets_all_unread_notifications()
     {
-        $conversation1 = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $conversation1 = Chat::createConversation([$this->users[0], $this->users[1]]);
         Chat::message('Hello 1')->from($this->users[1])->to($conversation1)->send();
         Chat::message('Hello 2')->from($this->users[1])->to($conversation1)->send();
-        $conversation2 = Chat::createConversation([$this->users[2]->getKey(), $this->users[0]->getKey()]);
+        $conversation2 = Chat::createConversation([$this->users[2], $this->users[0]]);
         Chat::message('Hello 3')->from($this->users[2])->to($conversation2)->send();
 
         $notifications = Chat::for($this->users[0])->unReadNotifications();
@@ -44,18 +44,18 @@ class NotificationsTest extends TestCase
     /** @test */
     public function it_gets_unread_notifications_per_conversation()
     {
-        $conversation1 = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $conversation1 = Chat::createConversation([$this->users[0], $this->users[1]]);
         Chat::message('Hello 1')->from($this->users[1])->to($conversation1)->send();
         Chat::message('Hello 2')->from($this->users[1])->to($conversation1)->send();
-        $conversation2 = Chat::createConversation([$this->users[2]->getKey(), $this->users[0]->getKey()]);
+        $conversation2 = Chat::createConversation([$this->users[2], $this->users[0]]);
         Chat::message('Hello 3')->from($this->users[2])->to($conversation2)->send();
 
-        $this->assertEquals(3, Chat::messages()->setUser($this->users[0])->unreadCount());
-        $this->assertEquals(2, Chat::conversation($conversation1)->setUser($this->users[0])->unreadCount());
-        $this->assertEquals(1, Chat::conversation($conversation2)->setUser($this->users[0])->unreadCount());
+        $this->assertEquals(3, Chat::messages()->setParticipant($this->users[0])->unreadCount());
+        $this->assertEquals(2, Chat::conversation($conversation1)->setParticipant($this->users[0])->unreadCount());
+        $this->assertEquals(1, Chat::conversation($conversation2)->setParticipant($this->users[0])->unreadCount());
 
         //Read message from from convo
-        Chat::message($conversation1->messages()->first())->setUser($this->users[0])->markRead();
-        $this->assertEquals(2, Chat::messages()->setUser($this->users[0])->unreadCount());
+        Chat::message($conversation1->messages()->first())->setParticipant($this->users[0])->markRead();
+        $this->assertEquals(2, Chat::messages()->setParticipant($this->users[0])->unreadCount());
     }
 }

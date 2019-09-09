@@ -11,14 +11,29 @@ use Musonza\Chat\Traits\SetsParticipants;
 class Chat
 {
     use SetsParticipants;
+    /**
+     * @var MessageService
+     */
+    protected $messageService;
+    /**
+     * @var ConversationService
+     */
+    protected $conversationService;
+    /**
+     * @var MessageNotification
+     */
+    protected $messageNotification;
 
     /**
      * @param MessageService      $messageService
      * @param ConversationService $conversationService
      * @param MessageNotification $messageNotification
      */
-    public function __construct(MessageService $messageService, ConversationService $conversationService, MessageNotification $messageNotification)
-    {
+    public function __construct(
+        MessageService $messageService,
+        ConversationService $conversationService,
+        MessageNotification $messageNotification
+    ) {
         $this->messageService = $messageService;
         $this->conversationService = $conversationService;
         $this->messageNotification = $messageNotification;
@@ -40,7 +55,7 @@ class Chat
     /**
      * Sets message.
      *
-     * @param string | Musonza\Chat\Models\Message $message
+     * @param string $message
      *
      * @return MessageService
      */
@@ -92,26 +107,6 @@ class Chat
     }
 
     /**
-     * Returns the User Model class.
-     *
-     * @return string
-     */
-    public static function userModel()
-    {
-        return config('musonza_chat.user_model');
-    }
-
-    /**
-     * Returns primary key for the User model.
-     *
-     * @return string
-     */
-    public static function userModelPrimaryKey()
-    {
-        return config('musonza_chat.user_model_primary_key') ?: app(self::userModel())->getKeyName();
-    }
-
-    /**
      * Should the messages be broadcasted.
      *
      * @return bool
@@ -126,8 +121,8 @@ class Chat
         return config('musonza_chat.sent_message_event');
     }
 
-    public static function makeThreeOrMoreUsersPublic()
+    public static function makeThreeOrMoreParticipantsPublic()
     {
-        return config('musonza_chat.make_three_or_more_users_public', true);
+        return config('musonza_chat.make_three_or_more_participants_public', true);
     }
 }

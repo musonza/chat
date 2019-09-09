@@ -13,4 +13,4 @@ sudo: false
 install:
   - if [[ $setup = 'basic' ]]; then travis_retry composer install --no-interaction --prefer-source; fi
 
-script: vendor/bin/phpunit
+script: vendor/bin/phpunit --testdox

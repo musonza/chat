@@ -2,7 +2,12 @@
 
 namespace Musonza\Chat\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Collection;
 use Musonza\Chat\BaseModel;
 use Musonza\Chat\Chat;
 
@@ -17,17 +22,17 @@ class Conversation extends BaseModel
     /**
      * Conversation participants.
      *
-     * @return BelongsToMany
+     * @return HasMany
      */
-    public function users()
+    public function participants()
     {
-        return $this->belongsToMany(Chat::userModel(), 'mc_conversation_user', 'conversation_id', 'user_id')->withTimestamps();
+        return $this->hasMany(ConversationParticipant::class);
     }
 
     /**
      * Return the recent message in a Conversation.
      *
-     * @return Message
+     * @return HasOne
      */
     public function last_message()
     {
@@ -37,7 +42,7 @@ class Conversation extends BaseModel
     /**
      * Messages in conversation.
      *
-     * @return Message
+     * @return HasMany
      */
     public function messages()
     {
@@ -47,38 +52,21 @@ class Conversation extends BaseModel
     /**
      * Get messages for a conversation.
      *
-     * @param User  $user
+     * @param Model $participant
      * @param array $paginationParams
      * @param bool  $deleted
      *
-     * @return Message
+     * @return LengthAwarePaginator|HasMany|Builder
      */
-    public function getMessages($user, $paginationParams, $deleted = false)
+    public function getMessages(Model $participant, $paginationParams, $deleted = false)
     {
-        return $this->getConversationMessages($user, $paginationParams, $deleted);
+        return $this->getConversationMessages($participant, $paginationParams, $deleted);
     }
 
-    /**
-     * Gets the list of conversations.
-     *
-     * @deprecated This will be deprecated in 4.0
-     *
-     * @param User   $user     The user
-     * @param int    $perPage  The per page
-     * @param int    $page     The page
-     * @param string $pageName The page name
-     *
-     * @return Conversations The list.
-     */
-    public function getList($user, $perPage = 25, $page = 1, $pageName = 'page')
-    {
-        return $this->getConversationsList($user, $perPage, $page, $pageName);
-    }
-
-    public function getUserConversations($user, array $options)
+    public function getParticipantConversations($participant, array $options)
     {
         return $this->getConversationsList(
-            $user,
+            $participant,
             $options['perPage'],
             $options['page'],
             $options['pageName'],
@@ -86,24 +74,29 @@ class Conversation extends BaseModel
         );
     }
 
+    public function participantFromSender(Model $sender)
+    {
+        return $this->participants()->where([
+            'conversation_id'  => $this->getKey(),
+            'messageable_id'   => $sender->getKey(),
+            'messageable_type' => get_class($sender),
+        ])->first();
+    }
+
     /**
      * Add user to conversation.
      *
-     * @param int $userId
+     * @param $participants
      *
-     * @return void
+     * @return Conversation
      */
-    public function addParticipants($userIds)
+    public function addParticipants($participants): self
     {
-        if (is_array($userIds)) {
-            foreach ($userIds as $id) {
-                $this->users()->attach($id);
-            }
-        } else {
-            $this->users()->attach($userIds);
+        foreach ($participants as $participant) {
+            $participant->joinConversation($this->getKey());
         }
 
-        if (Chat::makeThreeOrMoreUsersPublic() && $this->fresh()->users->count() > 2) {
+        if (Chat::makeThreeOrMoreParticipantsPublic() && $this->fresh()->participants->count() > 2) {
             $this->private = false;
             $this->save();
         }
@@ -112,23 +105,23 @@ class Conversation extends BaseModel
     }
 
     /**
-     * Remove user from conversation.
+     * Remove participant from conversation.
      *
-     * @param  $users
+     * @param  $participants
      *
      * @return Conversation
      */
-    public function removeUsers($users)
+    public function removeParticipant($participants)
     {
-        if (is_array($users)) {
-            foreach ($users as $id) {
-                $this->users()->detach($id);
+        if (is_array($participants)) {
+            foreach ($participants as $participant) {
+                $participant->leaveConversation($this->getKey());
             }
 
             return $this;
         }
 
-        $this->users()->detach($users);
+        $participants->leaveConversation($this->getKey());
 
         return $this;
     }
@@ -136,12 +129,14 @@ class Conversation extends BaseModel
     /**
      * Starts a new conversation.
      *
-     * @param array $participants users
+     * @param array $participants
+     * @param array $data
      *
      * @return Conversation
      */
-    public function start($participants, $data = [])
+    public function start(array $participants, $data = []): self
     {
+        /** @var Conversation $conversation */
         $conversation = $this->create(['data' => $data]);
 
         if ($participants) {
@@ -167,28 +162,17 @@ class Conversation extends BaseModel
     }
 
     /**
-     * Get number of users in a conversation.
+     * Gets conversations for a specific participant.
      *
-     * @return int
+     * @param Model $participant
+     *
+     * @return Collection
      */
-    public function userCount()
+    public function participantConversations(Model $participant): Collection
     {
-        return $this->count();
-    }
-
-    /**
-     * Gets conversations for a specific user.
-     *
-     * @param User | int $user
-     *
-     * @return array
-     */
-    public function userConversations($user)
-    {
-        $userId = is_object($user) ? $user->getKey() : $user;
-
-        return $this->join('mc_conversation_user', 'mc_conversation_user.conversation_id', '=', 'mc_conversations.id')
-            ->where('mc_conversation_user.user_id', $userId)
+        return $this->join('mc_conversation_participant', 'mc_conversation_participant.conversation_id', '=', 'mc_conversations.id')
+            ->where('mc_conversation_participant.messageable_id', $participant->getKey())
+            ->where('mc_conversation_participant.messageable_type', get_class($participant))
             ->where('private', true)
             ->pluck('mc_conversations.id');
     }
@@ -196,78 +180,74 @@ class Conversation extends BaseModel
     /**
      * Get unread notifications.
      *
-     * @param User $user
+     * @param Model $participant
      *
-     * @return void
+     * @return Collection
      */
-    public function unReadNotifications($user)
+    public function unReadNotifications(Model $participant): Collection
     {
-        $notifications = MessageNotification::where([['user_id', '=', $user->getKey()], ['conversation_id', '=', $this->id], ['is_seen', '=', 0]])->get();
+        $notifications = MessageNotification::where([
+            ['messageable_id', '=', $participant->getKey()],
+            ['messageable_type', '=', get_class($participant)],
+            ['conversation_id', '=', $this->id],
+            ['is_seen', '=', 0],
+        ])->get();
 
         return $notifications;
     }
 
     /**
-     * Gets conversations that are common for a list of users.
+     * Gets the notifications for the participant.
      *
-     * @param \Illuminate\Database\Eloquent\Collection | array $users ids
+     * @param  $participant
+     * @param bool $readAll
      *
-     * @return \Illuminate\Database\Eloquent\Collection Conversation
+     * @return MessageNotification
      */
-    public function common($users)
+    public function getNotifications($participant, $readAll = false)
     {
-        if ($users instanceof \Illuminate\Database\Eloquent\Collection) {
-            $users = $users->map(function ($user) {
-                return $user->getKey();
-            });
-        }
-
-        return $this->withCount(['users' => function ($query) use ($users) {
-            $query->whereIn(Chat::userModelPrimaryKey(), $users);
-        }])->get()->filter(function ($conversation, $key) use ($users) {
-            return $conversation->users_count == count($users);
-        });
+        return $this->notifications($participant, $readAll);
     }
 
     /**
-     * Gets the notifications.
+     * Clears participant conversation.
      *
-     * @param User $user The user
+     * @param $participant
      *
-     * @return Notifications The notifications.
+     * @return void
      */
-    public function getNotifications($user, $readAll = false)
+    public function clear($participant): void
     {
-        return $this->notifications($user, $readAll);
+        $this->clearConversation($participant);
     }
 
     /**
-     * Clears user conversation.
+     * Marks all the messages in a conversation as read for the participant.
      *
-     * @param User $user
+     * @param Model $participant
      *
-     * @return
+     * @return void
      */
-    public function clear($user)
+    public function readAll(Model $participant): void
     {
-        return $this->clearConversation($user);
+        $this->getNotifications($participant, true);
     }
 
     /**
-     * Marks all the messages in a conversation as read.
+     * Get messages in conversation for the specific participant.
      *
-     * @param $user
+     * @param Model $participant
+     * @param $paginationParams
+     * @param $deleted
+     *
+     * @return LengthAwarePaginator|HasMany|Builder
      */
-    public function readAll($user)
-    {
-        return $this->getNotifications($user, true);
-    }
-
-    private function getConversationMessages($user, $paginationParams, $deleted)
+    private function getConversationMessages(Model $participant, $paginationParams, $deleted)
     {
         $messages = $this->messages()
             ->join('mc_message_notification', 'mc_message_notification.message_id', '=', 'mc_messages.id')
-            ->where('mc_message_notification.user_id', $user->getKey());
+            ->where('mc_message_notification.messageable_type', get_class($participant))
+            ->where('mc_message_notification.messageable_id', $participant->getKey());
         $messages = $deleted ? $messages->whereNotNull('mc_message_notification.deleted_at') : $messages->whereNull('mc_message_notification.deleted_at');
         $messages = $messages->orderBy('mc_messages.id', $paginationParams['sorting'])
             ->paginate(
@@ -275,7 +255,7 @@ class Conversation extends BaseModel
                 [
                     'mc_message_notification.updated_at as read_at',
                     'mc_message_notification.deleted_at as deleted_at',
-                    'mc_message_notification.user_id',
+                    'mc_message_notification.messageable_id',
                     'mc_message_notification.id as notification_id',
                     'mc_messages.*',
                 ],
@@ -286,17 +266,29 @@ class Conversation extends BaseModel
         return $messages;
     }
 
-    private function getConversationsList($user, $perPage, $page, $pageName, $isPrivate = null)
+    /**
+     * @param Model $participant
+     * @param $perPage
+     * @param $page
+     * @param $pageName
+     * @param null $isPrivate
+     *
+     * @return mixed
+     */
+    private function getConversationsList(Model $participant, $perPage, $page, $pageName, $isPrivate = null)
     {
-        $paginator = $this->join('mc_conversation_user', 'mc_conversation_user.conversation_id', '=', 'mc_conversations.id')
+        $paginator = $this->join('mc_conversation_participant', 'mc_conversation_participant.conversation_id', '=', 'mc_conversations.id')
             ->with([
-                'last_message' => function ($query) use ($user) {
+                'last_message' => function ($query) use ($participant) {
                     $query->join('mc_message_notification', 'mc_message_notification.message_id', '=', 'mc_messages.id')
                         ->select('mc_message_notification.*', 'mc_messages.*')
-                        ->where('mc_message_notification.user_id', $user->getKey())
+                        ->where('mc_message_notification.messageable_id', $participant->getKey())
+                        ->where('mc_message_notification.messageable_type', get_class($participant))
                         ->whereNull('mc_message_notification.deleted_at');
                 },
-            ])->where('mc_conversation_user.user_id', $user->getKey());
+            ])
+            ->where('mc_conversation_participant.messageable_id', $participant->getKey())
+            ->where('mc_conversation_participant.messageable_type', get_class($participant));
 
         if (!is_null($isPrivate)) {
             $paginator = $paginator->where('mc_conversations.private', $isPrivate);
@@ -308,9 +300,10 @@ class Conversation extends BaseModel
             ->paginate($perPage, ['mc_conversations.*'], $pageName, $page);
     }
 
-    private function notifications($user, $readAll)
+    private function notifications(Model $participant, $readAll)
     {
-        $notifications = MessageNotification::where('user_id', $user->getKey())
+        $notifications = MessageNotification::where('messageable_id', $participant->getKey())
+            ->where('mc_message_notification.messageable_type', get_class($participant))
             ->where('conversation_id', $this->id);
 
         if ($readAll) {
@@ -320,10 +313,11 @@ class Conversation extends BaseModel
         return $notifications->get();
     }
 
-    private function clearConversation($user)
+    private function clearConversation($participant): void
     {
-        return MessageNotification::where('user_id', $user->getKey())
-            ->where('conversation_id', $this->id)
+        MessageNotification::where('messageable_id', $participant->getKey())
+            ->where('mc_message_notification.messageable_type', get_class($participant))
+            ->where('conversation_id', $this->getKey())
             ->delete();
     }
 }
