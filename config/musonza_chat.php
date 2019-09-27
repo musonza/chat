@@ -2,7 +2,6 @@
 
 return [
     'user_model' => 'App\User',
-    
     'db_connection' => 'mysql',
 
     /*
