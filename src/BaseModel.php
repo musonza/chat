@@ -12,8 +12,8 @@ class BaseModel extends Model
 
     public function __construct()
     {
-        $config = app('musonza_chat');
+        $config = config('musonza_chat');
 
-        $this->connection = $config['db_connection'];
+        $this->connection = $config['db_connection'] ?: config('database.default');
     }
 }
