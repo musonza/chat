@@ -20,7 +20,7 @@ class CreateChatTables extends Migration
 
         $this->userModelPrimaryKey = $userModel->getKeyName();
         $this->userModelTable = $userModel->getTable();
-        $this->dbConnection = $config['db_connection'];
+        $this->dbConnection = $config['db_connection'] ?: config('database.default');
         $this->useBigIncrements = app()::VERSION >= 5.8;
     }
 
