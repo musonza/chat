@@ -2,6 +2,8 @@
 
 return [
     'user_model' => 'App\User',
+    
+    'db_connection' => 'mysql',
 
     /*
      * If not set, the package will use getKeyName() on the user_model specified above

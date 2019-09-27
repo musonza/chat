@@ -9,6 +9,8 @@ class CreateChatTables extends Migration
     protected $userModelPrimaryKey = 'id';
     protected $userModelTable = 'users';
 
+    protected $dbConnection;
+
     protected $useBigIncrements;
 
     public function __construct()
@@ -18,6 +20,7 @@ class CreateChatTables extends Migration
 
         $this->userModelPrimaryKey = $userModel->getKeyName();
         $this->userModelTable = $userModel->getTable();
+        $this->dbConnection = $config['db_connection'];
         $this->useBigIncrements = app()::VERSION >= 5.8;
     }
 
@@ -29,14 +32,14 @@ class CreateChatTables extends Migration
     public function up()
     {
         if ($this->useBigIncrements) {
-            Schema::create('mc_conversations', function (Blueprint $table) {
+            Schema::connection($this->dbConnection)->create('mc_conversations', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->boolean('private')->default(true);
                 $table->text('data')->nullable();
                 $table->timestamps();
             });
 
-            Schema::create('mc_messages', function (Blueprint $table) {
+            Schema::connection($this->dbConnection)->create('mc_messages', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->text('body');
                 $table->bigInteger('conversation_id')->unsigned();
@@ -55,7 +58,7 @@ class CreateChatTables extends Migration
                     ->onDelete('cascade');
             });
 
-            Schema::create('mc_conversation_user', function (Blueprint $table) {
+            Schema::connection($this->dbConnection)->create('mc_conversation_user', function (Blueprint $table) {
                 $table->bigInteger('user_id')->unsigned();
                 $table->bigInteger('conversation_id')->unsigned();
                 $table->primary(['user_id', 'conversation_id']);
@@ -71,7 +74,7 @@ class CreateChatTables extends Migration
                     ->onDelete('cascade');
             });
 
-            Schema::create('mc_message_notification', function (Blueprint $table) {
+            Schema::connection($this->dbConnection)->create('mc_message_notification', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->bigInteger('message_id')->unsigned();
                 $table->bigInteger('conversation_id')->unsigned();
@@ -98,14 +101,14 @@ class CreateChatTables extends Migration
                     ->onDelete('cascade');
             });
         } else {
-            Schema::create('mc_conversations', function (Blueprint $table) {
+            Schema::connection($this->dbConnection)->create('mc_conversations', function (Blueprint $table) {
                 $table->increments('id');
                 $table->boolean('private')->default(true);
                 $table->text('data')->nullable();
                 $table->timestamps();
             });
 
-            Schema::create('mc_messages', function (Blueprint $table) {
+            Schema::connection($this->dbConnection)->create('mc_messages', function (Blueprint $table) {
                 $table->increments('id');
                 $table->text('body');
                 $table->integer('conversation_id')->unsigned();
@@ -124,7 +127,7 @@ class CreateChatTables extends Migration
                     ->onDelete('cascade');
             });
 
-            Schema::create('mc_conversation_user', function (Blueprint $table) {
+            Schema::connection($this->dbConnection)->create('mc_conversation_user', function (Blueprint $table) {
                 $table->integer('user_id')->unsigned();
                 $table->integer('conversation_id')->unsigned();
                 $table->primary(['user_id', 'conversation_id']);
@@ -140,7 +143,7 @@ class CreateChatTables extends Migration
                     ->onDelete('cascade');
             });
 
-            Schema::create('mc_message_notification', function (Blueprint $table) {
+            Schema::connection($this->dbConnection)->create('mc_message_notification', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('message_id')->unsigned();
                 $table->integer('conversation_id')->unsigned();
@@ -176,9 +179,9 @@ class CreateChatTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mc_conversation_user');
-        Schema::dropIfExists('mc_message_notification');
-        Schema::dropIfExists('mc_messages');
-        Schema::dropIfExists('mc_conversations');
+        Schema::connection($this->dbConnection)->dropIfExists('mc_conversation_user');
+        Schema::connection($this->dbConnection)->dropIfExists('mc_message_notification');
+        Schema::connection($this->dbConnection)->dropIfExists('mc_messages');
+        Schema::connection($this->dbConnection)->dropIfExists('mc_conversations');
     }
 }
