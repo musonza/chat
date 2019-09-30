@@ -18,7 +18,7 @@ class ConversationService
     /**
      * @var Conversation
      */
-    private $conversation;
+    public $conversation;
 
     public function __construct(Conversation $conversation)
     {
