@@ -13,6 +13,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
 {
     protected $conversation;
     protected $prefix = 'mc_';
+    protected $connection = 'testbench';
 
     public function __construct()
     {
