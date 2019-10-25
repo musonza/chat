@@ -4,9 +4,10 @@ namespace Musonza\Chat\Tests;
 
 use Chat;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Musonza\Chat\Client;
 use Musonza\Chat\Models\Message;
-use Musonza\Chat\User;
+use Musonza\Chat\Tests\Helpers\Models\Bot;
+use Musonza\Chat\Tests\Helpers\Models\Client;
+use Musonza\Chat\Tests\Helpers\Models\User;
 
 class MessageTest extends TestCase
 {
@@ -30,8 +31,9 @@ class MessageTest extends TestCase
     {
         $clientModel = factory(Client::class)->create();
         $userModel = factory(User::class)->create();
+        $botModel = factory(Bot::class)->create();
 
-        $conversation = Chat::createConversation([$clientModel, $userModel]);
+        $conversation = Chat::createConversation([$clientModel, $userModel, $botModel]);
 
         Chat::message('Hello')
             ->from($userModel)

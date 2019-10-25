@@ -34,7 +34,10 @@
     "autoload-dev": {
         "psr-4": {
             "Musonza\\Chat\\Tests\\": "tests"
-        }
+        },
+        "files": [
+            "tests/Helpers/Models.php"
+        ]
     },
     "scripts": {
         "test": "phpunit"
