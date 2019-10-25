@@ -2,7 +2,6 @@
 
 namespace Musonza\Chat\Models;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -76,9 +75,10 @@ class Conversation extends BaseModel
      * Add user to conversation.
      *
      * @param $users
+     *
      * @return Conversation
      */
-    public function addParticipants($users): Conversation
+    public function addParticipants($users): self
     {
         foreach ($users as $user) {
             $user->joinConversation($this->id);
@@ -187,7 +187,7 @@ class Conversation extends BaseModel
             ['messageable_id', '=', $user->getKey()],
             ['messageable_type', '=', get_class($user)],
             ['conversation_id', '=', $this->id],
-            ['is_seen', '=', 0]
+            ['is_seen', '=', 0],
         ])->get();
 
         return $notifications;
@@ -221,6 +221,7 @@ class Conversation extends BaseModel
      * Marks all the messages in a conversation as read.
      *
      * @param $user
+     *
      * @return Notifications
      */
     public function readAll($user)

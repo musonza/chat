@@ -9,7 +9,7 @@ class ConversationUser extends BaseModel
     protected $table = 'mc_conversation_user';
 
     protected $fillable = [
-        'conversation_id'
+        'conversation_id',
     ];
 
     /**

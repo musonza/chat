@@ -16,7 +16,7 @@ class SendMessageCommand
     /**
      * @param Conversation $conversation The conversation
      * @param string       $body         The message body
-     * @param Model          $sender     The sender identifier
+     * @param Model        $sender       The sender identifier
      * @param string       $type         The message type
      */
     public function __construct(Conversation $conversation, $body, Model $sender, $type = 'text')

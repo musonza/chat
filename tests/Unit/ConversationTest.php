@@ -4,8 +4,6 @@ namespace Musonza\Chat\Tests;
 
 use Chat;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Musonza\Chat\Models\ConversationUser;
-use Musonza\Chat\User;
 
 class ConversationTest extends TestCase
 {

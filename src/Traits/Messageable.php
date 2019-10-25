@@ -2,7 +2,6 @@
 
 namespace Musonza\Chat\Traits;
 
-use App\Models\Like;
 use Musonza\Chat\Models\ConversationUser;
 
 trait Messageable
@@ -20,9 +19,9 @@ trait Messageable
     public function joinConversation($conversationId)
     {
         $participation = new ConversationUser([
-            'messageable_id' => $this->getKey(),
+            'messageable_id'   => $this->getKey(),
             'messageable_type' => get_class($this),
-            'conversation_id' => $conversationId
+            'conversation_id'  => $conversationId,
         ]);
 
         $this->conversations()->save($participation);
@@ -31,9 +30,9 @@ trait Messageable
     public function leaveConversation($conversationId)
     {
         $this->conversations()->where([
-            'messageable_id' => $this->getKey(),
+            'messageable_id'   => $this->getKey(),
             'messageable_type' => get_class($this),
-            'conversation_id' => $conversationId
+            'conversation_id'  => $conversationId,
         ])->delete();
     }
 }
