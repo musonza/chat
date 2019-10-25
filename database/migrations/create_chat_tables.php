@@ -54,10 +54,11 @@ class CreateChatTables extends Migration
         });
 
         Schema::create('mc_conversation_user', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->bigInteger('conversation_id')->unsigned();
             $table->bigInteger('messageable_id')->unsigned();
             $table->string('messageable_type');
-            $table->primary(['conversation_id', 'messageable_id', 'messageable_type']);
+            $table->index(['conversation_id', 'messageable_id', 'messageable_type']);
             $table->timestamps();
 
             $table->foreign('conversation_id')
@@ -68,9 +69,10 @@ class CreateChatTables extends Migration
         Schema::create('mc_message_notification', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('message_id')->unsigned();
-            $table->bigInteger('conversation_id')->unsigned();
             $table->bigInteger('messageable_id')->unsigned();
             $table->string('messageable_type');
+            $table->bigInteger('conversation_id')->unsigned();
+            $table->bigInteger('participation_id')->unsigned();
             $table->boolean('is_seen')->default(false);
             $table->boolean('is_sender')->default(false);
             $table->boolean('flagged')->default(false);
@@ -85,6 +87,10 @@ class CreateChatTables extends Migration
 
             $table->foreign('conversation_id')
                 ->references('id')->on('mc_conversations')
+                ->onDelete('cascade');
+
+            $table->foreign('participation_id')
+                ->references('id')->on('mc_conversations_user')
                 ->onDelete('cascade');
         });
     }

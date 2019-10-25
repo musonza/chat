@@ -5,6 +5,7 @@ namespace Musonza\Chat\Tests;
 use Chat;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Musonza\Chat\Models\ConversationUser;
+use Musonza\Chat\User;
 
 class ConversationTest extends TestCase
 {
@@ -155,11 +156,12 @@ class ConversationTest extends TestCase
             $this->users[1],
             $this->users[3],
         ]);
+
         Chat::message('Hello Man 5')->from($this->users[3])->to($conversation3)->send();
         Chat::message('Hello Man 6')->from($this->users[0])->to($conversation3)->send();
         Chat::message('Hello Man 3')->from($this->users[2])->to($conversation2)->send();
 
-        $users = \Musonza\Chat\User::whereIn($this->userModelPrimaryKey, [1, 2, 4])->get();
+        $users = User::whereIn($this->userModelPrimaryKey, [1, 2, 4])->get();
 
         $conversations = Chat::conversations()->common($users);
 

@@ -17,7 +17,7 @@ class MessageNotification extends BaseModel
     /**
      * Creates a new notification.
      *
-     * @param Message      $message
+     * @param Message $message
      * @param Conversation $conversation
      */
     public static function make(Message $message, Conversation $conversation)
@@ -42,13 +42,14 @@ class MessageNotification extends BaseModel
             $is_sender = ($message->user_id == $participant->messageable_id) ? 1 : 0;
 
             $notification[] = [
-                'messageable_id'         => $participant->messageable_id,
-                'messageable_type'       => $participant->messageable_type,
-                'message_id'      => $message->id,
+                'messageable_id' => $participant->messageable_id,
+                'messageable_type' => $participant->messageable_type,
+                'message_id' => $message->id,
+                'participation_id' => $participant->id,
                 'conversation_id' => $conversation->id,
-                'is_seen'         => $is_sender,
-                'is_sender'       => $is_sender,
-                'created_at'      => $message->created_at,
+                'is_seen' => $is_sender,
+                'is_sender' => $is_sender,
+                'created_at' => $message->created_at,
             ];
         }
 
