@@ -3,7 +3,6 @@
 namespace Musonza\Chat\Tests\Helpers\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use Musonza\Chat\Traits\Messageable;
 
 class User extends Model
