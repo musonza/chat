@@ -90,7 +90,7 @@ class CreateChatTables extends Migration
                 ->onDelete('cascade');
 
             $table->foreign('participation_id')
-                ->references('id')->on('mc_conversations_user')
+                ->references('id')->on('mc_conversation_user')
                 ->onDelete('cascade');
         });
     }
