@@ -93,18 +93,6 @@ class ConversationService
     }
 
     /**
-     * Get conversations that users have in common.
-     *
-     * @param array | collection $users
-     *
-     * @return Collection
-     */
-    public function common($users)
-    {
-        return $this->conversation->common($users);
-    }
-
-    /**
      * Get Conversations with latest message.
      *
      * @return LengthAwarePaginator

@@ -5,6 +5,7 @@ namespace Musonza\Chat\Models;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Musonza\Chat\BaseModel;
 use Musonza\Chat\Chat;
 
@@ -29,7 +30,7 @@ class Conversation extends BaseModel
     /**
      * Return the recent message in a Conversation.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
     public function last_message()
     {
@@ -39,7 +40,7 @@ class Conversation extends BaseModel
     /**
      * Messages in conversation.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function messages()
     {
@@ -74,8 +75,7 @@ class Conversation extends BaseModel
     /**
      * Add user to conversation.
      *
-     * @param int $userId
-     *
+     * @param $users
      * @return Conversation
      */
     public function addParticipants($users): Conversation
@@ -194,28 +194,6 @@ class Conversation extends BaseModel
     }
 
     /**
-     * Gets conversations that are common for a list of users.
-     *
-     * @param Collection | array $users ids
-     *
-     * @return Collection Conversation
-     */
-    public function common($users)
-    {
-        if ($users instanceof Collection) {
-            $users = $users->map(function ($user) {
-                return $user->getKey();
-            });
-        }
-
-        return $this->withCount(['users' => function ($query) use ($users) {
-            $query->whereIn(Chat::userModelPrimaryKey(), $users);
-        }])->get()->filter(function ($conversation, $key) use ($users) {
-            return $conversation->users_count == count($users);
-        });
-    }
-
-    /**
      * Gets the notifications.
      *
      * @param User $user The user
@@ -230,7 +208,7 @@ class Conversation extends BaseModel
     /**
      * Clears user conversation.
      *
-     * @param User $user
+     * @param $user
      *
      * @return
      */
@@ -243,6 +221,7 @@ class Conversation extends BaseModel
      * Marks all the messages in a conversation as read.
      *
      * @param $user
+     * @return Notifications
      */
     public function readAll($user)
     {

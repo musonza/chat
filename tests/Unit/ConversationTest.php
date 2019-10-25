@@ -142,35 +142,6 @@ class ConversationTest extends TestCase
     }
 
     /** @test */
-    public function it_can_return_a_common_conversation_among_users()
-    {
-        $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
-        Chat::message('Hello 1')->from($this->users[1])->to($conversation)->send();
-        Chat::message('Hello 2')->from($this->users[0])->to($conversation)->send();
-
-        $conversation2 = Chat::createConversation([$this->users[0], $this->users[2]]);
-        Chat::message('Hello Man 4')->from($this->users[0])->to($conversation2)->send();
-
-        $conversation3 = Chat::createConversation([
-            $this->users[0],
-            $this->users[1],
-            $this->users[3],
-        ]);
-
-        Chat::message('Hello Man 5')->from($this->users[3])->to($conversation3)->send();
-        Chat::message('Hello Man 6')->from($this->users[0])->to($conversation3)->send();
-        Chat::message('Hello Man 3')->from($this->users[2])->to($conversation2)->send();
-
-        $users = User::whereIn($this->userModelPrimaryKey, [1, 2, 4])->get();
-
-        $conversations = Chat::conversations()->common($users);
-
-        $this->assertCount(1, $conversations);
-
-        $this->assertEquals(3, $conversations->first()->id);
-    }
-
-    /** @test */
     public function it_can_return_conversation_recent_messsage()
     {
         $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
