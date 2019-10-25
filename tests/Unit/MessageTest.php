@@ -41,8 +41,6 @@ class MessageTest extends TestCase
         $this->assertEquals($conversation->messages->count(), 1);
     }
 
-
-
     /** @test */
     public function it_returns_a_message_given_the_id()
     {

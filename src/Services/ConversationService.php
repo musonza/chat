@@ -2,7 +2,6 @@
 
 namespace Musonza\Chat\Services;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Musonza\Chat\Models\Conversation;
@@ -86,7 +85,7 @@ class ConversationService
         $common_conversations = $this->getConversationsInCommon($conversation1, $conversation2);
 
         if (!$common_conversations) {
-            return null;
+            return;
         }
 
         return $this->conversation->findOrFail($common_conversations[0]);
@@ -110,7 +109,7 @@ class ConversationService
     /**
      * Add user(s) to a conversation.
      *
-     * @param int | array  $userId / array of user ids or an integer
+     * @param int | array $userId / array of user ids or an integer
      *
      * @return Conversation
      */
