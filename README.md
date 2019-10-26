@@ -14,7 +14,7 @@ Create a Chat application for your Laravel Models
 - [Introduction](#introduction)
 - [Installation](#installation)
 - [Usage](#usage)
-  - [Add ability to participate to a Model](#Add ability to participate to-a-Model)
+  - [Adding the ability to participate to a Model](#Adding the ability to participate to a Model)
   - [Get participant details](#get-participant-details)
   - [Creating a conversation](#creating-a-conversation)
   - [Get a conversation by Id](#get-a-conversation-by-id)
@@ -97,7 +97,7 @@ php artisan migrate
 
 You can mix Models as participants. For instance you can have `Parents`, `Students` and `Professors` models communicating
 
-#### Add ability to participate to a Model 
+#### Adding the ability to participate to a Model 
 
 Add the `Musonza\Chat\Traits\Messageable` trait to any Model you want to participate in Conversations
 For example, let's say we want out `Bot` model to chat with other Models:
