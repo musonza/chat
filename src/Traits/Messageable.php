@@ -38,6 +38,6 @@ trait Messageable
 
     public function getParticipantDetails(): array
     {
-        return $this->participantDetails ?? [];
+        return $this->participantDetails ?? ['name' => $this->name ?? null];
     }
 }

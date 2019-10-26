@@ -14,6 +14,8 @@ Create a Chat application for your Laravel Models
 - [Introduction](#introduction)
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Add ability to participate to a Model](#Add ability to participate to-a-Model)
+  - [Get participant details](#get-participant-details)
   - [Creating a conversation](#creating-a-conversation)
   - [Get a conversation by Id](#get-a-conversation-by-id)
   - [Update conversation details](#update-conversation-details)
@@ -48,24 +50,6 @@ From the command line, run:
 
 ```
 composer require musonza/chat
-```
-
-Add the service provider to your `config\app.php` the providers array
-
-```
-Musonza\Chat\ChatServiceProvider::class
-```
-
-Add the Facade to your aliases:
-
-```
-'Chat' => Musonza\Chat\Facades\ChatFacade::class to your `config\app.php`
-```
-
-The class is bound to the ioC as chat
-
-```
-$chat = App::make('chat');
 ```
 
 Publish the assets:
@@ -112,6 +96,45 @@ php artisan migrate
 ## Usage
 
 You can mix Models as participants. For instance you can have `Parents`, `Students` and `Professors` models communicating
+
+#### Add ability to participate to a Model 
+
+Add the `Musonza\Chat\Traits\Messageable` trait to any Model you want to participate in Conversations
+For example, let's say we want out `Bot` model to chat with other Models:
+
+```php
+
+use Illuminate\Database\Eloquent\Model;
+use Musonza\Chat\Traits\Messageable;
+
+class Bot extends Model
+{
+    use Messageable;
+}
+```
+
+#### Get participant details
+
+Since we allow Models with data that differ in structure to chat, we may want a uniform way to
+represent the participant details in a uniform way.
+
+You can get the details as follows:
+
+```php
+$participantModel->getParticipantDetails();
+```
+Assuming you have a column `name` for your model, this returns a default array `['name' => 'column_value']`
+You can however, customize this for your needs by adding an Eloquent Accessor to your model as follows:
+
+```php
+    public function getParticipantDetailsAttribute()
+    {
+        return [
+            'name' => $this->someValue,
+            'foo' => 'bar',
+        ];
+    }
+```
 
 #### Creating a conversation
 ```php

@@ -35,7 +35,7 @@ class MessageTest extends TestCase
         $userModel = factory(User::class)->create();
         $botModel = factory(Bot::class)->create();
 
-        dd($clientModel->getParticipantDetails());
+        dd($botModel->getParticipantDetails());
 
         $conversation = Chat::createConversation([$clientModel, $userModel, $botModel]);
 
