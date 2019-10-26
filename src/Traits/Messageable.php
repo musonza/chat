@@ -2,7 +2,6 @@
 
 namespace Musonza\Chat\Traits;
 
-use Musonza\Chat\Models\Conversation;
 use Musonza\Chat\Models\ConversationParticipant;
 
 trait Messageable
