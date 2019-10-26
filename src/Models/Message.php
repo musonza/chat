@@ -36,14 +36,14 @@ class Message extends BaseModel
 
     public function sender()
     {
-        return $this->belongsTo(ConversationUser::class, 'user_id');
+        return $this->belongsTo(ConversationParticipant::class, 'participation_id');
     }
 
-    public function unreadCount($user)
+    public function unreadCount(Model $participant)
     {
-        return MessageNotification::where('messageable_id', $user->getKey())
+        return MessageNotification::where('messageable_id', $participant->getKey())
             ->where('is_seen', 0)
-            ->where('messageable_type', get_class($user))
+            ->where('messageable_type', get_class($participant))
             ->count();
     }
 
@@ -57,12 +57,12 @@ class Message extends BaseModel
      *
      * @param Conversation     $conversation
      * @param string           $body
-     * @param ConversationUser $participant
+     * @param ConversationParticipant $participant
      * @param string           $type
      *
      * @return Model
      */
-    public function send(Conversation $conversation, string $body, ConversationUser $participant, string $type = 'text'): Model
+    public function send(Conversation $conversation, string $body, ConversationParticipant $participant, string $type = 'text'): Model
     {
         $message = $conversation->messages()->create([
             'body'             => $body,
@@ -78,23 +78,28 @@ class Message extends BaseModel
     }
 
     /**
-     * Deletes a message.
+     * Deletes a message for the participant.
+     * @param Model $participant
+     * @return void
      */
-    public function trash($user)
+    public function trash(Model $participant): void
     {
-        return MessageNotification::where('messageable_id', $user->getKey())
-            ->where('messageable_type', get_class($user))
+        MessageNotification::where('messageable_id', $participant->getKey())
+            ->where('messageable_type', get_class($participant))
             ->where('message_id', $this->getKey())
             ->delete();
     }
 
     /**
      * Return user notification for specific message.
+     *
+     * @param Model $participant
+     * @return MessageNotification
      */
-    public function getNotification($user): MessageNotification
+    public function getNotification(Model $participant): MessageNotification
     {
-        return MessageNotification::where('messageable_id', $user->getKey())
-            ->where('messageable_type', get_class($user))
+        return MessageNotification::where('messageable_id', $participant->getKey())
+            ->where('messageable_type', get_class($participant))
             ->where('message_id', $this->id)
             ->select(['mc_message_notification.*', 'mc_message_notification.updated_at as read_at'])
             ->first();
@@ -102,27 +107,28 @@ class Message extends BaseModel
 
     /**
      * Marks message as read.
+     * @param $participant
      */
-    public function markRead($user): void
+    public function markRead($participant): void
     {
-        $this->getNotification($user)->markAsRead();
+        $this->getNotification($participant)->markAsRead();
     }
 
-    public function flagged($user): bool
+    public function flagged(Model $participant): bool
     {
-        return (bool) MessageNotification::where('messageable_id', $user->getKey())
+        return (bool) MessageNotification::where('messageable_id', $participant->getKey())
             ->where('message_id', $this->id)
-            ->where('messageable_type', get_class($user))
+            ->where('messageable_type', get_class($participant))
             ->where('flagged', 1)
             ->first();
     }
 
-    public function toggleFlag($user): self
+    public function toggleFlag(Model $participant): self
     {
-        MessageNotification::where('messageable_id', $user->getKey())
+        MessageNotification::where('messageable_id', $participant->getKey())
             ->where('message_id', $this->id)
-            ->where('messageable_type', get_class($user))
-            ->update(['flagged' => $this->flagged($user) ? false : true]);
+            ->where('messageable_type', get_class($participant))
+            ->update(['flagged' => $this->flagged($participant) ? false : true]);
 
         return $this;
     }

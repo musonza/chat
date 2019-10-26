@@ -6,20 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateChatTables extends Migration
 {
-    protected $userModelPrimaryKey = 'id';
-    protected $userModelTable = 'users';
-
-    protected $useBigIncrements;
-
-    public function __construct()
-    {
-        $config = config('musonza_chat');
-        $userModel = app($config['user_model']);
-
-        $this->userModelPrimaryKey = $userModel->getKeyName();
-        $this->userModelTable = $userModel->getTable();
-    }
-
     /**
      * Run the migrations.
      *
@@ -53,7 +39,7 @@ class CreateChatTables extends Migration
                 ->onDelete('cascade');
         });
 
-        Schema::create('mc_conversation_user', function (Blueprint $table) {
+        Schema::create('mc_conversation_participant', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('conversation_id')->unsigned();
             $table->bigInteger('messageable_id')->unsigned();
@@ -90,7 +76,7 @@ class CreateChatTables extends Migration
                 ->onDelete('cascade');
 
             $table->foreign('participation_id')
-                ->references('id')->on('mc_conversation_user')
+                ->references('id')->on('mc_conversation_participant')
                 ->onDelete('cascade');
         });
     }
@@ -102,7 +88,7 @@ class CreateChatTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mc_conversation_user');
+        Schema::dropIfExists('mc_conversation_participant');
         Schema::dropIfExists('mc_message_notification');
         Schema::dropIfExists('mc_messages');
         Schema::dropIfExists('mc_conversations');

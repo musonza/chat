@@ -126,7 +126,7 @@ class MessageTest extends TestCase
     }
 
     /** @test */
-    public function it_can_tell_message_sender_participation_id()
+    public function it_can_tell_message_sender_participation()
     {
         /** @var Conversation $conversation */
         $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
@@ -134,7 +134,7 @@ class MessageTest extends TestCase
         Chat::message('Hello')->from($this->users[0])->to($conversation)->send();
 
         $this->assertEquals(
-            $conversation->participantFromSender($this->users[0])->id,
+            $conversation->messages[0]->sender->getKey(),
             $conversation->messages[0]->participation_id
         );
     }
