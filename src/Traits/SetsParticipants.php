@@ -56,6 +56,7 @@ trait SetsParticipants
      * Sets the participant to receive the message.
      *
      * @param Model $recipient
+     *
      * @return $this
      */
     public function to(Model $recipient): self

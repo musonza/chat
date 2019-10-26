@@ -54,7 +54,7 @@ class Conversation extends BaseModel
      *
      * @param Model $participant
      * @param array $paginationParams
-     * @param bool $deleted
+     * @param bool  $deleted
      *
      * @return LengthAwarePaginator|HasMany|Builder
      */
@@ -77,8 +77,8 @@ class Conversation extends BaseModel
     public function participantFromSender(Model $sender)
     {
         return $this->participants()->where([
-            'conversation_id' => $this->getKey(),
-            'messageable_id' => $sender->getKey(),
+            'conversation_id'  => $this->getKey(),
+            'messageable_id'   => $sender->getKey(),
             'messageable_type' => get_class($sender),
         ])->first();
     }
@@ -130,11 +130,11 @@ class Conversation extends BaseModel
      * Starts a new conversation.
      *
      * @param array $participants
-     *
      * @param array $data
+     *
      * @return Conversation
      */
-    public function start(array $participants, $data = []): Conversation
+    public function start(array $participants, $data = []): self
     {
         /** @var Conversation $conversation */
         $conversation = $this->create(['data' => $data]);
@@ -201,6 +201,7 @@ class Conversation extends BaseModel
      *
      * @param  $participant
      * @param bool $readAll
+     *
      * @return MessageNotification
      */
     public function getNotifications($participant, $readAll = false)
@@ -238,6 +239,7 @@ class Conversation extends BaseModel
      * @param Model $participant
      * @param $paginationParams
      * @param $deleted
+     *
      * @return LengthAwarePaginator|HasMany|Builder
      */
     private function getConversationMessages(Model $participant, $paginationParams, $deleted)
@@ -270,6 +272,7 @@ class Conversation extends BaseModel
      * @param $page
      * @param $pageName
      * @param null $isPrivate
+     *
      * @return mixed
      */
     private function getConversationsList(Model $participant, $perPage, $page, $pageName, $isPrivate = null)
