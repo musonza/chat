@@ -30,9 +30,12 @@ class MessageTest extends TestCase
     /** @test */
     public function it_can_send_a_message_between_models()
     {
+        /** @var Client $clientModel */
         $clientModel = factory(Client::class)->create();
         $userModel = factory(User::class)->create();
         $botModel = factory(Bot::class)->create();
+
+        dd($clientModel->getParticipantDetails());
 
         $conversation = Chat::createConversation([$clientModel, $userModel, $botModel]);
 

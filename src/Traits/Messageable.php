@@ -35,4 +35,9 @@ trait Messageable
             'conversation_id'  => $conversationId,
         ])->delete();
     }
+
+    public function getParticipantDetails(): array
+    {
+        return $this->participantDetails ?? [];
+    }
 }
