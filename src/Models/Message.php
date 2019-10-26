@@ -14,7 +14,7 @@ class Message extends BaseModel
     protected $fillable = [
         'body',
         'participation_id',
-        'type'
+        'type',
     ];
 
     protected $table = 'mc_messages';
@@ -54,18 +54,20 @@ class Message extends BaseModel
 
     /**
      * Adds a message to a conversation.
-     * @param Conversation $conversation
-     * @param string $body
+     *
+     * @param Conversation     $conversation
+     * @param string           $body
      * @param ConversationUser $participant
-     * @param string $type
+     * @param string           $type
+     *
      * @return Model
      */
     public function send(Conversation $conversation, string $body, ConversationUser $participant, string $type = 'text'): Model
     {
         $message = $conversation->messages()->create([
-            'body'    => $body,
+            'body'             => $body,
             'participation_id' => $participant->getKey(),
-            'type'    => $type,
+            'type'             => $type,
         ]);
 
         $messageWasSent = Chat::sentMessageEvent();
@@ -115,7 +117,7 @@ class Message extends BaseModel
             ->first();
     }
 
-    public function toggleFlag($user): Message
+    public function toggleFlag($user): self
     {
         MessageNotification::where('messageable_id', $user->getKey())
             ->where('message_id', $this->id)
