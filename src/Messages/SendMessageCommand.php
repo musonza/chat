@@ -7,11 +7,10 @@ use Musonza\Chat\Models\Conversation;
 
 class SendMessageCommand
 {
-    public $senderId;
     public $body;
     public $conversation;
     public $type;
-    public $senderType;
+    public $participant;
 
     /**
      * @param Conversation $conversation The conversation
@@ -24,7 +23,6 @@ class SendMessageCommand
         $this->conversation = $conversation;
         $this->body = $body;
         $this->type = $type;
-        $this->senderId = $sender->getKey();
-        $this->senderType = get_class($sender);
+        $this->participant = $this->conversation->participantFromSender($sender);
     }
 }

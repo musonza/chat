@@ -2,6 +2,7 @@
 
 namespace Musonza\Chat\Commanding;
 
+use Exception;
 use Illuminate\Foundation\Application;
 
 class CommandBus
@@ -16,6 +17,11 @@ class CommandBus
         $this->app = $app;
     }
 
+    /**
+     * @param $command
+     * @return mixed
+     * @throws Exception
+     */
     public function execute($command)
     {
         $handler = $this->commandTranslator->toCommandHandler($command);

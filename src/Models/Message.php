@@ -2,6 +2,7 @@
 
 namespace Musonza\Chat\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Musonza\Chat\BaseModel;
 use Musonza\Chat\Chat;
 use Musonza\Chat\Eventing\EventGenerator;
@@ -10,7 +11,12 @@ class Message extends BaseModel
 {
     use EventGenerator;
 
-    protected $fillable = ['body', 'user_id', 'type'];
+    protected $fillable = [
+        'body',
+        'participation_id',
+        'type'
+    ];
+
     protected $table = 'mc_messages';
     /**
      * All of the relationships to be touched.
@@ -30,7 +36,7 @@ class Message extends BaseModel
 
     public function sender()
     {
-        return $this->belongsTo(Chat::userModel(), 'user_id');
+        return $this->belongsTo(ConversationUser::class, 'user_id');
     }
 
     public function unreadCount($user)
@@ -48,19 +54,17 @@ class Message extends BaseModel
 
     /**
      * Adds a message to a conversation.
-     *
      * @param Conversation $conversation
-     * @param string       $body
-     * @param int          $userId
-     * @param string       $type
-     *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @param string $body
+     * @param ConversationUser $participant
+     * @param string $type
+     * @return Model
      */
-    public function send(Conversation $conversation, $body, $userId, $type = 'text')
+    public function send(Conversation $conversation, string $body, ConversationUser $participant, string $type = 'text'): Model
     {
         $message = $conversation->messages()->create([
             'body'    => $body,
-            'user_id' => $userId,
+            'participation_id' => $participant->getKey(),
             'type'    => $type,
         ]);
 
@@ -73,28 +77,19 @@ class Message extends BaseModel
 
     /**
      * Deletes a message.
-     *
-     * @param Message $message
-     * @param User    $user
-     *
-     * @return
      */
     public function trash($user)
     {
         return MessageNotification::where('messageable_id', $user->getKey())
             ->where('messageable_type', get_class($user))
-            ->where('message_id', $this->id)
+            ->where('message_id', $this->getKey())
             ->delete();
     }
 
     /**
      * Return user notification for specific message.
-     *
-     * @param $user
-     *
-     * @return Notification
      */
-    public function getNotification($user)
+    public function getNotification($user): MessageNotification
     {
         return MessageNotification::where('messageable_id', $user->getKey())
             ->where('messageable_type', get_class($user))
@@ -105,17 +100,13 @@ class Message extends BaseModel
 
     /**
      * Marks message as read.
-     *
-     * @param User $user
-     *
-     * @return void
      */
-    public function markRead($user)
+    public function markRead($user): void
     {
         $this->getNotification($user)->markAsRead();
     }
 
-    public function flagged($user)
+    public function flagged($user): bool
     {
         return (bool) MessageNotification::where('messageable_id', $user->getKey())
             ->where('message_id', $this->id)
@@ -124,7 +115,7 @@ class Message extends BaseModel
             ->first();
     }
 
-    public function toggleFlag($user)
+    public function toggleFlag($user): Message
     {
         MessageNotification::where('messageable_id', $user->getKey())
             ->where('message_id', $this->id)

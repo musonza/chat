@@ -38,14 +38,14 @@ class MessageNotification extends BaseModel
     {
         $notification = [];
 
-        foreach ($conversation->users as $participant) {
-            $is_sender = ($message->user_id == $participant->messageable_id) ? 1 : 0;
+        foreach ($conversation->users as $participation) {
+            $is_sender = ($message->participation_id == $participation->id) ? 1 : 0;
 
             $notification[] = [
-                'messageable_id'   => $participant->messageable_id,
-                'messageable_type' => $participant->messageable_type,
+                'messageable_id'   => $participation->messageable_id,
+                'messageable_type' => $participation->messageable_type,
                 'message_id'       => $message->id,
-                'participation_id' => $participant->id,
+                'participation_id' => $participation->id,
                 'conversation_id'  => $conversation->id,
                 'is_seen'          => $is_sender,
                 'is_sender'        => $is_sender,

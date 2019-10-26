@@ -1,13 +1,6 @@
 <?php
 
 return [
-    'user_model' => 'App\User',
-
-    /*
-     * If not set, the package will use getKeyName() on the user_model specified above
-     */
-    'user_model_primary_key' => null,
-
     /*
      * This will allow you to broadcast an event when a message is sent
      * Example:

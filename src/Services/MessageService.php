@@ -2,6 +2,7 @@
 
 namespace Musonza\Chat\Services;
 
+use Exception;
 use Musonza\Chat\Commanding\CommandBus;
 use Musonza\Chat\Messages\SendMessageCommand;
 use Musonza\Chat\Models\Message;
@@ -101,22 +102,22 @@ class MessageService
     /**
      * Sends the message.
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return void
      */
     public function send()
     {
         if (!$this->from) {
-            throw new \Exception('Message sender has not been set');
+            throw new Exception('Message sender has not been set');
         }
 
         if (!$this->body) {
-            throw new \Exception('Message body has not been set');
+            throw new Exception('Message body has not been set');
         }
 
         if (!$this->to) {
-            throw new \Exception('Message receiver has not been set');
+            throw new Exception('Message receiver has not been set');
         }
 
         $command = new SendMessageCommand($this->to, $this->body, $this->from, $this->type);

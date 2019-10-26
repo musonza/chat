@@ -2,6 +2,7 @@
 
 namespace Musonza\Chat\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Musonza\Chat\BaseModel;
 
 class ConversationUser extends BaseModel
@@ -15,7 +16,7 @@ class ConversationUser extends BaseModel
     /**
      * Conversation.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function conversation()
     {

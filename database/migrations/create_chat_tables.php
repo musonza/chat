@@ -38,14 +38,14 @@ class CreateChatTables extends Migration
             $table->bigIncrements('id');
             $table->text('body');
             $table->bigInteger('conversation_id')->unsigned();
-            $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('participation_id')->unsigned()->nullable();
             $table->string('type')->default('text');
             $table->timestamps();
 
-            $table->foreign('user_id')
-                ->references($this->userModelPrimaryKey)
-                ->on($this->userModelTable)
-                ->onDelete('cascade');
+            $table->foreign('participation_id')
+                ->references('id')
+                ->on('mc_conversation_user')
+                ->onDelete('set null');
 
             $table->foreign('conversation_id')
                 ->references('id')

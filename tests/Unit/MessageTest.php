@@ -4,6 +4,7 @@ namespace Musonza\Chat\Tests;
 
 use Chat;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Musonza\Chat\Models\Conversation;
 use Musonza\Chat\Models\Message;
 use Musonza\Chat\Tests\Helpers\Models\Bot;
 use Musonza\Chat\Tests\Helpers\Models\Client;
@@ -125,13 +126,17 @@ class MessageTest extends TestCase
     }
 
     /** @test */
-    public function it_can_tell_message_sender()
+    public function it_can_tell_message_sender_participation_id()
     {
+        /** @var Conversation $conversation */
         $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
 
         Chat::message('Hello')->from($this->users[0])->to($conversation)->send();
 
-        $this->assertEquals($conversation->messages[0]->sender->email, $this->users[0]->email);
+        $this->assertEquals(
+            $conversation->participantFromSender($this->users[0])->id,
+            $conversation->messages[0]->participation_id
+        );
     }
 
     /** @test */
