@@ -74,8 +74,8 @@ class Conversation extends BaseModel
     public function participantFromSender(Model $sender)
     {
         return $this->users()->where([
-            'conversation_id' => $this->getKey(),
-            'messageable_id' => $sender->getKey(),
+            'conversation_id'  => $this->getKey(),
+            'messageable_id'   => $sender->getKey(),
             'messageable_type' => get_class($sender),
         ])->first();
     }

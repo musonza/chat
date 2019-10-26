@@ -19,8 +19,10 @@ class CommandBus
 
     /**
      * @param $command
-     * @return mixed
+     *
      * @throws Exception
+     *
+     * @return mixed
      */
     public function execute($command)
     {
