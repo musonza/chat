@@ -28,7 +28,7 @@ class Client extends Model
     {
         return [
             'name' => $this->name,
-            'foo' => 'bar',
+            'foo'  => 'bar',
         ];
     }
 }
