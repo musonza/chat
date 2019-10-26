@@ -109,7 +109,7 @@ Run the migrations:
 php artisan migrate
 ```
 
-## Usage
+## 💡Usage
 
 You can mix Models as participants. For instance you can have `Parents`, `Students` and `Professors` models communicating
 
