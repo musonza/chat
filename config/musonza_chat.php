@@ -16,7 +16,7 @@ return [
     'sent_message_event' => 'Musonza\Chat\Eventing\MessageWasSent',
 
     /*
-     * Automatically convert conversations with more than two users to public
+     * Automatically convert conversations with more than two participants to public
      */
-    'make_three_or_more_users_public' => true,
+    'make_three_or_more_participants_public' => true,
 ];

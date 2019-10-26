@@ -167,45 +167,45 @@ $message = Chat::messages()->getById($id);
 #### Mark a message as read
 
 ```php
-Chat::message($message)->setUser($participantModel)->markRead();
+Chat::message($message)->setParticipant($participantModel)->markRead();
 ```
 
 #### Flag / mark a message
 
 ```php
-Chat::message($message)->setUser($participantModel)->toggleFlag();
+Chat::message($message)->setParticipant($participantModel)->toggleFlag();
 
-Chat::message($message)->setUser($participantModel)->flagged(); // true
+Chat::message($message)->setParticipant($participantModel)->flagged(); // true
 ```
 
 #### Mark whole conversation as read
 
 ```php
-Chat::conversation($conversation)->setUser($participantModel)->readAll();
+Chat::conversation($conversation)->setParticipant($participantModel)->readAll();
 ```
 
 #### Unread messages count
 
 ```php
-$unreadCount = Chat::messages()->setUser($participantModel)->unreadCount();
+$unreadCount = Chat::messages()->setParticipant($participantModel)->unreadCount();
 ```
 
 #### Unread messages count per Conversation
 
 ```php
-Chat::conversation($conversation)->setUser($participantModel)->unreadCount();
+Chat::conversation($conversation)->setParticipant($participantModel)->unreadCount();
 ```
 
 #### Delete a message
 
 ```php
-Chat::message($message)->setUser($participantModel)->delete();
+Chat::message($message)->setParticipant($participantModel)->delete();
 ```
 
 #### Clear a conversation
 
 ```php
-Chat::conversation($conversation)->setUser($participantModel)->clear();
+Chat::conversation($conversation)->setParticipant($participantModel)->clear();
 ```
 
 #### Get a conversation between two users
@@ -251,26 +251,26 @@ Chat::conversation($conversation)->addParticipants([$participantModel, $particip
 #### Get messages in a conversation
 
 ```php
-Chat::conversation($conversation)->setUser($participantModel)->getMessages()
+Chat::conversation($conversation)->setParticipant($participantModel)->getMessages()
 ```
 
 #### Get user conversations by type
 
 ```php
 // private conversations
-$conversations = Chat::conversations()->setUser($participantModel)->isPrivate()->get();
+$conversations = Chat::conversations()->setParticipant($participantModel)->isPrivate()->get();
 
 // public conversations
-$conversations = Chat::conversations()->setUser($participantModel)->isPrivate(false)->get();
+$conversations = Chat::conversations()->setParticipant($participantModel)->isPrivate(false)->get();
 
 // all conversations
-$conversations = Chat::conversations()->setUser($participantModel)->get();
+$conversations = Chat::conversations()->setParticipant($participantModel)->get();
 ```
 
 #### Get recent messages
 
 ```php
-$messages = Chat::conversations()->setUser($participantModel)->limit(25)->page(1)->get();
+$messages = Chat::conversations()->setParticipant($participantModel)->limit(25)->page(1)->get();
 ```
 
 Example
@@ -309,7 +309,7 @@ Example
 There are a few ways you can achieve pagination
 You can specify the `limit` and `page` as above using the respective functions or as below:
 ```
-   $paginated = Chat::conversations()->setUser($user)
+   $paginated = Chat::conversations()->setParticipant($user)
             ->setPaginationParams([
                 'page' => 3,
                 'perPage' => 10,

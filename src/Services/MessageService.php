@@ -108,7 +108,7 @@ class MessageService
      */
     public function send()
     {
-        if (!$this->from) {
+        if (!$this->sender) {
             throw new Exception('Message sender has not been set');
         }
 
@@ -116,11 +116,11 @@ class MessageService
             throw new Exception('Message body has not been set');
         }
 
-        if (!$this->to) {
+        if (!$this->recipient) {
             throw new Exception('Message receiver has not been set');
         }
 
-        $command = new SendMessageCommand($this->to, $this->body, $this->from, $this->type);
+        $command = new SendMessageCommand($this->recipient, $this->body, $this->sender, $this->type);
 
         return $this->commandBus->execute($command);
     }

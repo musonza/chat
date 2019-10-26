@@ -14,6 +14,7 @@ class ConversationService
     use SetsParticipants, Paginates;
 
     protected $isPrivate = null;
+
     /**
      * @var Conversation
      */
@@ -79,16 +80,11 @@ class ConversationService
      */
     public function between(Model $participantOne, Model $participantTwo)
     {
-        $conversation1 = $this->conversation->userConversations($participantOne)->toArray();
-        $conversation2 = $this->conversation->userConversations($participantTwo)->toArray();
-
+        $conversation1 = $this->conversation->participantConversations($participantOne)->toArray();
+        $conversation2 = $this->conversation->participantConversations($participantTwo)->toArray();
         $common_conversations = $this->getConversationsInCommon($conversation1, $conversation2);
 
-        if (!$common_conversations) {
-            return;
-        }
-
-        return $this->conversation->findOrFail($common_conversations[0]);
+        return $common_conversations ? $this->conversation->findOrFail($common_conversations[0]) : null;
     }
 
     /**
@@ -98,7 +94,7 @@ class ConversationService
      */
     public function get()
     {
-        return $this->conversation->getUserConversations($this->user, [
+        return $this->conversation->getParticipantConversations($this->user, [
           'perPage'   => $this->perPage,
           'page'      => $this->page,
           'pageName'  => 'page',
@@ -127,11 +123,13 @@ class ConversationService
      */
     public function removeParticipants($users)
     {
-        return $this->conversation->removeUsers($users);
+        return $this->conversation->removeParticipant($users);
     }
 
     /**
      * Get count for unread messages.
+     *
+     * @return int
      */
     public function unreadCount()
     {

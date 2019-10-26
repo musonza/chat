@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 trait SetsParticipants
 {
-    protected $from;
-    protected $to;
+    protected $sender;
+    protected $recipient;
     protected $user;
 
     /**
@@ -27,11 +27,11 @@ trait SetsParticipants
     /**
      * Sets user.
      *
-     * @param object $user
+     * @param Model $user
      *
      * @return $this
      */
-    public function setUser(Model $user): self
+    public function setParticipant(Model $user): self
     {
         $this->user = $user;
 
@@ -39,22 +39,28 @@ trait SetsParticipants
     }
 
     /**
-     * Set Sender.
+     * Sets the participant that's sending the message.
      *
-     * @param Model $from
+     * @param Model $sender
      *
      * @return $this
      */
-    public function from(Model $from): self
+    public function from(Model $sender): self
     {
-        $this->from = $from;
+        $this->sender = $sender;
 
         return $this;
     }
 
+    /**
+     * Sets the participant to receive the message.
+     *
+     * @param Model $recipient
+     * @return $this
+     */
     public function to(Model $recipient): self
     {
-        $this->to = $recipient;
+        $this->recipient = $recipient;
 
         return $this;
     }

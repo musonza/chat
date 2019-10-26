@@ -4,6 +4,7 @@ namespace Musonza\Chat\Tests;
 
 use Chat;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Musonza\Chat\Tests\Helpers\Models\Client;
 
 class ConversationTest extends TestCase
 {
@@ -36,7 +37,7 @@ class ConversationTest extends TestCase
         Chat::message('Hello there 0')->from($this->users[1])->to($conversation)->send();
         Chat::message('Hello there 0')->from($this->users[1])->to($conversation)->send();
 
-        Chat::conversation($conversation)->setUser($this->users[0])->readAll();
+        Chat::conversation($conversation)->setParticipant($this->users[0])->readAll();
         $this->assertEquals(0, $conversation->unReadNotifications($this->users[0])->count());
     }
 
@@ -60,9 +61,9 @@ class ConversationTest extends TestCase
         Chat::message('Hello there 1')->from($this->users[0])->to($conversation)->send();
         Chat::message('Hello there 2')->from($this->users[0])->to($conversation)->send();
 
-        Chat::conversation($conversation)->setUser($this->users[0])->clear();
+        Chat::conversation($conversation)->setParticipant($this->users[0])->clear();
 
-        $messages = Chat::conversation($conversation)->setUser($this->users[0])->getMessages();
+        $messages = Chat::conversation($conversation)->setParticipant($this->users[0])->getMessages();
 
         $this->assertEquals($messages->count(), 0);
     }
@@ -72,7 +73,7 @@ class ConversationTest extends TestCase
     {
         $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
 
-        $this->assertCount(2, $conversation->users);
+        $this->assertCount(2, $conversation->participants);
     }
 
     /** @test */
@@ -92,13 +93,16 @@ class ConversationTest extends TestCase
     }
 
     /** @test */
-    public function it_can_remove_a_single_user_from_conversation()
+    public function it_can_remove_a_single_participant_from_conversation()
     {
-        $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
-
+        $clientModel = factory(Client::class)->create();
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1], $clientModel]);
         $conversation = Chat::conversation($conversation)->removeParticipants($this->users[0]);
 
-        $this->assertEquals(1, $conversation->fresh()->users()->count());
+        $this->assertEquals(2, $conversation->fresh()->participants()->count());
+
+        $conversation = Chat::conversation($conversation)->removeParticipants($clientModel);
+        $this->assertEquals(1, $conversation->fresh()->participants()->count());
     }
 
     /** @test */
@@ -108,7 +112,7 @@ class ConversationTest extends TestCase
 
         $conversation = Chat::conversation($conversation)->removeParticipants([$this->users[0], $this->users[1]]);
 
-        $this->assertEquals(0, $conversation->fresh()->users->count());
+        $this->assertEquals(0, $conversation->fresh()->participants->count());
     }
 
     /** @test */
@@ -116,13 +120,13 @@ class ConversationTest extends TestCase
     {
         $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
 
-        $this->assertEquals($conversation->users->count(), 2);
+        $this->assertEquals($conversation->participants->count(), 2);
 
         $userThree = $this->createUsers(1);
 
         Chat::conversation($conversation)->addParticipants([$userThree[0]]);
 
-        $this->assertEquals($conversation->fresh()->users->count(), 3);
+        $this->assertEquals($conversation->fresh()->participants->count(), 3);
     }
 
     /** @test */
@@ -130,13 +134,13 @@ class ConversationTest extends TestCase
     {
         $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
 
-        $this->assertEquals($conversation->users->count(), 2);
+        $this->assertEquals($conversation->participants->count(), 2);
 
         $otherUsers = $this->createUsers(5);
 
         Chat::conversation($conversation)->addParticipants($otherUsers);
 
-        $this->assertEquals($conversation->fresh()->users->count(), 7);
+        $this->assertEquals($conversation->fresh()->participants->count(), 7);
     }
 
     /** @test */
@@ -164,9 +168,9 @@ class ConversationTest extends TestCase
     {
         $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
         $message = Chat::message('Hello & Bye')->from($this->users[0])->to($conversation)->send();
-        Chat::message($message)->setUser($this->users[0])->delete();
+        Chat::message($message)->setParticipant($this->users[0])->delete();
 
-        $conversations = Chat::conversations()->setUser($this->users[0])->get();
+        $conversations = Chat::conversations()->setParticipant($this->users[0])->get();
 
         $this->assertNull($conversations->get(0)->last_message);
     }
@@ -177,11 +181,11 @@ class ConversationTest extends TestCase
         $conversation = Chat::createConversation([$this->users[0], $this->users[1]]);
         Chat::message('Hello')->from($this->users[0])->to($conversation)->send();
 
-        $conversations = Chat::conversations()->setUser($this->users[0])->get();
+        $conversations = Chat::conversations()->setParticipant($this->users[0])->get();
 
         $this->assertTrue((bool) $conversations->get(0)->last_message->is_seen);
 
-        $conversations = Chat::conversations()->setUser($this->users[1])->get();
+        $conversations = Chat::conversations()->setParticipant($this->users[1])->get();
 
         $this->assertFalse((bool) $conversations->get(0)->last_message->is_seen);
     }
@@ -200,13 +204,13 @@ class ConversationTest extends TestCase
         $conversation = Chat::createConversation([$auth, $this->users[3]]);
         Chat::message('Hello-'.$conversation->id)->from($auth)->to($conversation)->send();
 
-        $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->setUser($auth)->limit(1)->page(1)->get();
+        $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->setParticipant($auth)->limit(1)->page(1)->get();
         $this->assertEquals('Hello-3', $conversations->items()[0]->last_message->body);
 
-        $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->setUser($auth)->limit(1)->page(2)->get();
+        $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->setParticipant($auth)->limit(1)->page(2)->get();
         $this->assertEquals('Hello-2', $conversations->items()[0]->last_message->body);
 
-        $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->setUser($auth)->limit(1)->page(3)->get();
+        $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->setParticipant($auth)->limit(1)->page(3)->get();
         $this->assertEquals('Hello-1', $conversations->items()[0]->last_message->body);
     }
 
@@ -245,7 +249,7 @@ class ConversationTest extends TestCase
     /** @test */
     public function converting_at_least_three_participants_to_public_is_configurable()
     {
-        $this->app['config']->set('musonza_chat.make_three_or_more_users_public', false);
+        $this->app['config']->set('musonza_chat.make_three_or_more_participants_public', false);
 
         $conversation = Chat::createConversation([
             $this->users[0],
@@ -267,13 +271,13 @@ class ConversationTest extends TestCase
         Chat::createConversation([$this->users[0], $this->users[1]])->makePrivate(false);
         Chat::createConversation([$this->users[0], $this->users[1]])->makePrivate();
 
-        $allConversations = Chat::conversations()->setUser($this->users[0])->get();
+        $allConversations = Chat::conversations()->setParticipant($this->users[0])->get();
         $this->assertCount(3, $allConversations);
 
-        $privateConversations = Chat::conversations()->setUser($this->users[0])->isPrivate()->get();
+        $privateConversations = Chat::conversations()->setParticipant($this->users[0])->isPrivate()->get();
         $this->assertCount(2, $privateConversations);
 
-        $publicConversations = Chat::conversations()->setUser($this->users[0])->isPrivate(false)->get();
+        $publicConversations = Chat::conversations()->setParticipant($this->users[0])->isPrivate(false)->get();
         $this->assertCount(1, $publicConversations);
     }
 }
