@@ -19,7 +19,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         parent::__construct();
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -106,7 +106,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         return factory(User::class, $count)->create();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         (new CreateChatTables())->down();
         $this->rollbackTestTables();
