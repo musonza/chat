@@ -3,7 +3,6 @@
 namespace Musonza\Chat\Tests;
 
 use Chat;
-use Exception;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Musonza\Chat\Exceptions\DirectMessagingExistsException;
 use Musonza\Chat\Exceptions\InvalidDirectMessageNumberOfParticipants;
@@ -246,7 +245,7 @@ class ConversationTest extends TestCase
     /** @test */
     public function it_does_not_duplicate_direct_messaging()
     {
-        Chat::createConversation([$this->users[0], $this->users[1],])
+        Chat::createConversation([$this->users[0], $this->users[1]])
             ->makeDirect();
 
         $this->expectException(DirectMessagingExistsException::class);
@@ -259,7 +258,7 @@ class ConversationTest extends TestCase
     public function it_prevents_additional_participants_to_direct_conversation()
     {
         /** @var Conversation $conversation */
-        $conversation = Chat::createConversation([$this->users[0], $this->users[1],])
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1]])
             ->makeDirect();
 
         $this->expectException(InvalidDirectMessageNumberOfParticipants::class);

@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Musonza\Chat\BaseModel;
-use Musonza\Chat\Chat;
 use Musonza\Chat\ConfigurationManager;
 use Musonza\Chat\Exceptions\DirectMessagingExistsException;
 use Musonza\Chat\Exceptions\InvalidDirectMessageNumberOfParticipants;
@@ -93,8 +92,9 @@ class Conversation extends BaseModel
      *
      * @param $participants
      *
-     * @return Conversation
      * @throws InvalidDirectMessageNumberOfParticipants
+     *
+     * @return Conversation
      */
     public function addParticipants($participants): self
     {
@@ -167,9 +167,10 @@ class Conversation extends BaseModel
      *
      * @param bool $isDirect
      *
-     * @return Conversation
      * @throws InvalidDirectMessageNumberOfParticipants
      * @throws DirectMessagingExistsException
+     *
+     * @return Conversation
      */
     public function makeDirect($isDirect = true)
     {
@@ -360,6 +361,6 @@ class Conversation extends BaseModel
 
     public function isDirectMessage()
     {
-        return !!$this->direct_message;
+        return (bool) $this->direct_message;
     }
 }
