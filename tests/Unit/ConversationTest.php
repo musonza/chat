@@ -302,7 +302,7 @@ class ConversationTest extends TestCase
     }
 
     /**
-     * Conversation Settings
+     * Conversation Settings.
      *
      * @test
      */
@@ -321,8 +321,8 @@ class ConversationTest extends TestCase
             ConfigurationManager::PARTICIPATION_TABLE,
             [
                 'messageable_type' => get_class($this->users[0]),
-                'messageable_id' => $this->users[0]->getKey(),
-                'settings' => json_encode($settings),
+                'messageable_id'   => $this->users[0]->getKey(),
+                'settings'         => json_encode($settings),
             ]
         );
     }

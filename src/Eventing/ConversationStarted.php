@@ -13,6 +13,6 @@ class ConversationStarted extends Event
 
     public function __construct(Conversation $conversation)
     {
-        $this->conversation  = $conversation;
+        $this->conversation = $conversation;
     }
 }
