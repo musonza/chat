@@ -1,16 +1,21 @@
 language: php
 
+env:
+  - ILLUMINATE_VERSION=5.8.*
+matrix:
+  include:
+    - php: 7.2
+      env: ILLUMINATE_VERSION=6.0
+    - php: 7.2
+      env: ILLUMINATE_VERSION=6.*
 php:
   - 7.1
-  - 7.2
-
-env:
-  global:
-    - setup=basic
 
 sudo: false
 
-install:
-  - if [[ $setup = 'basic' ]]; then travis_retry composer install --no-interaction --prefer-source; fi
+before_install:
+  - composer require "illuminate/support:${ILLUMINATE_VERSION}" --no-update
+  -
+install: composer update --prefer-source --no-interaction --dev
 
 script: vendor/bin/phpunit --testdox
