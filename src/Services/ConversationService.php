@@ -115,8 +115,9 @@ class ConversationService
      *
      * @param int | array $userId / array of user ids or an integer
      *
-     * @return Conversation
      * @throws InvalidDirectMessageNumberOfParticipants
+     *
+     * @return Conversation
      */
     public function addParticipants($userId)
     {
