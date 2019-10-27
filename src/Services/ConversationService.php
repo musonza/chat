@@ -105,7 +105,7 @@ class ConversationService
           'perPage'   => $this->perPage,
           'page'      => $this->page,
           'pageName'  => 'page',
-          'filters' => $this->filters,
+          'filters'   => $this->filters,
         ]);
     }
 

@@ -224,12 +224,13 @@ class ConversationTest extends TestCase
     }
 
     /**
-     * DIRECT MESSAGING
+     * DIRECT MESSAGING.
+     *
      * @test
      */
     public function it_creates_direct_messaging()
     {
-        $conversation = Chat::createConversation([$this->users[0], $this->users[1],])
+        $conversation = Chat::createConversation([$this->users[0], $this->users[1]])
             ->makeDirect();
 
         $this->assertTrue($conversation->direct_message);

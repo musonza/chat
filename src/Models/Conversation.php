@@ -183,8 +183,8 @@ class Conversation extends BaseModel
      * Gets conversations for a specific participant.
      *
      * @param Model $participant
+     * @param bool  $isDirectMessage
      *
-     * @param bool $isDirectMessage
      * @return Collection
      */
     public function participantConversations(Model $participant, bool $isDirectMessage = false): Collection
@@ -308,7 +308,7 @@ class Conversation extends BaseModel
             ->where('mc_participation.messageable_type', get_class($participant));
 
         if (isset($filters['private'])) {
-            $paginator = $paginator->where('mc_conversations.private', !!$filters['private']);
+            $paginator = $paginator->where('mc_conversations.private', (bool) $filters['private']);
         }
 
         return $paginator->orderBy('mc_conversations.updated_at', 'DESC')
