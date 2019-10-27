@@ -15,7 +15,7 @@ sudo: false
 
 before_install:
   - composer require "illuminate/support:${ILLUMINATE_VERSION}" --no-update
-  -
+
 install: composer update --prefer-source --no-interaction --dev
 
 script: vendor/bin/phpunit --testdox
