@@ -113,7 +113,7 @@ class Message extends BaseModel
             ->where('message_id', $this->id)
             ->select([
                 '*',
-                'updated_at as read_at'
+                'updated_at as read_at',
             ])
             ->first();
     }
