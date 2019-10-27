@@ -60,10 +60,10 @@ class Message extends BaseModel
     /**
      * Adds a message to a conversation.
      *
-     * @param Conversation            $conversation
-     * @param string                  $body
+     * @param Conversation  $conversation
+     * @param string        $body
      * @param Participation $participant
-     * @param string                  $type
+     * @param string        $type
      *
      * @return Model
      */
