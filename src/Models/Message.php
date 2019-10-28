@@ -30,6 +30,12 @@ class Message extends BaseModel
 
     public function sender()
     {
+        $fields = Chat::senderFieldsWhitelist();
+
+        if ($fields) {
+            return $this->belongsTo(Chat::userModel(), 'user_id')->select($fields);
+        }
+
         return $this->belongsTo(Chat::userModel(), 'user_id');
     }
 

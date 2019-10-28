@@ -26,4 +26,10 @@ return [
      * Automatically convert conversations with more than two users to public
      */
     'make_three_or_more_users_public' => true,
+
+    /**
+     * Specify the fields that you want to return each time for the sender.
+     * If not set or empty, all the columns for the sender will be returned
+     */
+    'sender_fields_whitelist' => [],
 ];

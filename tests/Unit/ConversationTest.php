@@ -304,4 +304,16 @@ class ConversationTest extends TestCase
         $publicConversations = Chat::conversations()->setUser($this->users[0])->isPrivate(false)->get();
         $this->assertCount(1, $publicConversations);
     }
+
+    /** @test */
+    public function it_specifies_fields_to_return_for_sender()
+    {
+        $this->app['config']->set('musonza_chat.sender_fields_whitelist', ['uid', 'email']);
+
+        $conversation = Chat::createConversation([$this->users[0]->getKey(), $this->users[1]->getKey()]);
+        $message = Chat::message('Hello')->from($this->users[0])->to($conversation)->send();
+
+        $this->assertSame(['uid', 'email'], array_keys($message->sender->attributesToArray()));
+    }
+
 }

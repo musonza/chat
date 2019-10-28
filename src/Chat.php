@@ -130,4 +130,11 @@ class Chat
     {
         return config('musonza_chat.make_three_or_more_users_public', true);
     }
+
+    public static function senderFieldsWhitelist()
+    {
+        $fields = config('musonza_chat.sender_fields_whitelist', []);
+
+        return (is_array($fields) && !empty($fields)) ? $fields : null;
+    }
 }
