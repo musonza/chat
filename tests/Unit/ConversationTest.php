@@ -315,5 +315,4 @@ class ConversationTest extends TestCase
 
         $this->assertSame(['uid', 'email'], array_keys($message->sender->attributesToArray()));
     }
-
 }
