@@ -20,9 +20,9 @@ class Conversation extends BaseModel
     protected $table = ConfigurationManager::CONVERSATIONS_TABLE;
     protected $fillable = ['data'];
     protected $casts = [
-        'data' => 'array',
+        'data'           => 'array',
         'direct_message' => 'boolean',
-        'private' => 'boolean',
+        'private'        => 'boolean',
     ];
 
     /**
@@ -334,7 +334,7 @@ class Conversation extends BaseModel
                         ->where('chat_message_notification.messageable_type', get_class($participant))
                         ->whereNull('chat_message_notification.deleted_at');
                 },
-                'conversation.participants.messageable'
+                'conversation.participants.messageable',
             ])
             ->where('chat_participation.messageable_id', $participant->getKey());
 

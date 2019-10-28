@@ -8,7 +8,6 @@ use Musonza\Chat\ConfigurationManager;
 use Musonza\Chat\Exceptions\DirectMessagingExistsException;
 use Musonza\Chat\Exceptions\InvalidDirectMessageNumberOfParticipants;
 use Musonza\Chat\Models\Conversation;
-use Musonza\Chat\Models\Participation;
 use Musonza\Chat\Tests\Helpers\Models\Client;
 
 class ConversationTest extends TestCase
