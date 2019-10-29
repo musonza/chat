@@ -124,6 +124,7 @@ class Chat
     public static function senderFieldsWhitelist()
     {
         $fields = config('musonza_chat.sender_fields_whitelist', []);
+
         return (is_array($fields) && !empty($fields)) ? $fields : null;
     }
 }

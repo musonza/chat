@@ -13,7 +13,7 @@ use Musonza\Chat\Tests\Helpers\Models\Client;
 class ConversationTest extends TestCase
 {
     use DatabaseMigrations;
-    
+
     /** @test */
     public function it_creates_a_conversation()
     {
@@ -180,7 +180,7 @@ class ConversationTest extends TestCase
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
-        
+
         /** @var Collection $conversations */
         $conversations = Chat::conversations()->setParticipant($this->alpha)->get();
 

@@ -252,7 +252,7 @@ class MessageTest extends TestCase
     public function it_specifies_fields_to_return_for_sender()
     {
         $this->app['config']->set('musonza_chat.sender_fields_whitelist', [
-            'name', 'bot_id'
+            'name', 'bot_id',
         ]);
 
         $bot = factory(Bot::class)->create();
@@ -261,6 +261,6 @@ class MessageTest extends TestCase
         $conversation = Chat::createConversation([$client, $bot]);
         Chat::message('Hello')->from($bot)->to($conversation)->send();
 
-        $this->assertSame([ 'name', 'bot_id'], array_keys($conversation->messages[0]->sender));
+        $this->assertSame(['name', 'bot_id'], array_keys($conversation->messages[0]->sender));
     }
 }

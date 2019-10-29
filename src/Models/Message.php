@@ -50,7 +50,7 @@ class Message extends BaseModel
             return $participantModel->getParticipantDetails();
         }
 
-        $fields =  Chat::senderFieldsWhitelist();
+        $fields = Chat::senderFieldsWhitelist();
 
         return $fields ? $this->participation->messageable->only($fields) : $this->participation->messageable;
     }
