@@ -309,6 +309,7 @@ class Conversation extends BaseModel
     /**
      * @param Model $participant
      * @param $options
+     *
      * @return mixed
      */
     private function getConversationsList(Model $participant, $options)
@@ -328,12 +329,12 @@ class Conversation extends BaseModel
             ])
             ->where('chat_participation.messageable_id', $participant->getKey());
 
-        if (isset( $options['filters']['private'])) {
+        if (isset($options['filters']['private'])) {
             $paginator = $paginator->where('c.private', (bool) $options['filters']['private']);
         }
 
-        if (isset( $options['filters']['direct_message'])) {
-            $paginator = $paginator->where('c.direct_message', (bool)  $options['filters']['direct_message']);
+        if (isset($options['filters']['direct_message'])) {
+            $paginator = $paginator->where('c.direct_message', (bool) $options['filters']['direct_message']);
         }
 
         return $paginator
