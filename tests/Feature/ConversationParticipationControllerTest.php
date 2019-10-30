@@ -54,7 +54,7 @@ class ConversationParticipationControllerTest extends TestCase
         $this->getJson(route('conversations.participation.show', [$conversation->getKey(), $participant->getKey()]))
             ->assertStatus(200)
             ->assertJson([
-                'messageable_type' => get_class($userModel)
+                'messageable_type' => get_class($userModel),
             ]);
     }
 
@@ -91,8 +91,8 @@ class ConversationParticipationControllerTest extends TestCase
 
         $payload = [
             'settings' => [
-                'mute_mentions' => true
-            ]
+                'mute_mentions' => true,
+            ],
         ];
 
         $this->putJson(

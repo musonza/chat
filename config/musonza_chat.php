@@ -29,12 +29,12 @@ return [
      */
     'sender_fields_whitelist' => [],
 
-    /**
+    /*
      * Whether to load the package routes file in your application.
      */
     'should_load_routes' => true,
 
-    /**
+    /*
      * Routes configuration
      */
     'routes' => [
@@ -43,7 +43,7 @@ return [
         'middleware'  => ['web'],
     ],
 
-    /**
+    /*
      * Default values for pagination
      */
     'pagination' => [

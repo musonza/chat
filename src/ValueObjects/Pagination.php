@@ -42,8 +42,6 @@ class Pagination
     }
 }
 
-
-
 return [
     'page'     => $pagination['page'] ?? 1,
     'perPage'  => $pagination['perPage'] ?? 25,

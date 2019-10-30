@@ -16,7 +16,7 @@ class GetParticipantMessages extends BaseRequest
         parent::__construct();
         $this->pagination = $pagination;
     }
-    
+
     public function authorized()
     {
         return true;
@@ -25,13 +25,13 @@ class GetParticipantMessages extends BaseRequest
     public function rules()
     {
         return [
-            'participant_id' => 'required',
+            'participant_id'   => 'required',
             'participant_type' => 'required',
-            'page'     => 'integer',
-            'perPage'  => 'integer',
-            'sorting'  => 'string|in:asc,desc',
-            'columns'  => 'array',
-            'pageName' => 'string',
+            'page'             => 'integer',
+            'perPage'          => 'integer',
+            'sorting'          => 'string|in:asc,desc',
+            'columns'          => 'array',
+            'pageName'         => 'string',
         ];
     }
 
