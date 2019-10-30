@@ -3,8 +3,8 @@
 namespace Musonza\Chat\Http\Controllers;
 
 use Chat;
-use Musonza\Chat\Http\Requests\StoreMessage;
 use Musonza\Chat\Http\Requests\GetParticipantMessages;
+use Musonza\Chat\Http\Requests\StoreMessage;
 
 class ConversationMessageController extends Controller
 {

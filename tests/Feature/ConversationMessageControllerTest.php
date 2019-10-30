@@ -19,11 +19,11 @@ class ConversationMessageControllerTest extends TestCase
         Chat::conversation($conversation)->addParticipants([$userModel, $clientModel]);
 
         $payload = [
-            'participant_id' => $userModel->getKey(),
+            'participant_id'   => $userModel->getKey(),
             'participant_type' => get_class($userModel),
-            'message' => [
+            'message'          => [
                 'body' => 'Hello',
-            ]
+            ],
         ];
 
         $this->postJson(route('conversations.messages.store', $conversation->getKey()), $payload)
@@ -48,7 +48,7 @@ class ConversationMessageControllerTest extends TestCase
 
         $parameters = [
              $conversation->getKey(),
-            'participant_id' => $userModel->getKey(),
+            'participant_id'   => $userModel->getKey(),
             'participant_type' => get_class($userModel),
 //            'page' => 1,
 //            'perPage' => 2,
@@ -61,14 +61,14 @@ class ConversationMessageControllerTest extends TestCase
         $this->getJson(route('conversations.messages.index', $parameters))
             ->assertStatus(200)
             ->assertJson([
-                'current_page' => 1
+                'current_page' => 1,
             ])
             ->assertJsonStructure(
                 [
                     'data' => [[
                         'sender',
                         'body',
-                    ]]
+                    ]],
                 ]
             );
     }
