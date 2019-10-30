@@ -29,9 +29,28 @@ return [
      */
     'sender_fields_whitelist' => [],
 
+    /**
+     * Whether to load the package routes file in your application.
+     */
+    'should_load_routes' => true,
+
+    /**
+     * Routes configuration
+     */
     'routes' => [
         'enabled' => false,
         'path_prefix' => 'chat',
         'middleware' => ['web'],
+    ],
+
+    /**
+     * Default values for pagination
+     */
+    'pagination' => [
+        'page'     => 1,
+        'perPage'  => 25,
+        'sorting'  => 'asc',
+        'columns'  => ['*'],
+        'pageName' => 'page',
     ],
 ];

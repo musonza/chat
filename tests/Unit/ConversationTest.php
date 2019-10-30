@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Musonza\Chat\Exceptions\DirectMessagingExistsException;
 use Musonza\Chat\Exceptions\InvalidDirectMessageNumberOfParticipants;
 use Musonza\Chat\Models\Conversation;
+use Musonza\Chat\Models\Participation;
 use Musonza\Chat\Tests\Helpers\Models\Client;
 
 class ConversationTest extends TestCase
@@ -314,18 +315,30 @@ class ConversationTest extends TestCase
     public function it_can_update_participant_conversation_settings()
     {
         /** @var Conversation $conversation */
-        $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
+        $conversation = Chat::createConversation([$this->alpha]);
 
         $settings = ['mute_mentions' => true];
 
         Chat::conversation($conversation)
             ->setParticipant($this->alpha)
-            ->updateSettings($settings);
+            ->getParticipation()
+            ->update(['settings' => $settings]);
 
         $this->assertEquals(
             $settings,
             $this->alpha->participation->where('conversation_id', $conversation->id)->first()->settings
         );
+    }
+
+    /** @test */
+    public function it_can_get_participation_info_for_a_model()
+    {
+        /** @var Conversation $conversation */
+        $conversation = Chat::createConversation([$this->alpha]);
+
+        $participation = Chat::conversation($conversation)->setParticipant($this->alpha)->getParticipation();
+
+        $this->assertInstanceOf(Participation::class, $participation);
     }
 
     /** @test */

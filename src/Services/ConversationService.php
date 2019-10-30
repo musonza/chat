@@ -7,8 +7,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Musonza\Chat\Eventing\ConversationStarted;
 use Musonza\Chat\Models\Conversation;
-use Musonza\Chat\Models\Message;
-use Musonza\Chat\Models\Participation;
 use Musonza\Chat\Traits\Paginates;
 use Musonza\Chat\Traits\SetsParticipants;
 
@@ -191,15 +189,8 @@ class ConversationService
         return $this;
     }
 
-    public function updateSettings(array $settings)
+    public function getParticipation()
     {
-        /** @var Participation $participation */
-        $participation = $this->participant
-            ->participation()
-            ->where('conversation_id', $this->conversation->getKey())
-            ->first();
-
-        $participation->settings = $settings;
-        $participation->save();
+        return $this->participant->participation()->first();
     }
 }

@@ -38,6 +38,8 @@ Want to use any Laravel model as Chat participant? Follow this PR https://github
   - [Get messages in a conversation](#get-messages-in-a-conversation)
   - [Get recent messages](#get-recent-messages)
   - [Get participants in a conversation](#get-participants-in-a-conversation)
+  - [Get participation entry for a Model in a conversation](#Get-participation-entry-for-a-Model-in-a-conversation)
+  - [Update participation settings](#Update-participation-settings)
 - [License](#license)
 
 </details>
@@ -354,6 +356,25 @@ To get the `conversations` simply call `$paginated->items()`
 
 ```php
 $participants = $conversation->participants;
+```
+
+#### Get participation entry for a Model in a conversation
+
+```php
+Chat::conversation($conversation)->setParticipant($model)->getParticipation();
+```
+
+#### Update participation settings
+
+Set Conversation settings for participant (example: mute_mentions, mute_conversation)
+
+```php
+$settings = ['mute_mentions' => true];
+
+Chat::conversation($conversation)
+    ->setParticipant($this->alpha)
+    ->getParticipation()
+    ->update(['settings' => $settings]);
 ```
 
 ## License

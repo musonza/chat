@@ -4,7 +4,9 @@ namespace Musonza\Chat\Http\Controllers;
 
 use Chat;
 use Musonza\Chat\Http\Requests\StoreParticipation;
+use Musonza\Chat\Http\Requests\UpdateParticipation;
 use Musonza\Chat\Models\Participation;
+use Symfony\Component\HttpFoundation\Response;
 
 class ConversationParticipationController extends Controller
 {
@@ -15,7 +17,34 @@ class ConversationParticipationController extends Controller
 
         return response($conversation->participants);
     }
-    
+
+    public function index($conversationId)
+    {
+        $conversation = Chat::conversations()->getById($conversationId);
+
+        return response($conversation->participants);
+    }
+
+    public function show($conversationId, $participationId)
+    {
+        $participation = Participation::find($participationId);
+
+        return response($participation);
+    }
+
+    public function update(UpdateParticipation $request, $conversationId, $participationId)
+    {
+        $participation = Participation::find($participationId);
+
+        if ($participation->conversation_id != $conversationId) {
+            abort(Response::HTTP_FORBIDDEN);
+        }
+
+        $participation->update($request->validated());
+
+        return response($participation);
+    }
+
     public function destroy($conversationId, $participationId)
     {
         $conversation = Chat::conversations()->getById($conversationId);
