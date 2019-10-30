@@ -11,16 +11,16 @@ $middleware = config('musonza_chat.routes.middleware');
 
 Route::group([
     'middleware' => $middleware,
-    'namespace' => 'Musonza\Chat\Http\Controllers',
-    'prefix' => $chatRoutesPrefix
+    'namespace'  => 'Musonza\Chat\Http\Controllers',
+    'prefix'     => $chatRoutesPrefix,
 ], function () use ($chatRoutesPrefix) {
-    /** Conversation */
+    /* Conversation */
     Route::post('/conversations', 'ConversationController@store')->name('conversations.store');
     Route::get('/conversations/{id}', 'ConversationController@show')->name('conversations.show');
     Route::put('/conversations/{id}', 'ConversationController@update')->name('conversations.update');
     Route::delete('/conversations/{id}', 'ConversationController@destroy')->name('conversations.destroy');
 
-    /** Conversation Participation */
+    /* Conversation Participation */
     Route::post('/conversations/{id}/participation', 'ConversationParticipationController@store')
         ->name('conversations.participation.store');
     Route::delete('/conversations/{id}/participation/{participation_id}', 'ConversationParticipationController@destroy')

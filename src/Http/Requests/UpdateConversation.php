@@ -14,7 +14,7 @@ class UpdateConversation extends FormRequest
     public function rules()
     {
         return [
-            'data' => 'array'
+            'data' => 'array',
         ];
     }
 }
