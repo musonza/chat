@@ -30,8 +30,8 @@ return [
     'sender_fields_whitelist' => [],
 
     'routes' => [
-        'enabled' => false,
+        'enabled'     => false,
         'path_prefix' => 'chat',
-        'middleware' => ['web'],
+        'middleware'  => ['web'],
     ],
 ];

@@ -23,7 +23,7 @@ class ChatServiceProvider extends ServiceProvider
         $this->publishMigrations();
         $this->publishConfig();
 
-        require __DIR__ . '/Http/routes.php';
+        require __DIR__.'/Http/routes.php';
     }
 
     /**

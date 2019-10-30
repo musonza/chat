@@ -14,10 +14,10 @@ class StoreConversation extends FormRequest
     public function rules()
     {
         return [
-            'participants' => 'array',
-            'participants.*.id' => 'required',
+            'participants'        => 'array',
+            'participants.*.id'   => 'required',
             'participants.*.type' => 'required|string',
-            'data' => 'array'
+            'data'                => 'array',
         ];
     }
 
