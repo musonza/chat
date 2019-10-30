@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class BaseModel extends Model
 {
-    protected $prefix = 'mc_';
+    protected $tablePrefix = 'chat_';
 }

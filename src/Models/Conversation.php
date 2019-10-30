@@ -2,6 +2,7 @@
 
 namespace Musonza\Chat\Models;
 
+use Chat;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,6 +13,7 @@ use Musonza\Chat\BaseModel;
 use Musonza\Chat\ConfigurationManager;
 use Musonza\Chat\Eventing\ParticipantsJoined;
 use Musonza\Chat\Eventing\ParticipantsLeft;
+use Musonza\Chat\Exceptions\DeletingConversationWithParticipantsException;
 use Musonza\Chat\Exceptions\DirectMessagingExistsException;
 use Musonza\Chat\Exceptions\InvalidDirectMessageNumberOfParticipants;
 
@@ -24,6 +26,15 @@ class Conversation extends BaseModel
         'direct_message' => 'boolean',
         'private'        => 'boolean',
     ];
+
+    public function delete()
+    {
+        if ($this->participants()->count()) {
+            throw new DeletingConversationWithParticipantsException();
+        }
+
+        return parent::delete();
+    }
 
     /**
      * Conversation participants.
@@ -43,7 +54,7 @@ class Conversation extends BaseModel
     public function last_message()
     {
         return $this->hasOne(Message::class)
-            ->orderBy('chat_messages.id', 'desc')
+            ->orderBy($this->tablePrefix . 'messages.id', 'desc')
             ->with('participation');
     }
 
@@ -188,14 +199,13 @@ class Conversation extends BaseModel
         return $this;
     }
 
+    /**
+     * @throws DirectMessagingExistsException
+     */
     private function ensureNoDirectMessagingExist()
     {
         $participants = $this->participants()->get()->pluck('messageable');
-
-        $modelOne = $participants[0];
-        $modelTwo = $participants[1];
-
-        $common = \Chat::conversations()->between($modelOne, $modelTwo);
+        $common = Chat::conversations()->between($participants[0], $participants[1]);
 
         if (!is_null($common)) {
             throw new DirectMessagingExistsException();
@@ -285,19 +295,19 @@ class Conversation extends BaseModel
     private function getConversationMessages(Model $participant, $paginationParams, $deleted)
     {
         $messages = $this->messages()
-            ->join('chat_message_notification', 'chat_message_notification.message_id', '=', 'chat_messages.id')
-            ->where('chat_message_notification.messageable_type', get_class($participant))
-            ->where('chat_message_notification.messageable_id', $participant->getKey());
-        $messages = $deleted ? $messages->whereNotNull('chat_message_notification.deleted_at') : $messages->whereNull('chat_message_notification.deleted_at');
-        $messages = $messages->orderBy('chat_messages.id', $paginationParams['sorting'])
+            ->join($this->tablePrefix . 'message_notification', $this->tablePrefix . 'message_notification.message_id', '=', $this->tablePrefix . 'messages.id')
+            ->where($this->tablePrefix . 'message_notification.messageable_type', get_class($participant))
+            ->where($this->tablePrefix . 'message_notification.messageable_id', $participant->getKey());
+        $messages = $deleted ? $messages->whereNotNull($this->tablePrefix . 'message_notification.deleted_at') : $messages->whereNull($this->tablePrefix . 'message_notification.deleted_at');
+        $messages = $messages->orderBy($this->tablePrefix . 'messages.id', $paginationParams['sorting'])
             ->paginate(
                 $paginationParams['perPage'],
                 [
-                    'chat_message_notification.updated_at as read_at',
-                    'chat_message_notification.deleted_at as deleted_at',
-                    'chat_message_notification.messageable_id',
-                    'chat_message_notification.id as notification_id',
-                    'chat_messages.*',
+                    $this->tablePrefix . 'message_notification.updated_at as read_at',
+                    $this->tablePrefix . 'message_notification.deleted_at as deleted_at',
+                    $this->tablePrefix . 'message_notification.messageable_id',
+                    $this->tablePrefix . 'message_notification.id as notification_id',
+                    $this->tablePrefix . 'messages.*',
                 ],
                 $paginationParams['pageName'],
                 $paginationParams['page']
@@ -316,18 +326,18 @@ class Conversation extends BaseModel
     {
         /** @var Builder $paginator */
         $paginator = $participant->participation()
-            ->join('chat_conversations as c', 'chat_participation.conversation_id', '=', 'c.id')
+            ->join($this->tablePrefix . 'conversations as c', $this->tablePrefix . 'participation.conversation_id', '=', 'c.id')
             ->with([
                 'conversation.last_message' => function ($query) use ($participant) {
-                    $query->join('chat_message_notification', 'chat_message_notification.message_id', '=', 'chat_messages.id')
-                        ->select('chat_message_notification.*', 'chat_messages.*')
-                        ->where('chat_message_notification.messageable_id', $participant->getKey())
-                        ->where('chat_message_notification.messageable_type', get_class($participant))
-                        ->whereNull('chat_message_notification.deleted_at');
+                    $query->join($this->tablePrefix . 'message_notification', $this->tablePrefix . 'message_notification.message_id', '=', $this->tablePrefix . 'messages.id')
+                        ->select($this->tablePrefix . 'message_notification.*', $this->tablePrefix . 'messages.*')
+                        ->where($this->tablePrefix . 'message_notification.messageable_id', $participant->getKey())
+                        ->where($this->tablePrefix . 'message_notification.messageable_type', get_class($participant))
+                        ->whereNull($this->tablePrefix . 'message_notification.deleted_at');
                 },
                 'conversation.participants.messageable',
             ])
-            ->where('chat_participation.messageable_id', $participant->getKey());
+            ->where($this->tablePrefix . 'participation.messageable_id', $participant->getKey());
 
         if (isset($options['filters']['private'])) {
             $paginator = $paginator->where('c.private', (bool) $options['filters']['private']);
@@ -341,13 +351,13 @@ class Conversation extends BaseModel
             ->orderBy('c.updated_at', 'DESC')
             ->orderBy('c.id', 'DESC')
             ->distinct('c.id')
-            ->paginate($options['perPage'], ['chat_participation.*'], $options['pageName'], $options['page']);
+            ->paginate($options['perPage'], [$this->tablePrefix . 'participation.*'], $options['pageName'], $options['page']);
     }
 
     private function notifications(Model $participant, $readAll)
     {
         $notifications = MessageNotification::where('messageable_id', $participant->getKey())
-            ->where('chat_message_notification.messageable_type', get_class($participant))
+            ->where($this->tablePrefix . 'message_notification.messageable_type', get_class($participant))
             ->where('conversation_id', $this->id);
 
         if ($readAll) {
@@ -360,12 +370,12 @@ class Conversation extends BaseModel
     private function clearConversation($participant): void
     {
         MessageNotification::where('messageable_id', $participant->getKey())
-            ->where('chat_message_notification.messageable_type', get_class($participant))
+            ->where($this->tablePrefix . 'message_notification.messageable_type', get_class($participant))
             ->where('conversation_id', $this->getKey())
             ->delete();
     }
 
-    public function isDirectMessage()
+    public function isDirectMessage(): bool
     {
         return (bool) $this->direct_message;
     }

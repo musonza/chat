@@ -2,6 +2,7 @@
 
 namespace Musonza\Chat\Traits;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Musonza\Chat\Exceptions\InvalidDirectMessageNumberOfParticipants;
 use Musonza\Chat\Models\Conversation;
 use Musonza\Chat\Models\Participation;
@@ -13,7 +14,10 @@ trait Messageable
         return $this->participation->pluck('conversation');
     }
 
-    public function participation()
+    /**
+     * @return MorphMany
+     */
+    public function participation(): MorphMany
     {
         return $this->morphMany(Participation::class, 'messageable');
     }

@@ -1,6 +1,7 @@
 <?php
 
 use Faker\Generator as Faker;
+use Musonza\Chat\Models\Conversation;
 use Musonza\Chat\Tests\Helpers\Models\Bot;
 use Musonza\Chat\Tests\Helpers\Models\Client;
 use Musonza\Chat\Tests\Helpers\Models\User;
@@ -36,5 +37,11 @@ $factory->define(Client::class, function (Faker $faker) {
 $factory->define(Bot::class, function (Faker $faker) {
     return [
         'name'           => $faker->name,
+    ];
+});
+
+$factory->define(Conversation::class, function (Faker $faker) {
+    return [
+        'data' => ['title' => $faker->sentence]
     ];
 });

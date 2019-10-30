@@ -90,6 +90,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         $app['config']->set('musonza_chat.sent_message_event', 'Musonza\Chat\Eventing\MessageWasSent');
         $app['config']->set('musonza_chat.broadcasts', false);
         $app['config']->set('musonza_chat.user_model_primary_key', null);
+        $app['config']->set('musonza_chat.routes.enabled', true);
     }
 
     protected function getPackageProviders($app)

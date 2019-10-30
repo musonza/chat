@@ -28,4 +28,10 @@ return [
      * If not set or empty, all the columns for the sender will be returned
      */
     'sender_fields_whitelist' => [],
+
+    'routes' => [
+        'enabled' => false,
+        'path_prefix' => 'chat',
+        'middleware' => ['web'],
+    ],
 ];
