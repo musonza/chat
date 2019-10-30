@@ -11,17 +11,22 @@ $middleware = config('musonza_chat.routes.middleware');
 
 Route::group([
     'middleware' => $middleware,
-    'namespace' => 'Musonza\Chat\Http\Controllers',
-    'prefix' => $chatRoutesPrefix
+    'namespace'  => 'Musonza\Chat\Http\Controllers',
+    'prefix'     => $chatRoutesPrefix,
 ], function () use ($chatRoutesPrefix) {
-    /** Conversation */
+    /* Conversation */
     Route::post('/conversations', 'ConversationController@store')->name('conversations.store');
     Route::get('/conversations/{id}', 'ConversationController@show')->name('conversations.show');
     Route::put('/conversations/{id}', 'ConversationController@update')->name('conversations.update');
     Route::delete('/conversations/{id}', 'ConversationController@destroy')->name('conversations.destroy');
 
+<<<<<<< HEAD
     /** Conversation Participation */
     Route::post('/conversations/{id}/participants', 'ConversationParticipationController@store')
+=======
+    /* Conversation Participation */
+    Route::post('/conversations/{id}/participation', 'ConversationParticipationController@store')
+>>>>>>> f6b36792400fb3f9350c0b0a8816ef0b31b29638
         ->name('conversations.participation.store');
     Route::delete('/conversations/{id}/participants/{participation_id}', 'ConversationParticipationController@destroy')
         ->name('conversations.participation.destroy');
@@ -38,4 +43,11 @@ Route::group([
     Route::get('/conversations/{id}/messages', 'ConversationMessageController@index')
         ->name('conversations.messages.index');
 
+<<<<<<< HEAD
 });
+=======
+    Route::get('/conversations/{id}participants', 'ConversationParticipationController@index');
+    Route::get('/conversations/{id}/participants/{participation_id}', 'ConversationParticipationController@show');
+    Route::put('/conversations/{id}/participants/{participation_id}', 'ConversationParticipationController@update');
+});
+>>>>>>> f6b36792400fb3f9350c0b0a8816ef0b31b29638

@@ -19,8 +19,8 @@ class ConversationParticipationControllerTest extends TestCase
         $payload = [
             'participants' => [
                 ['id' => $userModel->getKey(), 'type' => get_class($userModel)],
-                ['id' => $clientModel->getKey(), 'type' => get_class($clientModel)]
-            ]
+                ['id' => $clientModel->getKey(), 'type' => get_class($clientModel)],
+            ],
         ];
 
         $this->postJson(route('conversations.participation.store', [$conversation->getKey()]), $payload)

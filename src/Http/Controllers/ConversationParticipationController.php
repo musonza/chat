@@ -18,6 +18,7 @@ class ConversationParticipationController extends Controller
         return response($conversation->participants);
     }
 
+<<<<<<< HEAD
     public function index($conversationId)
     {
         $conversation = Chat::conversations()->getById($conversationId);
@@ -45,6 +46,8 @@ class ConversationParticipationController extends Controller
         return response($participation);
     }
 
+=======
+>>>>>>> f6b36792400fb3f9350c0b0a8816ef0b31b29638
     public function destroy($conversationId, $participationId)
     {
         $conversation = Chat::conversations()->getById($conversationId);

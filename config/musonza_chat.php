@@ -38,9 +38,9 @@ return [
      * Routes configuration
      */
     'routes' => [
-        'enabled' => false,
+        'enabled'     => false,
         'path_prefix' => 'chat',
-        'middleware' => ['web'],
+        'middleware'  => ['web'],
     ],
 
     /**

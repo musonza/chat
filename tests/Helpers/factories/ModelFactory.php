@@ -42,6 +42,6 @@ $factory->define(Bot::class, function (Faker $faker) {
 
 $factory->define(Conversation::class, function (Faker $faker) {
     return [
-        'data' => ['title' => $faker->sentence]
+        'data' => ['title' => $faker->sentence],
     ];
 });
