@@ -44,7 +44,7 @@ class ConversationParticipationController extends Controller
 
         return response($participation);
     }
-    
+
     public function destroy($conversationId, $participationId)
     {
         $conversation = Chat::conversations()->getById($conversationId);

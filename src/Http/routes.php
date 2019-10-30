@@ -20,7 +20,6 @@ Route::group([
     Route::put('/conversations/{id}', 'ConversationController@update')->name('conversations.update');
     Route::delete('/conversations/{id}', 'ConversationController@destroy')->name('conversations.destroy');
 
-
     /* Conversation Participation */
     Route::post('/conversations/{id}/participation', 'ConversationParticipationController@store')
         ->name('conversations.participation.store');
@@ -33,7 +32,7 @@ Route::group([
     Route::get('/conversations/{id}/participants', 'ConversationParticipationController@index')
         ->name('conversations.participation.index');
 
-    /** Messaging */
+    /* Messaging */
     Route::post('/conversations/{id}/messages', 'ConversationMessageController@store')
         ->name('conversations.messages.store');
     Route::get('/conversations/{id}/messages', 'ConversationMessageController@index')
