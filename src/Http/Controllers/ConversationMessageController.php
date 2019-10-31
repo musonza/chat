@@ -49,6 +49,6 @@ class ConversationMessageController extends Controller
             ->setParticipant($request->getParticipant())
             ->delete();
 
-        return response("");
+        return response('');
     }
 }

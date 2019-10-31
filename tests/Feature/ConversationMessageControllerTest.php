@@ -51,11 +51,11 @@ class ConversationMessageControllerTest extends TestCase
              $conversation->getKey(),
             'participant_id'   => $userModel->getKey(),
             'participant_type' => get_class($userModel),
-            'page' => 1,
-            'perPage' => 2,
-            'sorting' => "desc",
-            'columns' => [
-                '*'
+            'page'             => 1,
+            'perPage'          => 2,
+            'sorting'          => 'desc',
+            'columns'          => [
+                '*',
             ],
         ];
 
@@ -70,7 +70,7 @@ class ConversationMessageControllerTest extends TestCase
                         [
                             'sender',
                             'body',
-                        ]
+                        ],
                     ],
                 ]
             );
