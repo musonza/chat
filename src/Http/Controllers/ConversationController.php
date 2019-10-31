@@ -18,6 +18,7 @@ class ConversationController extends Controller
     public function index()
     {
         $conversations = Chat::conversations()->conversation->all();
+
         return response($conversations);
     }
 
