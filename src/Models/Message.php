@@ -97,13 +97,13 @@ class Message extends BaseModel
     /**
      * Creates an entry in the message_notification table for each participant
      * This will be used to determine if a message is read or deleted.
+     *
      * @param Message $message
      */
     protected function createNotifications($message)
     {
         MessageNotification::make($message, $message->conversation);
     }
-
 
     /**
      * Deletes a message for the participant.
