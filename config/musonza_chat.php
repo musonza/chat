@@ -53,12 +53,12 @@ return [
         'pageName' => 'page',
     ],
 
-    /**
+    /*
      * Model Transformers
      */
     'transformers' => [
         'conversation' => null,
-        'message' => null,
-        'participant' => null,
-    ]
+        'message'      => null,
+        'participant'  => null,
+    ],
 ];
