@@ -28,24 +28,24 @@ class MessageWasSent extends Event implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('mc-chat-conversation.' . $this->message->conversation_id);
+        return new PrivateChannel('mc-chat-conversation.'.$this->message->conversation_id);
     }
 
     public function broadcastWith()
     {
         return [
             'message' => [
-                'id' => $this->message->id,
-                'body' => $this->message->body,
+                'id'              => $this->message->id,
+                'body'            => $this->message->body,
                 'conversation_id' => $this->message->conversation_id,
-                'type' => $this->message->type,
-                'created_at' => $this->message->created_at,
-                'sender' => [
-                    'id' => $this->message->sender->id,
-                    'name' => $this->message->sender->name,
+                'type'            => $this->message->type,
+                'created_at'      => $this->message->created_at,
+                'sender'          => [
+                    'id'               => $this->message->sender->id,
+                    'name'             => $this->message->sender->name,
                     'messageable_type' => $this->message->sender->participation[0]->messageable_type,
                     'participation_id' => $this->message->sender->participation[0]->id,
-                ]
+                ],
             ],
         ];
     }
