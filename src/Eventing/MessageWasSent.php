@@ -35,12 +35,12 @@ class MessageWasSent extends Event implements ShouldBroadcast
     {
         return [
             'message' => [
-                'id' => $this->message->getKey(),
-                'body' => $this->message->body,
+                'id'              => $this->message->getKey(),
+                'body'            => $this->message->body,
                 'conversation_id' => $this->message->conversation_id,
-                'type' => $this->message->type,
-                'created_at' => $this->message->created_at,
-                'sender' => $this->message->sender,
+                'type'            => $this->message->type,
+                'created_at'      => $this->message->created_at,
+                'sender'          => $this->message->sender,
             ],
         ];
     }
