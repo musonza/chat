@@ -21,14 +21,16 @@ class ConversationService
      */
     public $conversation;
 
+    public $directMessage = false;
+
     public function __construct(Conversation $conversation)
     {
         $this->conversation = $conversation;
     }
 
-    public function start($participants, $data = [])
+    public function start(array $payload)
     {
-        $conversation = $this->conversation->start($participants, $data);
+        $conversation = $this->conversation->start($payload);
 
         event(new ConversationStarted($conversation));
 

@@ -49,7 +49,20 @@ class Chat
      */
     public function createConversation(array $participants, array $data = [])
     {
-        return $this->conversationService->start($participants, $data);
+        $payload = [
+            'participants' => $participants,
+            'data' => $data,
+            'direct_message' => $this->conversationService->directMessage,
+        ];
+
+        return $this->conversationService->start($payload);
+    }
+
+    public function makeDirect()
+    {
+        $this->conversationService->directMessage = true;
+
+        return $this;
     }
 
     /**

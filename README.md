@@ -141,7 +141,12 @@ $conversation = Chat::createConversation($participants)->makePrivate();
 $conversation = Chat::createConversation($participants)->makePrivate(false);
 
 // Create a direct message
+
+// Make direct conversation after creation
 $conversation = Chat::createConversation($participants)->makeDirect();
+
+// Specify intent for direct conversation before creation
+$conversation = Chat::makeDirect()->createConversation($participants);
 ```
 
 > **Note:** You will not be able to add additional participants to a direct conversation. 

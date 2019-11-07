@@ -45,8 +45,8 @@ class ChatServiceProvider extends ServiceProvider
      */
     private function registerChat()
     {
-        $this->app->bind('chat', function () {
-            return $this->app->make(\Musonza\Chat\Chat::class);
+        $this->app->bind('\Musonza\Chat\Chat', function () {
+            return $this->app->make(Chat::class);
         });
     }
 

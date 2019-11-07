@@ -20,7 +20,7 @@ use Musonza\Chat\Exceptions\InvalidDirectMessageNumberOfParticipants;
 class Conversation extends BaseModel
 {
     protected $table = ConfigurationManager::CONVERSATIONS_TABLE;
-    protected $fillable = ['data'];
+    protected $fillable = ['data', 'direct_message'];
     protected $casts = [
         'data'           => 'array',
         'direct_message' => 'boolean',
@@ -148,18 +148,21 @@ class Conversation extends BaseModel
     /**
      * Starts a new conversation.
      *
-     * @param array $participants
-     * @param array $data
-     *
+     * @param array $payload
      * @return Conversation
+     * @throws InvalidDirectMessageNumberOfParticipants
      */
-    public function start(array $participants, $data = []): self
+    public function start(array $payload): self
     {
-        /** @var Conversation $conversation */
-        $conversation = $this->create(['data' => $data]);
+        if ($payload['direct_message'] && count($payload['participants']) > 2) {
+            throw new InvalidDirectMessageNumberOfParticipants();
+        }
 
-        if ($participants) {
-            $conversation->addParticipants($participants);
+        /** @var Conversation $conversation */
+        $conversation = $this->create(['data' => $payload['data'], 'direct_message' => !!$payload['direct_message']]);
+
+        if ($payload['participants']) {
+            $conversation->addParticipants($payload['participants']);
         }
 
         return $conversation;
@@ -210,6 +213,7 @@ class Conversation extends BaseModel
     private function ensureNoDirectMessagingExist()
     {
         $participants = $this->participants()->get()->pluck('messageable');
+        /** @var Conversation $common */
         $common = Chat::conversations()->between($participants[0], $participants[1]);
 
         if (!is_null($common)) {
