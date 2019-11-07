@@ -149,8 +149,10 @@ class Conversation extends BaseModel
      * Starts a new conversation.
      *
      * @param array $payload
-     * @return Conversation
+     *
      * @throws InvalidDirectMessageNumberOfParticipants
+     *
+     * @return Conversation
      */
     public function start(array $payload): self
     {
@@ -159,7 +161,7 @@ class Conversation extends BaseModel
         }
 
         /** @var Conversation $conversation */
-        $conversation = $this->create(['data' => $payload['data'], 'direct_message' => !!$payload['direct_message']]);
+        $conversation = $this->create(['data' => $payload['data'], 'direct_message' => (bool) $payload['direct_message']]);
 
         if ($payload['participants']) {
             $conversation->addParticipants($payload['participants']);
