@@ -5,7 +5,6 @@ namespace Musonza\Chat\Services;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Musonza\Chat\ConfigurationManager;
 use Musonza\Chat\Eventing\ConversationStarted;
 use Musonza\Chat\Models\Conversation;
 use Musonza\Chat\Traits\Paginates;

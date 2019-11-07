@@ -150,10 +150,10 @@ class Conversation extends BaseModel
      *
      * @param array $payload
      *
-     * @return Conversation
      * @throws DirectMessagingExistsException
-     *
      * @throws InvalidDirectMessageNumberOfParticipants
+     *
+     * @return Conversation
      */
     public function start(array $payload): self
     {
@@ -218,6 +218,7 @@ class Conversation extends BaseModel
 
     /**
      * @param $participants
+     *
      * @throws DirectMessagingExistsException
      */
     private function ensureNoDirectMessagingExist($participants)

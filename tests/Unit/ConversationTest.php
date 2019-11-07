@@ -276,7 +276,7 @@ class ConversationTest extends TestCase
     /** @test */
     public function it_can_return_a_conversation_between_users()
     {
-        /** @var  Conversation $conversation */
+        /** @var Conversation $conversation */
 //        $conversation = Chat::makeDirect()->createConversation([$this->alpha, $this->bravo]);
         $conversation = Chat::createConversation([$this->alpha, $this->bravo])->makeDirect();
 
