@@ -50,8 +50,8 @@ class Chat
     public function createConversation(array $participants, array $data = [])
     {
         $payload = [
-            'participants' => $participants,
-            'data' => $data,
+            'participants'   => $participants,
+            'data'           => $data,
             'direct_message' => $this->conversationService->directMessage,
         ];
 
