@@ -86,11 +86,11 @@ class ConversationService
     public function between(Model $participantOne, Model $participantTwo)
     {
         $participantOneConversationIds = $this->conversation
-            ->participantConversations($participantOne, true)
+            ->participantConversations($participantOne, false)
             ->pluck('id');
 
         $participantTwoConversationIds = $this->conversation
-            ->participantConversations($participantTwo, true)
+            ->participantConversations($participantTwo, false)
             ->pluck('id');
 
         $common = $this->getConversationsInCommon($participantOneConversationIds, $participantTwoConversationIds);
