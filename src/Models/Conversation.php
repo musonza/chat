@@ -316,7 +316,7 @@ class Conversation extends BaseModel
         $messages = $this->messages()
             ->join($this->tablePrefix.'message_notifications', $this->tablePrefix.'message_notifications.message_id', '=', $this->tablePrefix.'messages.id')
             ->where($this->tablePrefix.'message_notifications.messageable_type', get_class($participant))
-            ->where($this->tablePrefix.'message_notifications.messageable_id', $participant->getKey());
+            ->where($this->tablePrefix.'message_notifications.is_sender', 1);
         $messages = $deleted ? $messages->whereNotNull($this->tablePrefix.'message_notifications.deleted_at') : $messages->whereNull($this->tablePrefix.'message_notifications.deleted_at');
         $messages = $messages->orderBy($this->tablePrefix.'messages.id', $paginationParams['sorting'])
             ->paginate(
