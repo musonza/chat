@@ -124,7 +124,9 @@ class Message extends BaseModel
             ->where('message_id', $this->getKey())
             ->delete();
 
-        event(new AllMessagesDeleted($this));
+        if ($this->unDeletedCount() === 0) {
+            event(new AllMessagesDeleted($this));
+        }
     }
 
     public function unDeletedCount()
