@@ -27,6 +27,7 @@ Create a Chat application for your multiple Models
   - [Mark whole conversation as read](#mark-whole-conversation-as-read)
   - [Unread messages count](#unread-messages-count)
   - [Delete a message](#delete-a-message)
+  - [Cleanup Deleted Messages](#cleanup-deleted-messages)
   - [Clear a conversation](#clear-a-conversation)
   - [Get participant conversations](#Get-participant-conversations)
   - [Get a conversation between two participants](#get-a-conversation-between-two-participants)
@@ -233,6 +234,21 @@ Chat::conversation($conversation)->setParticipant($participantModel)->unreadCoun
 ```php
 Chat::message($message)->setParticipant($participantModel)->delete();
 ```
+
+#### Cleanup Deleted Messages
+
+What to cleanup when all participants have deleted a `$message`?
+
+```php
+
+if ($message->unDeletedCount === 0) {
+    // cleanup, delete files associated with message etc
+}
+
+```
+
+Each time a user deletes a message an event `MessageWasDeleted` is fired. You can listen for that event and access
+the message object `$event->message`.
 
 #### Clear a conversation
 
