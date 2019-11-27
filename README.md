@@ -239,16 +239,7 @@ Chat::message($message)->setParticipant($participantModel)->delete();
 
 What to cleanup when all participants have deleted a `$message`?
 
-```php
-
-if ($message->unDeletedCount === 0) {
-    // cleanup, delete files associated with message etc
-}
-
-```
-
-Each time a user deletes a message an event `MessageWasDeleted` is fired. You can listen for that event and access
-the message object `$event->message`.
+Listen for `AllMessagesDeletedEvent`
 
 #### Clear a conversation
 

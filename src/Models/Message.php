@@ -7,7 +7,7 @@ use Musonza\Chat\BaseModel;
 use Musonza\Chat\Chat;
 use Musonza\Chat\ConfigurationManager;
 use Musonza\Chat\Eventing\EventGenerator;
-use Musonza\Chat\Eventing\MessageWasDeleted;
+use Musonza\Chat\Eventing\AllMessagesDeleted;
 use Musonza\Chat\Eventing\MessageWasSent;
 
 class Message extends BaseModel
@@ -124,7 +124,7 @@ class Message extends BaseModel
             ->where('message_id', $this->getKey())
             ->delete();
 
-        event(new MessageWasDeleted($this));
+        event(new AllMessagesDeleted($this));
     }
 
     public function unDeletedCount()
