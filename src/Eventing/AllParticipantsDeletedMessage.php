@@ -4,7 +4,7 @@ namespace Musonza\Chat\Eventing;
 
 use Musonza\Chat\Models\Message;
 
-class AllMessagesDeleted extends Event
+class AllParticipantsDeletedMessage extends Event
 {
     public $message;
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Musonza\Chat\BaseModel;
 use Musonza\Chat\Chat;
 use Musonza\Chat\ConfigurationManager;
-use Musonza\Chat\Eventing\AllMessagesDeleted;
+use Musonza\Chat\Eventing\AllParticipantsDeletedMessage;
 use Musonza\Chat\Eventing\EventGenerator;
 use Musonza\Chat\Eventing\MessageWasSent;
 
@@ -125,7 +125,7 @@ class Message extends BaseModel
             ->delete();
 
         if ($this->unDeletedCount() === 0) {
-            event(new AllMessagesDeleted($this));
+            event(new AllParticipantsDeletedMessage($this));
         }
     }
 

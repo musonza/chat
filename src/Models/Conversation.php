@@ -11,6 +11,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Musonza\Chat\BaseModel;
 use Musonza\Chat\ConfigurationManager;
+use Musonza\Chat\Eventing\AllParticipantsClearedConversation;
 use Musonza\Chat\Eventing\ParticipantsJoined;
 use Musonza\Chat\Eventing\ParticipantsLeft;
 use Musonza\Chat\Exceptions\DeletingConversationWithParticipantsException;
@@ -288,6 +289,10 @@ class Conversation extends BaseModel
     public function clear($participant): void
     {
         $this->clearConversation($participant);
+
+        if ($this->unDeletedCount() === 0) {
+            event(new AllParticipantsClearedConversation($this));
+        }
     }
 
     /**
@@ -373,6 +378,12 @@ class Conversation extends BaseModel
             ->orderBy('c.id', 'DESC')
             ->distinct('c.id')
             ->paginate($options['perPage'], [$this->tablePrefix.'participation.*', 'c.*'], $options['pageName'], $options['page']);
+    }
+
+    public function unDeletedCount()
+    {
+        return MessageNotification::where('conversation_id', $this->getKey())
+            ->count();
     }
 
     private function notifications(Model $participant, $readAll)
