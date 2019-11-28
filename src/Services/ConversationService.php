@@ -194,6 +194,7 @@ class ConversationService
     public function getParticipation($participant = null)
     {
         $participant = $participant ?? $this->participant;
+
         return $participant->participation()->first();
     }
 }
