@@ -362,7 +362,14 @@ class Conversation extends BaseModel
                         ->whereNull($this->tablePrefix.'message_notifications.deleted_at');
                 },
                 'conversation.participants.messageable',
-            ]);
+            ])
+            ->whereHas('conversation.last_message', function ($query) use ($participant) {
+                $query->join($this->tablePrefix . 'message_notifications', $this->tablePrefix . 'message_notifications.message_id', '=', $this->tablePrefix . 'messages.id')
+                    ->select($this->tablePrefix . 'message_notifications.*', $this->tablePrefix . 'messages.*')
+                    ->where($this->tablePrefix . 'message_notifications.messageable_id', $participant->getKey())
+                    ->where($this->tablePrefix . 'message_notifications.messageable_type', get_class($participant))
+                    ->whereNull($this->tablePrefix . 'message_notifications.deleted_at');
+            });
 
         if (isset($options['filters']['private'])) {
             $paginator = $paginator->where('c.private', (bool) $options['filters']['private']);
