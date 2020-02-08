@@ -48,7 +48,7 @@ class ConversationMessageControllerTest extends TestCase
         Chat::message('ndeipi')->from($userModel)->to($conversation)->send();
 
         $parameters = [
-             $conversation->getKey(),
+            $conversation->getKey(),
             'participant_id'   => $userModel->getKey(),
             'participant_type' => get_class($userModel),
             'page'             => 1,

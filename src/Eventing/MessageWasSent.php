@@ -12,8 +12,9 @@ use Musonza\Chat\Models\Message;
 
 class MessageWasSent extends Event implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
-
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
     public $message;
 
     public function __construct(Message $message)

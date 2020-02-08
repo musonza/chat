@@ -12,8 +12,8 @@ use Musonza\Chat\Traits\SetsParticipants;
 
 class ConversationService
 {
-    use SetsParticipants, Paginates;
-
+    use SetsParticipants;
+    use Paginates;
     protected $filters = [];
 
     /**
@@ -106,10 +106,10 @@ class ConversationService
     public function get()
     {
         return $this->conversation->getParticipantConversations($this->participant, [
-          'perPage'   => $this->perPage,
-          'page'      => $this->page,
-          'pageName'  => 'page',
-          'filters'   => $this->filters,
+            'perPage'   => $this->perPage,
+            'page'      => $this->page,
+            'pageName'  => 'page',
+            'filters'   => $this->filters,
         ]);
     }
 
