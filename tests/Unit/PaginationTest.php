@@ -19,15 +19,16 @@ class PaginationTest extends TestCase
             'sorting'  => 'desc',
         ]);
 
-        $this->assertEquals([
-            'page'    => 3,
-            'perPage' => 30,
-            'sorting' => 'desc',
-            'columns' => [
-                0 => '*',
+        $this->assertEquals(
+            [
+                'page'    => 3,
+                'perPage' => 30,
+                'sorting' => 'desc',
+                'columns' => [
+                    0 => '*',
+                ],
+                'pageName' => 'test',
             ],
-            'pageName' => 'test',
-        ],
             $chat->getPaginationParams()
         );
     }
