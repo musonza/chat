@@ -31,7 +31,7 @@ class CreateChatTables extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['conversation_id', 'messageable_id', 'messageable_type'], 'participation_index');
+            $table->unique(['conversation_id', 'messageable_id', 'messageable_type', 'deleted_at'], 'participation_index');
 
             $table->foreign('conversation_id')
                 ->references('id')
