@@ -41,7 +41,8 @@ class Message extends BaseModel
 
     public function participation()
     {
-        return $this->belongsTo(Participation::class, 'participation_id');
+        return $this->belongsTo(Participation::class, 'participation_id')
+            ->withTrashed();
     }
 
     public function getSenderAttribute()

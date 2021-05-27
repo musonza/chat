@@ -29,6 +29,7 @@ class CreateChatTables extends Migration
             $table->string('messageable_type');
             $table->text('settings')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->unique(['conversation_id', 'messageable_id', 'messageable_type'], 'participation_index');
 
