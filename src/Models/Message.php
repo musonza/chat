@@ -88,10 +88,12 @@ class Message extends BaseModel
             'type'             => $type,
         ]);
 
+        $messageWasSent = Chat::sentMessageEvent();
+
         if (Chat::broadcasts()) {
-            broadcast(new MessageWasSent($message))->toOthers();
+            broadcast(new $messageWasSent($message))->toOthers();
         } else {
-            event(new MessageWasSent($message));
+            event(new $messageWasSent($message));
         }
 
         $this->createNotifications($message);
