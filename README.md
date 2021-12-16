@@ -192,7 +192,7 @@ Sometimes you might want to add details about a message. For example, when the m
 ```php
 $message = Chat::message('Attachment 1')
 		->type('attachment')
-        ->data('{ file_name: "post_image.jpg", file_url: "http://example.com/img.jpg"}')
+		->data('{ file_name: "post_image.jpg", file_url: "http://example.com/img.jpg"}')
 		->from($model)
 		->to($conversation)
 		->send();
