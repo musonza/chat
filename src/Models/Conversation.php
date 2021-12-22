@@ -123,7 +123,7 @@ class Conversation extends BaseModel
     /**
      * Remove participant from conversation.
      *
-     * @param  $participants
+     * @param $participants
      *
      * @return Conversation
      */
@@ -269,7 +269,7 @@ class Conversation extends BaseModel
     /**
      * Gets the notifications for the participant.
      *
-     * @param  $participant
+     * @param      $participant
      * @param bool $readAll
      *
      * @return MessageNotification

@@ -18,7 +18,7 @@ class Message extends BaseModel
         'body',
         'participation_id',
         'type',
-        'data'
+        'data',
     ];
 
     protected $table = ConfigurationManager::MESSAGES_TABLE;
@@ -36,7 +36,7 @@ class Message extends BaseModel
      */
     protected $casts = [
         'flagged' => 'boolean',
-        'data' => 'array'
+        'data'    => 'array',
     ];
 
     protected $appends = ['sender'];
@@ -92,7 +92,7 @@ class Message extends BaseModel
             'body'             => $body,
             'participation_id' => $participant->getKey(),
             'type'             => $type,
-            'data'             => $data
+            'data'             => $data,
         ]);
 
         if (Chat::broadcasts()) {
