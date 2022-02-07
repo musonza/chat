@@ -8,6 +8,8 @@ return [
      * Event: Musonza\Chat\Eventing\MessageWasSent
      */
     'broadcasts' => false,
+    'broadcast_connection' => 'sync',
+    'broadcast_queue' => 'default',
 
     /*
      * Specify the fields that you want to return each time for the sender.
