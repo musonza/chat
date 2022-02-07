@@ -22,7 +22,7 @@ class MessageWasSent extends Event implements ShouldBroadcast
     public function __construct(Message $message)
     {
         $this->message = $message;
-        $this->connection = config('musonza_chat.broadcast_connection', 'database');
+        $this->connection = config('musonza_chat.broadcast_connection', 'sync');
         $this->queue = config('musonza_chat.broadcast_queue', 'default');
     }
 
