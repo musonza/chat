@@ -16,6 +16,8 @@ class MessageWasSent extends Event implements ShouldBroadcast
     use InteractsWithSockets;
     use SerializesModels;
     public $message;
+    public $connection = config('musonza_chat.broadcast_connection', 'sync');
+    public $queue = config('musonza_chat.broadcast_queue', 'default');
 
     public function __construct(Message $message)
     {
