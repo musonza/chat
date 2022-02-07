@@ -7,9 +7,9 @@ return [
      * Channel: mc-chat-conversation.2,
      * Event: Musonza\Chat\Eventing\MessageWasSent
      */
-    'broadcasts' => false,
+    'broadcasts'           => false,,
     'broadcast_connection' => 'sync',
-    'broadcast_queue' => 'default',
+    'broadcast_queue'      => 'default',
 
     /*
      * Specify the fields that you want to return each time for the sender.
