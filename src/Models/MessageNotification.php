@@ -15,6 +15,17 @@ class MessageNotification extends BaseModel
     protected $fillable = ['messageable_id', 'messageable_type', 'message_id', 'conversation_id'];
     protected $dates = ['deleted_at'];
 
+
+    public function messageable()
+    {
+        return $this->morphTo();
+    }
+
+    public function message()
+    {
+        return $this->belongsTo(Message::class, 'message_id');
+    }
+
     /**
      * Creates a new notification.
      *
