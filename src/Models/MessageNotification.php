@@ -12,7 +12,7 @@ class MessageNotification extends BaseModel
     use SoftDeletes;
 
     protected $table = ConfigurationManager::MESSAGE_NOTIFICATIONS_TABLE;
-    protected $fillable = ['messageable_id', 'messageable_type', 'message_id', 'conversation_id'];
+    protected $fillable = ['messageable_id', 'messageable_type', 'message_id', 'conversation_id', 'participation_id'];
     protected $dates = ['deleted_at'];
 
 
@@ -48,12 +48,10 @@ class MessageNotification extends BaseModel
 
     public static function createCustomNotifications($message, $conversation)
     {
-        $notification = [];
-        $i = 0;
         foreach ($conversation->participants as $participation) {
             $is_sender = ($message->participation_id == $participation->id) ? 1 : 0;
 
-            $notification[] = [
+            $notification = [
                 'messageable_id'   => $participation->messageable_id,
                 'messageable_type' => $participation->messageable_type,
                 'message_id'       => $message->id,
@@ -63,14 +61,9 @@ class MessageNotification extends BaseModel
                 'is_sender'        => $is_sender,
                 'created_at'       => $message->created_at,
             ];
-            $i++;
-            if ($i > 1000) {
-                self::insert($notification);
-                $i = 0;
-                $notification = [];
-            }
+
+            MessageNotification::create($notification);
         }
-        self::insert($notification);
     }
 
     public function markAsRead()
