@@ -12,7 +12,16 @@ class MessageNotification extends BaseModel
     use SoftDeletes;
 
     protected $table = ConfigurationManager::MESSAGE_NOTIFICATIONS_TABLE;
-    protected $fillable = ['messageable_id', 'messageable_type', 'message_id', 'conversation_id', 'participation_id'];
+    protected $fillable = [
+        'messageable_id',
+        'messageable_type',
+        'message_id',
+        'participation_id',
+        'conversation_id',
+        'is_seen',
+        'is_sender',
+        'created_at',
+    ];
     protected $dates = ['deleted_at'];
 
 
