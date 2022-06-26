@@ -24,7 +24,6 @@ class MessageNotification extends BaseModel
     ];
     protected $dates = ['deleted_at'];
 
-
     public function messageable()
     {
         return $this->morphTo();

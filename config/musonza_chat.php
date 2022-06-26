@@ -2,7 +2,7 @@
 
 return [
     /**
-     * this will set default database connection
+     * this will set default database connection.
      */
     'db_connection' => config('database.default'),
     /*
