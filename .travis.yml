@@ -14,4 +14,4 @@ before_install:
 
 install: composer update --prefer-source --no-interaction --dev
 
-script: vendor/bin/phpunit --testdox
+script: composer test

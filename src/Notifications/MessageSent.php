@@ -9,6 +9,8 @@ class MessageSent extends Notification
 {
     use Queueable;
 
+    private $data;
+
     /**
      * Create a new notification instance.
      *

@@ -2,7 +2,7 @@
 
 namespace Musonza\Chat\Http\Controllers;
 
-use Chat;
+use Musonza\Chat\Facades\ChatFacade as Chat;
 use Musonza\Chat\Http\Requests\StoreParticipation;
 use Musonza\Chat\Http\Requests\UpdateParticipation;
 use Musonza\Chat\Models\Conversation;

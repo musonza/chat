@@ -2,7 +2,6 @@
 
 namespace Musonza\Chat\Models;
 
-use Chat;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,6 +16,7 @@ use Musonza\Chat\Eventing\ParticipantsLeft;
 use Musonza\Chat\Exceptions\DeletingConversationWithParticipantsException;
 use Musonza\Chat\Exceptions\DirectMessagingExistsException;
 use Musonza\Chat\Exceptions\InvalidDirectMessageNumberOfParticipants;
+use Musonza\Chat\Facades\ChatFacade as Chat;
 
 class Conversation extends BaseModel
 {

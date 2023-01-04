@@ -19,7 +19,7 @@ class SendMessageCommand
      * @param Model        $sender       The sender identifier
      * @param string       $type         The message type
      */
-    public function __construct(Conversation $conversation, $body, Model $sender, $type = 'text', $data)
+    public function __construct(Conversation $conversation, $body, Model $sender, string $type = 'text', array $data = [])
     {
         $this->conversation = $conversation;
         $this->body = $body;

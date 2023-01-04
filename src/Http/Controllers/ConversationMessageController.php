@@ -2,7 +2,7 @@
 
 namespace Musonza\Chat\Http\Controllers;
 
-use Chat;
+use Musonza\Chat\Facades\ChatFacade as Chat;
 use Musonza\Chat\Http\Requests\ClearConversation;
 use Musonza\Chat\Http\Requests\DeleteMessage;
 use Musonza\Chat\Http\Requests\GetParticipantMessages;

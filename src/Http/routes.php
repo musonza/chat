@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 $chatRoutesPrefix = config('musonza_chat.routes.path_prefix');
 $middleware = config('musonza_chat.routes.middleware');
 
