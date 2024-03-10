@@ -311,8 +311,8 @@ class Conversation extends BaseModel
      * Get messages in conversation for the specific participant.
      *
      * @param Model $participant
-     * @param $paginationParams
-     * @param $deleted
+     * @param       $paginationParams
+     * @param       $deleted
      *
      * @return LengthAwarePaginator|HasMany|Builder
      */
@@ -344,7 +344,7 @@ class Conversation extends BaseModel
 
     /**
      * @param Model $participant
-     * @param $options
+     * @param       $options
      *
      * @return mixed
      */
