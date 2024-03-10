@@ -373,8 +373,8 @@ class Conversation extends BaseModel
         }
 
         return $paginator
-            ->orderBy('c.updated_at', 'DESC')
-            ->orderBy('c.id', 'DESC')
+            ->orderBy('c.updated_at', $options['sorting'])
+            ->orderBy('c.id', $options['sorting'])
             ->distinct('c.id')
             ->paginate($options['perPage'], [$this->tablePrefix.'participation.*', 'c.*'], $options['pageName'], $options['page']);
     }
