@@ -1,6 +1,10 @@
 <?php
 
 return [
+    /**
+     * this will set default database connection.
+     */
+    'db_connection' => config('database.default'),
     /*
      * This will allow you to broadcast an event when a message is sent
      * Example:
