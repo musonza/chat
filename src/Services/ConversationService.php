@@ -110,6 +110,7 @@ class ConversationService
             'page'      => $this->page,
             'pageName'  => 'page',
             'filters'   => $this->filters,
+            'sorting'   => $this->sorting,
         ]);
     }
 
