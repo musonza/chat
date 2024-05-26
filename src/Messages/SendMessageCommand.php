@@ -20,7 +20,7 @@ class SendMessageCommand
      * @param string       $type         The message type
      * @param array        $data         The message data
      */
-    public function __construct(Conversation $conversation, $body, Model $sender, $type = 'text', $data = [])
+    public function __construct(Conversation $conversation, $body, Model $sender, string $type = 'text', array $data = [])
     {
         $this->conversation = $conversation;
         $this->body = $body;
