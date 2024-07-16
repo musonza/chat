@@ -110,6 +110,7 @@ class ConversationService
             'page'      => $this->page,
             'pageName'  => 'page',
             'filters'   => $this->filters,
+            'sorting'   => $this->sorting,
         ]);
     }
 
@@ -175,6 +176,18 @@ class ConversationService
     }
 
     /**
+     * Sets the conversation filters
+     *
+     * @return $this
+     */
+    public function appendFilter($key, $value)
+    {
+        $this->filters[$key] = $value;
+
+        return $this;
+    }
+
+    /**
      * Sets the conversation type to query for direct conversations.
      *
      * @param bool $isDirectMessage
@@ -195,6 +208,6 @@ class ConversationService
     {
         $participant = $participant ?? $this->participant;
 
-        return $participant->participation()->first();
+        return $participant->participation()->where('conversation_id', $this->conversation->getKey())->first();
     }
 }

@@ -116,7 +116,7 @@ You can however, customize this for your needs by adding an Eloquent Accessor th
  with as much as you need to your model as follows:
 
 ```php
-    public function getParticipantDetailsAttribute()
+    public function getParticipantDetails()
     {
         return [
             'name' => $this->someValue,

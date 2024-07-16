@@ -330,6 +330,7 @@ class Conversation extends BaseModel
                     $this->tablePrefix.'message_notifications.updated_at as read_at',
                     $this->tablePrefix.'message_notifications.deleted_at as deleted_at',
                     $this->tablePrefix.'message_notifications.messageable_id',
+                    $this->tablePrefix.'message_notifications.messageable_type',
                     $this->tablePrefix.'message_notifications.id as notification_id',
                     $this->tablePrefix.'message_notifications.is_seen',
                     $this->tablePrefix.'message_notifications.is_sender',
@@ -364,17 +365,15 @@ class Conversation extends BaseModel
                 'conversation.participants.messageable',
             ]);
 
-        if (isset($options['filters']['private'])) {
-            $paginator = $paginator->where('c.private', (bool) $options['filters']['private']);
-        }
-
-        if (isset($options['filters']['direct_message'])) {
-            $paginator = $paginator->where('c.direct_message', (bool) $options['filters']['direct_message']);
+       if(isset($options['filters'])) {
+            foreach ($options['filters'] ?? [] as $key => $val) {
+                $paginator = $paginator->where("c.$key", $val);
+            }
         }
 
         return $paginator
-            ->orderBy('c.updated_at', 'DESC')
-            ->orderBy('c.id', 'DESC')
+            ->orderBy('c.updated_at', $options['sorting'] ?? 'DESC')
+            ->orderBy('c.id', $options['sorting'] ?? 'DESC')
             ->distinct('c.id')
             ->paginate($options['perPage'], [$this->tablePrefix.'participation.*', 'c.*'], $options['pageName'], $options['page']);
     }
