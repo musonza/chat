@@ -365,12 +365,10 @@ class Conversation extends BaseModel
                 'conversation.participants.messageable',
             ]);
 
-        if (isset($options['filters']['private'])) {
-            $paginator = $paginator->where('c.private', (bool) $options['filters']['private']);
-        }
-
-        if (isset($options['filters']['direct_message'])) {
-            $paginator = $paginator->where('c.direct_message', (bool) $options['filters']['direct_message']);
+       if(isset($options['filters'])) {
+            foreach ($options['filters'] ?? [] as $key => $val) {
+                $paginator = $paginator->where("c.$key", $val);
+            }
         }
 
         return $paginator
