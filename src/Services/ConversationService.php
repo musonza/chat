@@ -176,6 +176,18 @@ class ConversationService
     }
 
     /**
+     * Sets the conversation filters
+     *
+     * @return $this
+     */
+    public function appendFilter($key, $value)
+    {
+        $this->filters[$key] = $value;
+
+        return $this;
+    }
+
+    /**
      * Sets the conversation type to query for direct conversations.
      *
      * @param bool $isDirectMessage
