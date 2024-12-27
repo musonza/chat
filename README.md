@@ -66,7 +66,7 @@ composer require musonza/chat
 Publish the assets:
 
 ```
-php artisan vendor:publish
+php artisan vendor:publish --provider="Musonza\Chat\ChatServiceProvider"
 ```
 
 This will publish database migrations and a configuration file `musonza_chat.php` in the Laravel config folder.
