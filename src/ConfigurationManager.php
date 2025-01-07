@@ -9,6 +9,11 @@ class ConfigurationManager
     const MESSAGE_NOTIFICATIONS_TABLE = 'chat_message_notifications';
     const PARTICIPATION_TABLE = 'chat_participation';
 
+    public static function defaultConnection()
+    {
+        return config('musonza_chat.db_connection');
+    }
+
     public static function paginationDefaultParameters()
     {
         $pagination = config('musonza_chat.pagination', []);
