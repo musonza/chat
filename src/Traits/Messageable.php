@@ -28,7 +28,7 @@ trait Messageable
             throw new InvalidDirectMessageNumberOfParticipants();
         }
 
-        $participation = new Participation;
+        $participation = new Participation();
 
         $participation->messageable_id = $this->getKey();
         $participation->messageable_type = $this->getMorphClass();
