@@ -28,11 +28,11 @@ trait Messageable
             throw new InvalidDirectMessageNumberOfParticipants();
         }
 
-        $participation = new Participation([
-            'messageable_id'   => $this->getKey(),
-            'messageable_type' => $this->getMorphClass(),
-            'conversation_id'  => $conversation->getKey(),
-        ]);
+        $participation = new Participation;
+
+        $participation->messageable_id = $this->getKey();
+        $participation->messageable_type = $this->getMorphClass();
+        $participation->conversation_id = $conversation->getKey();
 
         $this->participation()->save($participation);
     }
