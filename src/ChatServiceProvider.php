@@ -22,6 +22,7 @@ class ChatServiceProvider extends ServiceProvider
     {
         $this->publishMigrations();
         $this->publishConfig();
+        $this->publishModels();
 
         if (config('musonza_chat.should_load_routes')) {
             require __DIR__.'/Http/routes.php';
@@ -74,5 +75,17 @@ class ChatServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config' => config_path(),
         ], 'chat.config');
+    }
+
+    /**
+     * Publish package's Models file.
+     *
+     * @return void
+     */
+    public function publishModels()
+    {
+        $this->publishes([
+            __DIR__.'/../src/Models' => app_path('Models'),
+        ], 'chat.models');
     }
 }
