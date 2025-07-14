@@ -11,7 +11,6 @@ use Musonza\Chat\Tests\TestCase;
 
 class ConversationParticipationControllerTest extends TestCase
 {
-
     public function setUp()
     {
         parent::setUp();

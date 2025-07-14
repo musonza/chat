@@ -8,7 +8,6 @@ use Musonza\Chat\Tests\TestCase;
 
 class DataTransformersTest extends TestCase
 {
-
     public function setUp()
     {
         parent::setUp();
