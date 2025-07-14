@@ -15,7 +15,7 @@ class ConversationMessageControllerTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        
+
         $this->app['config']->set('musonza_chat.should_load_routes', true);
     }
 
