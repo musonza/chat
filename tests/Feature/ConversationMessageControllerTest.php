@@ -11,6 +11,13 @@ use Musonza\Chat\Tests\TestCase;
 
 class ConversationMessageControllerTest extends TestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->app['config']->set('musonza_chat.should_load_routes', true);
+    }
+
     public function testStore()
     {
         $conversation = factory(Conversation::class)->create();

@@ -20,6 +20,7 @@ Create a Chat application for your multiple Models
 - [Installation](#installation)
 - [Usage](#usage)
   - [Adding the ability to participate to a Model](#Adding-the-ability-to-participate-to-a-Model)
+  - [Enable the routes](#enable-the-routes)
   - [Get participant details](#get-participant-details)
   - [Creating a conversation](#creating-a-conversation)
   - [Get a conversation by Id](#get-a-conversation-by-id)
@@ -100,6 +101,10 @@ class Bot extends Model
     use Messageable;
 }
 ```
+
+#### Enable the routes
+
+The package includes routes for conversations, conversation participants, and messaging. These routes are hidden by default. To enable them, change `should_load_routes` to `true`, but make sure to configure the middleware correctly. 
 
 #### Get participant details
 

@@ -26,7 +26,7 @@ return [
     /*
      * Whether to load the package routes file in your application.
      */
-    'should_load_routes' => true,
+    'should_load_routes' => false,
 
     /*
      * Routes configuration

@@ -13,6 +13,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ConversationControllerTest extends TestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->app['config']->set('musonza_chat.should_load_routes', true);
+    }
+
     public function testStore()
     {
         $this->withoutExceptionHandling();
