@@ -10,6 +10,15 @@ return [
     'broadcasts' => false,
 
     /*
+     * This will allow you to specify your own broadcast class incase you need to modify the payload for the event
+     * Example:
+     * Event: App\Events\ChatMessageWasSent
+     *
+     * */
+
+    'sent_message_event' => null,
+
+    /*
      * Specify the fields that you want to return each time for the sender.
      * If not set or empty, all the columns for the sender will be returned
      *
