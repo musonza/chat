@@ -27,11 +27,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
     /** @var User */
     protected $delta;
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function setUp(): void
     {
         parent::setUp();
