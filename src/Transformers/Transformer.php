@@ -28,9 +28,9 @@ abstract class Transformer extends Fractal\TransformerAbstract
 
     public function fractalManager($resource)
     {
-        $fractal = new Manager;
+        $fractal = new Manager();
 
-        $fractal->setSerializer(new ArraySerializer);
+        $fractal->setSerializer(new ArraySerializer());
 
         if ($includes = request('include', null)) {
             $fractal->parseIncludes($includes);
