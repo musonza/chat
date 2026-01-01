@@ -11,30 +11,28 @@ use Musonza\Chat\Traits\SetsParticipants;
 class Chat
 {
     use SetsParticipants;
+
     /**
      * @var MessageService
      */
     protected $messageService;
+
     /**
      * @var ConversationService
      */
     protected $conversationService;
+
     /**
      * @var MessageNotification
      */
     protected $messageNotification;
 
-    /**
-     * @param MessageService      $messageService
-     * @param ConversationService $conversationService
-     * @param MessageNotification $messageNotification
-     */
     public function __construct(
         MessageService $messageService,
         ConversationService $conversationService,
         MessageNotification $messageNotification
     ) {
-        $this->messageService = $messageService;
+        $this->messageService      = $messageService;
         $this->conversationService = $conversationService;
         $this->messageNotification = $messageNotification;
     }
@@ -42,8 +40,6 @@ class Chat
     /**
      * Creates a new conversation.
      *
-     * @param array $participants
-     * @param array $data
      *
      * @return Conversation
      */
@@ -68,8 +64,7 @@ class Chat
     /**
      * Sets message.
      *
-     * @param string $message
-     *
+     * @param  string  $message
      * @return MessageService
      */
     public function message($message)
@@ -90,7 +85,6 @@ class Chat
     /**
      * Sets Conversation.
      *
-     * @param Conversation $conversation
      *
      * @return ConversationService
      */
@@ -138,6 +132,6 @@ class Chat
     {
         $fields = config('musonza_chat.sender_fields_whitelist', []);
 
-        return (is_array($fields) && !empty($fields)) ? $fields : null;
+        return (is_array($fields) && ! empty($fields)) ? $fields : null;
     }
 }

@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 trait SetsParticipants
 {
     protected $sender;
+
     protected $recipient;
+
     protected $participant;
 
     /**
      * Sets participant.
      *
-     * @param Model $participant
      *
      * @return $this
      */
@@ -27,7 +28,6 @@ trait SetsParticipants
     /**
      * Sets the participant that's sending the message.
      *
-     * @param Model $sender
      *
      * @return $this
      */
@@ -41,7 +41,6 @@ trait SetsParticipants
     /**
      * Sets the participant to receive the message.
      *
-     * @param Model $recipient
      *
      * @return $this
      */

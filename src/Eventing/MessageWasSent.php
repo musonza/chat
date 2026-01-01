@@ -15,6 +15,7 @@ class MessageWasSent extends Event implements ShouldBroadcast
     use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
+
     public $message;
 
     public function __construct(Message $message)
@@ -29,7 +30,7 @@ class MessageWasSent extends Event implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('mc-chat-conversation.'.$this->message->conversation_id);
+        return new PrivateChannel('mc-chat-conversation.' . $this->message->conversation_id);
     }
 
     public function broadcastWith()

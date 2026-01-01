@@ -11,19 +11,19 @@ use Musonza\Chat\Tests\TestCase;
 
 class ConversationParticipationControllerTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->app['config']->set('musonza_chat.should_load_routes', true);
     }
 
-    public function testStore()
+    public function test_store()
     {
         $conversation = factory(Conversation::class)->create();
-        $userModel = factory(User::class)->create();
-        $clientModel = factory(Client::class)->create();
-        $payload = [
+        $userModel    = factory(User::class)->create();
+        $clientModel  = factory(Client::class)->create();
+        $payload      = [
             'participants' => [
                 ['id' => $userModel->getKey(), 'type' => $userModel->getMorphClass()],
                 ['id' => $clientModel->getKey(), 'type' => $clientModel->getMorphClass()],
@@ -36,11 +36,11 @@ class ConversationParticipationControllerTest extends TestCase
         $this->assertCount(2, $conversation->participants);
     }
 
-    public function testIndex()
+    public function test_index()
     {
         $conversation = factory(Conversation::class)->create();
-        $userModel = factory(User::class)->create();
-        $clientModel = factory(Client::class)->create();
+        $userModel    = factory(User::class)->create();
+        $clientModel  = factory(Client::class)->create();
 
         Chat::conversation($conversation)->addParticipants([$userModel, $clientModel]);
 
@@ -49,10 +49,10 @@ class ConversationParticipationControllerTest extends TestCase
             ->assertJsonCount(2);
     }
 
-    public function testShow()
+    public function test_show()
     {
         $conversation = factory(Conversation::class)->create();
-        $userModel = factory(User::class)->create();
+        $userModel    = factory(User::class)->create();
         Chat::conversation($conversation)->addParticipants([$userModel]);
 
         /** @var Participation $participant */
@@ -65,11 +65,11 @@ class ConversationParticipationControllerTest extends TestCase
             ]);
     }
 
-    public function testDestroy()
+    public function test_destroy()
     {
         $conversation = factory(Conversation::class)->create();
-        $userModel = factory(User::class)->create();
-        $clientModel = factory(Client::class)->create();
+        $userModel    = factory(User::class)->create();
+        $clientModel  = factory(Client::class)->create();
 
         Chat::conversation($conversation)->addParticipants([$userModel, $clientModel]);
 
@@ -83,11 +83,11 @@ class ConversationParticipationControllerTest extends TestCase
             ->assertJsonCount(1);
     }
 
-    public function testUpdate()
+    public function test_update()
     {
         $conversation = factory(Conversation::class)->create();
-        $userModel = factory(User::class)->create();
-        $clientModel = factory(Client::class)->create();
+        $userModel    = factory(User::class)->create();
+        $clientModel  = factory(Client::class)->create();
 
         Chat::conversation($conversation)->addParticipants([$userModel, $clientModel]);
 

@@ -4,6 +4,4 @@ namespace Musonza\Chat\Exceptions;
 
 use Exception;
 
-class DirectMessagingExistsException extends Exception
-{
-}
+class DirectMessagingExistsException extends Exception {}

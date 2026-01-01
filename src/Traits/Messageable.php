@@ -14,9 +14,6 @@ trait Messageable
         return $this->participation->pluck('conversation');
     }
 
-    /**
-     * @return MorphMany
-     */
     public function participation(): MorphMany
     {
         return $this->morphMany(Participation::class, 'messageable');
@@ -25,7 +22,7 @@ trait Messageable
     public function joinConversation(Conversation $conversation)
     {
         if ($conversation->isDirectMessage() && $conversation->participants()->count() == 2) {
-            throw new InvalidDirectMessageNumberOfParticipants();
+            throw new InvalidDirectMessageNumberOfParticipants;
         }
 
         $participation = new Participation([
