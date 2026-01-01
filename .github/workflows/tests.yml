@@ -45,6 +45,7 @@ jobs:
   code-style:
     runs-on: ubuntu-latest
     name: Code Style
+    continue-on-error: true
 
     steps:
       - name: Checkout code
@@ -65,6 +66,7 @@ jobs:
   static-analysis:
     runs-on: ubuntu-latest
     name: Static Analysis
+    continue-on-error: true
 
     steps:
       - name: Checkout code

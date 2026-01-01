@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ConversationControllerTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
