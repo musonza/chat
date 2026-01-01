@@ -355,4 +355,48 @@ class ConversationTest extends TestCase
 
         $this->assertSame(['uid', 'email'], array_keys($message->sender));
     }
+
+    /** @test */
+    public function it_returns_correct_participation_for_specific_conversation()
+    {
+        // Create two conversations with the same participant
+        $conversation1 = Chat::createConversation([$this->alpha, $this->bravo]);
+        $conversation2 = Chat::createConversation([$this->alpha, $this->charlie]);
+
+        // Get participation for each conversation
+        $participation1 = Chat::conversation($conversation1)->getParticipation($this->alpha);
+        $participation2 = Chat::conversation($conversation2)->getParticipation($this->alpha);
+
+        // Verify each participation belongs to the correct conversation
+        $this->assertEquals($conversation1->id, $participation1->conversation_id);
+        $this->assertEquals($conversation2->id, $participation2->conversation_id);
+
+        // Verify they are different participations
+        $this->assertNotEquals($participation1->id, $participation2->id);
+    }
+
+    /** @test */
+    public function it_returns_participant_details_from_messageable_trait()
+    {
+        // User model uses the default getParticipantDetails from trait
+        $this->alpha->name = 'Test User';
+
+        $details = $this->alpha->getParticipantDetails();
+
+        $this->assertIsArray($details);
+        $this->assertEquals(['name' => 'Test User'], $details);
+    }
+
+    /** @test */
+    public function it_returns_custom_participant_details_when_method_is_overridden()
+    {
+        // Client model has a custom getParticipantDetails method
+        $client = factory(\Musonza\Chat\Tests\Helpers\Models\Client::class)->create(['name' => 'Test Client']);
+
+        $details = $client->getParticipantDetails();
+
+        $this->assertIsArray($details);
+        $this->assertEquals('Test Client', $details['name']);
+        $this->assertEquals('bar', $details['foo']);
+    }
 }
