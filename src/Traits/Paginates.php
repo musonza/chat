@@ -5,10 +5,15 @@ namespace Musonza\Chat\Traits;
 trait Paginates
 {
     protected $perPage = 25;
+
     protected $page = 1;
+
     protected $sorting = 'asc';
+
     protected $columns = ['*'];
+
     protected $pageName = 'page';
+
     protected $deleted = false;
 
     /**
@@ -28,7 +33,6 @@ trait Paginates
     /**
      * Set current page for pagination.
      *
-     * @param int $page
      *
      * @return $this
      */

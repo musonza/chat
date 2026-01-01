@@ -13,12 +13,16 @@ class MessageService
     use SetsParticipants;
 
     protected $type = 'text';
+
     protected $data = [];
+
     protected $body;
+
     /**
      * @var CommandBus
      */
     protected $commandBus;
+
     /**
      * @var Message
      */
@@ -109,6 +113,8 @@ class MessageService
 
     /**
      * Sends the message.
+     *
+     *
      *
      * @throws Exception
      *

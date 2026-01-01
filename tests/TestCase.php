@@ -15,31 +15,33 @@ use Musonza\Chat\Tests\Helpers\Models\User;
 class TestCase extends \Orchestra\Testbench\TestCase
 {
     protected $conversation;
+
     protected $prefix = 'chat_';
+
     protected $userModelPrimaryKey;
+
     public $users;
+
     /** @var User */
     protected $alpha;
+
     /** @var User */
     protected $bravo;
+
     /** @var User */
     protected $charlie;
+
     /** @var User */
     protected $delta;
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->artisan('migrate', ['--database' => 'testbench']);
         $this->withFactories(__DIR__.'/Helpers/factories');
         $this->migrate();
         $this->users = $this->createUsers(6);
-        list($this->alpha, $this->bravo, $this->charlie, $this->delta) = $this->users;
+        [$this->alpha, $this->bravo, $this->charlie, $this->delta] = $this->users;
     }
 
     protected function migrateTestTables()
@@ -75,25 +77,25 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'prefix'   => '',
         ]);
 
-//         $app['config']->set('database.default', 'testbench');
-//         $app['config']->set('database.connections.testbench', [
-//             'driver' => 'mysql',
-//             'database' => 'chat',
-//             'username' => 'root',
-//             'host' => '127.0.0.1',
-//             'password' => 'my-secret-pw',
-//             'prefix' => '',
-//             'strict'      => true,
-//             'engine'      => null,
-//             'modes'       => [
-//                 'ONLY_FULL_GROUP_BY',
-//                 'STRICT_TRANS_TABLES',
-//                 'NO_ZERO_IN_DATE',
-//                 'NO_ZERO_DATE',
-//                 'ERROR_FOR_DIVISION_BY_ZERO',
-//                 'NO_ENGINE_SUBSTITUTION',
-//             ],
-//         ]);
+        //         $app['config']->set('database.default', 'testbench');
+        //         $app['config']->set('database.connections.testbench', [
+        //             'driver' => 'mysql',
+        //             'database' => 'chat',
+        //             'username' => 'root',
+        //             'host' => '127.0.0.1',
+        //             'password' => 'my-secret-pw',
+        //             'prefix' => '',
+        //             'strict'      => true,
+        //             'engine'      => null,
+        //             'modes'       => [
+        //                 'ONLY_FULL_GROUP_BY',
+        //                 'STRICT_TRANS_TABLES',
+        //                 'NO_ZERO_IN_DATE',
+        //                 'NO_ZERO_DATE',
+        //                 'ERROR_FOR_DIVISION_BY_ZERO',
+        //                 'NO_ENGINE_SUBSTITUTION',
+        //             ],
+        //         ]);
 
         $app['config']->set('musonza_chat.user_model', 'Musonza\Chat\Tests\Helpers\Models\User');
         $app['config']->set('musonza_chat.sent_message_event', 'Musonza\Chat\Eventing\MessageWasSent');
@@ -122,7 +124,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         return factory(User::class, $count)->create();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         (new CreateChatTables())->down();
         (new CreateTestTables())->down();

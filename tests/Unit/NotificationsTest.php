@@ -56,7 +56,7 @@ class NotificationsTest extends TestCase
         $this->assertEquals(2, Chat::conversation($conversation1)->setParticipant($this->alpha)->unreadCount());
         $this->assertEquals(1, Chat::conversation($conversation2)->setParticipant($this->alpha)->unreadCount());
 
-        //Read message from from convo
+        // Read message from from convo
         Chat::message($conversation1->messages()->first())->setParticipant($this->alpha)->markRead();
         $this->assertEquals(2, Chat::messages()->setParticipant($this->alpha)->unreadCount());
     }

@@ -22,6 +22,7 @@ class Message extends BaseModel
     ];
 
     protected $table = ConfigurationManager::MESSAGES_TABLE;
+
     /**
      * All of the relationships to be touched.
      *
@@ -78,13 +79,6 @@ class Message extends BaseModel
 
     /**
      * Adds a message to a conversation.
-     *
-     * @param Conversation  $conversation
-     * @param string        $body
-     * @param Participation $participant
-     * @param string        $type
-     *
-     * @return Model
      */
     public function send(Conversation $conversation, string $body, Participation $participant, string $type = 'text', array $data = []): Model
     {
@@ -117,10 +111,6 @@ class Message extends BaseModel
 
     /**
      * Deletes a message for the participant.
-     *
-     * @param Model $participant
-     *
-     * @return void
      */
     public function trash(Model $participant): void
     {
@@ -142,10 +132,6 @@ class Message extends BaseModel
 
     /**
      * Return user notification for specific message.
-     *
-     * @param Model $participant
-     *
-     * @return MessageNotification
      */
     public function getNotification(Model $participant): MessageNotification
     {
@@ -161,8 +147,6 @@ class Message extends BaseModel
 
     /**
      * Marks message as read.
-     *
-     * @param $participant
      */
     public function markRead($participant): void
     {

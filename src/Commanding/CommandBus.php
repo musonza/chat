@@ -18,8 +18,6 @@ class CommandBus
     }
 
     /**
-     * @param $command
-     *
      * @throws Exception
      *
      * @return mixed

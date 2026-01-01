@@ -30,13 +30,13 @@ $factory->define(User::class, function (Faker $faker) {
 
 $factory->define(Client::class, function (Faker $faker) {
     return [
-        'name'           => $faker->name,
+        'name' => $faker->name,
     ];
 });
 
 $factory->define(Bot::class, function (Faker $faker) {
     return [
-        'name'           => $faker->name,
+        'name' => $faker->name,
     ];
 });
 

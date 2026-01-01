@@ -202,7 +202,7 @@ class MessageTest extends TestCase
     /** @test */
     public function it_return_unread_messages_count_for_user()
     {
-        list($this->alpha, $this->bravo) = $this->users;
+        [$this->alpha, $this->bravo] = $this->users;
 
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         Chat::message('Hello 1')->from($this->bravo)->to($conversation)->send();
@@ -220,7 +220,7 @@ class MessageTest extends TestCase
     /** @test */
     public function it_gets_a_message_by_id()
     {
-        list($this->alpha, $this->bravo) = $this->users;
+        [$this->alpha, $this->bravo] = $this->users;
 
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         Chat::message('Hello 1')->from($this->bravo)->to($conversation)->send();

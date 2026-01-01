@@ -11,24 +11,22 @@ use Musonza\Chat\Traits\SetsParticipants;
 class Chat
 {
     use SetsParticipants;
+
     /**
      * @var MessageService
      */
     protected $messageService;
+
     /**
      * @var ConversationService
      */
     protected $conversationService;
+
     /**
      * @var MessageNotification
      */
     protected $messageNotification;
 
-    /**
-     * @param MessageService      $messageService
-     * @param ConversationService $conversationService
-     * @param MessageNotification $messageNotification
-     */
     public function __construct(
         MessageService $messageService,
         ConversationService $conversationService,
@@ -42,8 +40,6 @@ class Chat
     /**
      * Creates a new conversation.
      *
-     * @param array $participants
-     * @param array $data
      *
      * @return Conversation
      */
@@ -90,7 +86,6 @@ class Chat
     /**
      * Sets Conversation.
      *
-     * @param Conversation $conversation
      *
      * @return ConversationService
      */

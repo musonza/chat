@@ -12,8 +12,9 @@ use Musonza\Chat\Traits\SetsParticipants;
 
 class ConversationService
 {
-    use SetsParticipants;
     use Paginates;
+    use SetsParticipants;
+
     protected $filters = [];
 
     /**
@@ -78,8 +79,6 @@ class ConversationService
     /**
      * Get Private Conversation between two users.
      *
-     * @param Model $participantOne
-     * @param Model $participantTwo
      *
      * @return Conversation
      */
@@ -106,17 +105,16 @@ class ConversationService
     public function get()
     {
         return $this->conversation->getParticipantConversations($this->participant, [
-            'perPage'   => $this->perPage,
-            'page'      => $this->page,
-            'pageName'  => 'page',
-            'filters'   => $this->filters,
+            'perPage'  => $this->perPage,
+            'page'     => $this->page,
+            'pageName' => 'page',
+            'filters'  => $this->filters,
         ]);
     }
 
     /**
      * Add user(s) to a conversation.
      *
-     * @param array $participants
      *
      * @return Conversation
      */

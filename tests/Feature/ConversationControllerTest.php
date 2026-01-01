@@ -13,14 +13,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ConversationControllerTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->app['config']->set('musonza_chat.should_load_routes', true);
     }
 
-    public function testStore()
+    public function test_store()
     {
         $this->withoutExceptionHandling();
 
@@ -57,7 +57,7 @@ class ConversationControllerTest extends TestCase
         ]);
     }
 
-    public function testShow()
+    public function test_show()
     {
         $conversation = factory(Conversation::class)->create();
 
@@ -68,7 +68,7 @@ class ConversationControllerTest extends TestCase
             ]);
     }
 
-    public function testUpdate()
+    public function test_update()
     {
         $conversation = factory(Conversation::class)->create();
 
@@ -81,7 +81,7 @@ class ConversationControllerTest extends TestCase
             ]);
     }
 
-    public function testDestroy()
+    public function test_destroy()
     {
         $conversation = factory(Conversation::class)->create();
 
@@ -89,7 +89,7 @@ class ConversationControllerTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testDestroyWithParticipants()
+    public function test_destroy_with_participants()
     {
         $conversation = factory(Conversation::class)->create();
 

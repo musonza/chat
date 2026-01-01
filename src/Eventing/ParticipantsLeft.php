@@ -10,6 +10,7 @@ class ParticipantsLeft extends Event
      * @var Conversation
      */
     public $conversation;
+
     public $participants;
 
     public function __construct(Conversation $conversation, $participants)

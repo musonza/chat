@@ -11,14 +11,14 @@ use Musonza\Chat\Tests\TestCase;
 
 class ConversationMessageControllerTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->app['config']->set('musonza_chat.should_load_routes', true);
     }
 
-    public function testStore()
+    public function test_store()
     {
         $conversation = factory(Conversation::class)->create();
         $userModel = factory(User::class)->create();
@@ -43,7 +43,7 @@ class ConversationMessageControllerTest extends TestCase
             ]);
     }
 
-    public function testIndex()
+    public function test_index()
     {
         $conversation = factory(Conversation::class)->create();
         $userModel = factory(User::class)->create();
@@ -83,7 +83,7 @@ class ConversationMessageControllerTest extends TestCase
             );
     }
 
-    public function testClearConversation()
+    public function test_clear_conversation()
     {
         $conversation = factory(Conversation::class)->create();
         $userModel = factory(User::class)->create();
@@ -104,7 +104,7 @@ class ConversationMessageControllerTest extends TestCase
             ->assertSuccessful();
     }
 
-    public function testDestroy()
+    public function test_destroy()
     {
         $conversation = factory(Conversation::class)->create();
         $userModel = factory(User::class)->create();

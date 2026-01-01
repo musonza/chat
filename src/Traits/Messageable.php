@@ -14,9 +14,6 @@ trait Messageable
         return $this->participation->pluck('conversation');
     }
 
-    /**
-     * @return MorphMany
-     */
     public function participation(): MorphMany
     {
         return $this->morphMany(Participation::class, 'messageable');

@@ -8,14 +8,14 @@ use Musonza\Chat\Tests\TestCase;
 
 class DataTransformersTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->app['config']->set('musonza_chat.should_load_routes', true);
     }
 
-    public function testConversationWithoutTransformer()
+    public function test_conversation_without_transformer()
     {
         $conversation = factory(Conversation::class)->create();
         $responseWithoutTransformer = $this->getJson(route('conversations.show', $conversation->getKey()))
@@ -24,7 +24,7 @@ class DataTransformersTest extends TestCase
         $this->assertInstanceOf(Conversation::class, $responseWithoutTransformer->getOriginalContent());
     }
 
-    public function testConversationWithTransformer()
+    public function test_conversation_with_transformer()
     {
         $conversation = factory(Conversation::class)->create();
         $this->app['config']->set('musonza_chat.transformers.conversation', TestConversationTransformer::class);

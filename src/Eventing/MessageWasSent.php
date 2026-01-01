@@ -15,6 +15,7 @@ class MessageWasSent extends Event implements ShouldBroadcast
     use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
+
     public $message;
 
     public function __construct(Message $message)

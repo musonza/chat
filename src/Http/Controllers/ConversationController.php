@@ -77,9 +77,6 @@ class ConversationController extends Controller
     }
 
     /**
-     * @param DestroyConversation $request
-     * @param                     $id
-     *
      * @throws Exception
      *
      * @return ResponseFactory|Response

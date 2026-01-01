@@ -9,6 +9,7 @@ use Musonza\Chat\Models\Message;
 class SendMessageCommandHandler
 {
     protected $message;
+
     protected $dispatcher;
 
     /**

@@ -21,7 +21,9 @@ use Musonza\Chat\Exceptions\InvalidDirectMessageNumberOfParticipants;
 class Conversation extends BaseModel
 {
     protected $table = ConfigurationManager::CONVERSATIONS_TABLE;
+
     protected $fillable = ['data', 'direct_message'];
+
     protected $casts = [
         'data'           => 'array',
         'direct_message' => 'boolean',
@@ -71,13 +73,12 @@ class Conversation extends BaseModel
      */
     public function messages()
     {
-        return $this->hasMany(Message::class, 'conversation_id'); //->with('sender');
+        return $this->hasMany(Message::class, 'conversation_id'); // ->with('sender');
     }
 
     /**
      * Get messages for a conversation.
      *
-     * @param Model $participant
      * @param array $paginationParams
      * @param bool  $deleted
      *
@@ -104,10 +105,6 @@ class Conversation extends BaseModel
 
     /**
      * Add user to conversation.
-     *
-     * @param $participants
-     *
-     * @return Conversation
      */
     public function addParticipants(array $participants): self
     {
@@ -123,7 +120,6 @@ class Conversation extends BaseModel
     /**
      * Remove participant from conversation.
      *
-     * @param $participants
      *
      * @return Conversation
      */
@@ -149,12 +145,9 @@ class Conversation extends BaseModel
     /**
      * Starts a new conversation.
      *
-     * @param array $payload
      *
      * @throws DirectMessagingExistsException
      * @throws InvalidDirectMessageNumberOfParticipants
-     *
-     * @return Conversation
      */
     public function start(array $payload): self
     {
@@ -218,8 +211,6 @@ class Conversation extends BaseModel
     }
 
     /**
-     * @param $participants
-     *
      * @throws DirectMessagingExistsException
      */
     private function ensureNoDirectMessagingExist($participants)
@@ -234,11 +225,6 @@ class Conversation extends BaseModel
 
     /**
      * Gets conversations for a specific participant.
-     *
-     * @param Model $participant
-     * @param bool  $isDirectMessage
-     *
-     * @return Collection
      */
     public function participantConversations(Model $participant, bool $isDirectMessage = false): Collection
     {
@@ -249,10 +235,6 @@ class Conversation extends BaseModel
 
     /**
      * Get unread notifications.
-     *
-     * @param Model $participant
-     *
-     * @return Collection
      */
     public function unReadNotifications(Model $participant): Collection
     {
@@ -269,7 +251,6 @@ class Conversation extends BaseModel
     /**
      * Gets the notifications for the participant.
      *
-     * @param      $participant
      * @param bool $readAll
      *
      * @return MessageNotification
@@ -281,10 +262,6 @@ class Conversation extends BaseModel
 
     /**
      * Clears participant conversation.
-     *
-     * @param $participant
-     *
-     * @return void
      */
     public function clear($participant): void
     {
@@ -297,10 +274,6 @@ class Conversation extends BaseModel
 
     /**
      * Marks all the messages in a conversation as read for the participant.
-     *
-     * @param Model $participant
-     *
-     * @return void
      */
     public function readAll(Model $participant): void
     {
@@ -310,9 +283,6 @@ class Conversation extends BaseModel
     /**
      * Get messages in conversation for the specific participant.
      *
-     * @param Model $participant
-     * @param       $paginationParams
-     * @param       $deleted
      *
      * @return LengthAwarePaginator|HasMany|Builder
      */
@@ -343,9 +313,6 @@ class Conversation extends BaseModel
     }
 
     /**
-     * @param Model $participant
-     * @param       $options
-     *
      * @return mixed
      */
     private function getConversationsList(Model $participant, $options)
