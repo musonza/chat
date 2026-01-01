@@ -36,7 +36,7 @@ class ConversationMessageController extends Controller
     public function index(GetParticipantMessages $request, $conversationId)
     {
         $conversation = Chat::conversations()->getById($conversationId);
-        $message = Chat::conversation($conversation)
+        $message      = Chat::conversation($conversation)
             ->setParticipant($request->getParticipant())
             ->setPaginationParams($request->getPaginationParams())
             ->getMessages();
@@ -58,7 +58,7 @@ class ConversationMessageController extends Controller
     public function store(StoreMessage $request, $conversationId)
     {
         $conversation = Chat::conversations()->getById($conversationId);
-        $message = Chat::message($request->getMessageBody())
+        $message      = Chat::message($request->getMessageBody())
             ->from($request->getParticipant())
             ->to($conversation)
             ->send();

@@ -126,8 +126,7 @@ class ConversationService
     /**
      * Remove user(s) from a conversation.
      *
-     * @param $users / array of user ids or an integer
-     *
+     * @param  $users  / array of user ids or an integer
      * @return Conversation
      */
     public function removeParticipants($users)
@@ -148,9 +147,8 @@ class ConversationService
     /**
      * Gets the conversations in common.
      *
-     * @param Collection $conversation1 The conversation Ids for user one
-     * @param Collection $conversation2 The conversation Ids for user two
-     *
+     * @param  Collection  $conversation1  The conversation Ids for user one
+     * @param  Collection  $conversation2  The conversation Ids for user two
      * @return Conversation The conversations in common.
      */
     private function getConversationsInCommon(Collection $conversation1, Collection $conversation2)
@@ -161,8 +159,7 @@ class ConversationService
     /**
      * Sets the conversation type to query for, public or private.
      *
-     * @param bool $isPrivate
-     *
+     * @param  bool  $isPrivate
      * @return $this
      */
     public function isPrivate($isPrivate = true)
@@ -175,8 +172,7 @@ class ConversationService
     /**
      * Sets the conversation type to query for direct conversations.
      *
-     * @param bool $isDirectMessage
-     *
+     * @param  bool  $isDirectMessage
      * @return $this
      */
     public function isDirect($isDirectMessage = true)

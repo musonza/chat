@@ -2,8 +2,8 @@
 
 namespace Musonza\Chat\Tests;
 
-require __DIR__.'/../database/migrations/create_chat_tables.php';
-require __DIR__.'/Helpers/migrations.php';
+require __DIR__ . '/../database/migrations/create_chat_tables.php';
+require __DIR__ . '/Helpers/migrations.php';
 
 use CreateChatTables;
 use CreateTestTables;
@@ -38,31 +38,30 @@ class TestCase extends \Orchestra\Testbench\TestCase
     {
         parent::setUp();
         $this->artisan('migrate', ['--database' => 'testbench']);
-        $this->withFactories(__DIR__.'/Helpers/factories');
+        $this->withFactories(__DIR__ . '/Helpers/factories');
         $this->migrate();
-        $this->users = $this->createUsers(6);
+        $this->users                                               = $this->createUsers(6);
         [$this->alpha, $this->bravo, $this->charlie, $this->delta] = $this->users;
     }
 
     protected function migrateTestTables()
     {
-        $config = config('musonza_chat');
-        $userModel = app($config['user_model']);
+        $config                    = config('musonza_chat');
+        $userModel                 = app($config['user_model']);
         $this->userModelPrimaryKey = $userModel->getKeyName();
     }
 
     protected function migrate()
     {
         $this->migrateTestTables();
-        (new CreateChatTables())->up();
-        (new CreateTestTables())->up();
+        (new CreateChatTables)->up();
+        (new CreateTestTables)->up();
     }
 
     /**
      * Define environment setup.
      *
-     * @param Application $app
-     *
+     * @param  Application  $app
      * @return void
      */
     protected function getEnvironmentSetUp($app)
@@ -126,8 +125,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function tearDown(): void
     {
-        (new CreateChatTables())->down();
-        (new CreateTestTables())->down();
+        (new CreateChatTables)->down();
+        (new CreateTestTables)->down();
         parent::tearDown();
     }
 }

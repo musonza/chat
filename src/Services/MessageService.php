@@ -31,7 +31,7 @@ class MessageService
     public function __construct(CommandBus $commandBus, Message $message)
     {
         $this->commandBus = $commandBus;
-        $this->message = $message;
+        $this->message    = $message;
     }
 
     public function setMessage($message)
@@ -49,7 +49,6 @@ class MessageService
      * Set Message type.
      *
      * @param string type
-     *
      * @return $this
      */
     public function type(string $type)
@@ -115,13 +114,14 @@ class MessageService
      * Sends the message.
      *
      *
-     * @throws Exception
      *
      * @return Message
+     *
+     * @throws Exception
      */
     public function send()
     {
-        if (!$this->sender) {
+        if (! $this->sender) {
             throw new Exception('Message sender has not been set');
         }
 
@@ -129,7 +129,7 @@ class MessageService
             throw new Exception('Message body has not been set');
         }
 
-        if (!$this->recipient) {
+        if (! $this->recipient) {
             throw new Exception('Message receiver has not been set');
         }
 
