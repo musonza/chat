@@ -35,6 +35,7 @@ class ChatServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->mergeConfigFrom(__DIR__.'/../config/musonza_chat.php', 'musonza_chat');
         $this->registerChat();
     }
 

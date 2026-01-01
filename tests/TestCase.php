@@ -37,25 +37,29 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->artisan('migrate', ['--database' => 'testbench']);
-        $this->withFactories(__DIR__.'/Helpers/factories');
-        $this->migrate();
+
+        $this->setUpDatabase();
         $this->users = $this->createUsers(6);
         [$this->alpha, $this->bravo, $this->charlie, $this->delta] = $this->users;
     }
 
-    protected function migrateTestTables()
+    /**
+     * Set up the database schema and factories.
+     */
+    protected function setUpDatabase(): void
     {
-        $config = config('musonza_chat');
-        $userModel = app($config['user_model']);
-        $this->userModelPrimaryKey = $userModel->getKeyName();
-    }
+        $this->loadMigrationsFrom(__DIR__.'/Helpers/database/migrations');
 
-    protected function migrate()
-    {
-        $this->migrateTestTables();
+        $config = config('musonza_chat');
+        if (isset($config['user_model'])) {
+            $userModel = app($config['user_model']);
+            $this->userModelPrimaryKey = $userModel->getKeyName();
+        }
+
         (new CreateChatTables())->up();
         (new CreateTestTables())->up();
+
+        $this->withFactories(__DIR__.'/Helpers/factories');
     }
 
     /**
@@ -67,7 +71,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
      */
     protected function getEnvironmentSetUp($app)
     {
-        parent::getEnvironmentSetUp($app);
+        // Set app key for encryption (required by web middleware)
+        $app['config']->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
 
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'testbench');
@@ -76,26 +81,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'database' => ':memory:',
             'prefix'   => '',
         ]);
-
-        //         $app['config']->set('database.default', 'testbench');
-        //         $app['config']->set('database.connections.testbench', [
-        //             'driver' => 'mysql',
-        //             'database' => 'chat',
-        //             'username' => 'root',
-        //             'host' => '127.0.0.1',
-        //             'password' => 'my-secret-pw',
-        //             'prefix' => '',
-        //             'strict'      => true,
-        //             'engine'      => null,
-        //             'modes'       => [
-        //                 'ONLY_FULL_GROUP_BY',
-        //                 'STRICT_TRANS_TABLES',
-        //                 'NO_ZERO_IN_DATE',
-        //                 'NO_ZERO_DATE',
-        //                 'ERROR_FOR_DIVISION_BY_ZERO',
-        //                 'NO_ENGINE_SUBSTITUTION',
-        //             ],
-        //         ]);
 
         $app['config']->set('musonza_chat.user_model', 'Musonza\Chat\Tests\Helpers\Models\User');
         $app['config']->set('musonza_chat.sent_message_event', 'Musonza\Chat\Eventing\MessageWasSent');
