@@ -19,8 +19,7 @@ trait Paginates
     /**
      * Set the limit.
      *
-     * @param int $limit
-     *
+     * @param  int  $limit
      * @return $this
      */
     public function limit($limit)

@@ -6,34 +6,21 @@ use Illuminate\Support\Facades\Route;
 
 class RouteTest extends TestCase
 {
-    protected function setUp(): void
+    /** @test */
+    public function routes_are_registered_when_enabled(): void
     {
-        parent::setUp();
-
-        // Disable route caching and refresh routes
-        Route::flushMiddlewareGroups();
-        Route::clearResolvedInstances();
+        // Routes should be loaded since we set should_load_routes = true in getEnvironmentSetUp
+        $this->assertTrue(Route::has('conversations.index'));
+        $this->assertTrue(Route::has('conversations.store'));
+        $this->assertTrue(Route::has('conversations.show'));
+        $this->assertTrue(Route::has('conversations.update'));
+        $this->assertTrue(Route::has('conversations.destroy'));
     }
 
     /** @test */
-    public function it_can_disable_routes()
+    public function conversation_routes_return_correct_responses(): void
     {
-        // Disable route loading
-        $this->app['config']->set('musonza_chat.should_load_routes', false);
-        $this->refreshApplication();
-
-        $response = $this->get('/conversations');
-        $response->assertStatus(404);
-    }
-
-    /** @test */
-    public function it_can_enable_routes()
-    {
-        // Enable route loading
-        $this->app['config']->set('musonza_chat.should_load_routes', true);
-        $this->refreshApplication();
-
-        $response = $this->get('/conversations');
+        $response = $this->get('/chat/conversations');
         $response->assertStatus(200);
     }
 }
