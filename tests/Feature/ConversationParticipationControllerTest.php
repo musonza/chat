@@ -21,9 +21,9 @@ class ConversationParticipationControllerTest extends TestCase
     public function test_store()
     {
         $conversation = factory(Conversation::class)->create();
-        $userModel = factory(User::class)->create();
-        $clientModel = factory(Client::class)->create();
-        $payload = [
+        $userModel    = factory(User::class)->create();
+        $clientModel  = factory(Client::class)->create();
+        $payload      = [
             'participants' => [
                 ['id' => $userModel->getKey(), 'type' => $userModel->getMorphClass()],
                 ['id' => $clientModel->getKey(), 'type' => $clientModel->getMorphClass()],
@@ -39,8 +39,8 @@ class ConversationParticipationControllerTest extends TestCase
     public function test_index()
     {
         $conversation = factory(Conversation::class)->create();
-        $userModel = factory(User::class)->create();
-        $clientModel = factory(Client::class)->create();
+        $userModel    = factory(User::class)->create();
+        $clientModel  = factory(Client::class)->create();
 
         Chat::conversation($conversation)->addParticipants([$userModel, $clientModel]);
 
@@ -52,7 +52,7 @@ class ConversationParticipationControllerTest extends TestCase
     public function test_show()
     {
         $conversation = factory(Conversation::class)->create();
-        $userModel = factory(User::class)->create();
+        $userModel    = factory(User::class)->create();
         Chat::conversation($conversation)->addParticipants([$userModel]);
 
         /** @var Participation $participant */
@@ -68,8 +68,8 @@ class ConversationParticipationControllerTest extends TestCase
     public function test_destroy()
     {
         $conversation = factory(Conversation::class)->create();
-        $userModel = factory(User::class)->create();
-        $clientModel = factory(Client::class)->create();
+        $userModel    = factory(User::class)->create();
+        $clientModel  = factory(Client::class)->create();
 
         Chat::conversation($conversation)->addParticipants([$userModel, $clientModel]);
 
@@ -86,8 +86,8 @@ class ConversationParticipationControllerTest extends TestCase
     public function test_update()
     {
         $conversation = factory(Conversation::class)->create();
-        $userModel = factory(User::class)->create();
-        $clientModel = factory(Client::class)->create();
+        $userModel    = factory(User::class)->create();
+        $clientModel  = factory(Client::class)->create();
 
         Chat::conversation($conversation)->addParticipants([$userModel, $clientModel]);
 

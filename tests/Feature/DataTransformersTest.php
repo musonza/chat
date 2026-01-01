@@ -17,7 +17,7 @@ class DataTransformersTest extends TestCase
 
     public function test_conversation_without_transformer()
     {
-        $conversation = factory(Conversation::class)->create();
+        $conversation               = factory(Conversation::class)->create();
         $responseWithoutTransformer = $this->getJson(route('conversations.show', $conversation->getKey()))
             ->assertStatus(200);
 

@@ -20,7 +20,7 @@ class ConversationTest extends TestCase
     {
         Chat::createConversation([$this->alpha, $this->bravo]);
 
-        $this->assertDatabaseHas($this->prefix.'conversations', ['id' => 1]);
+        $this->assertDatabaseHas($this->prefix . 'conversations', ['id' => 1]);
     }
 
     /** @test */
@@ -65,7 +65,7 @@ class ConversationTest extends TestCase
     public function it_can_update_conversation_details()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $data = ['title' => 'PHP Channel', 'description' => 'PHP Channel Description'];
+        $data         = ['title' => 'PHP Channel', 'description' => 'PHP Channel Description'];
         $conversation->update(['data' => $data]);
 
         $this->assertEquals('PHP Channel', $conversation->data['title']);
@@ -99,7 +99,7 @@ class ConversationTest extends TestCase
     /** @test */
     public function it_can_remove_a_single_participant_from_conversation()
     {
-        $clientModel = factory(Client::class)->create();
+        $clientModel  = factory(Client::class)->create();
         $conversation = Chat::createConversation([$this->alpha, $this->bravo, $clientModel]);
         $conversation = Chat::conversation($conversation)->removeParticipants($this->alpha);
 
@@ -171,7 +171,7 @@ class ConversationTest extends TestCase
     public function it_returns_last_message_as_null_when_the_very_last_message_was_deleted()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message = Chat::message('Hello & Bye')->from($this->alpha)->to($conversation)->send();
+        $message      = Chat::message('Hello & Bye')->from($this->alpha)->to($conversation)->send();
         Chat::message($message)->setParticipant($this->alpha)->delete();
 
         $conversations = Chat::conversations()->setParticipant($this->alpha)->get();
@@ -202,13 +202,13 @@ class ConversationTest extends TestCase
 
         $conversation = Chat::createConversation([$auth, $this->bravo]);
 
-        Chat::message('Hello-'.$conversation->id)->from($auth)->to($conversation)->send();
+        Chat::message('Hello-' . $conversation->id)->from($auth)->to($conversation)->send();
 
         $conversation = Chat::createConversation([$auth, $this->charlie]);
-        Chat::message('Hello-'.$conversation->id)->from($auth)->to($conversation)->send();
+        Chat::message('Hello-' . $conversation->id)->from($auth)->to($conversation)->send();
 
         $conversation = Chat::createConversation([$auth, $this->delta]);
-        Chat::message('Hello-'.$conversation->id)->from($auth)->to($conversation)->send();
+        Chat::message('Hello-' . $conversation->id)->from($auth)->to($conversation)->send();
 
         /** @var Collection $conversations */
         $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->setParticipant($auth)->limit(1)->page(1)->get();
@@ -351,7 +351,7 @@ class ConversationTest extends TestCase
         $this->app['config']->set('musonza_chat.sender_fields_whitelist', ['uid', 'email']);
 
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
+        $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
 
         $this->assertSame(['uid', 'email'], array_keys($message->sender));
     }

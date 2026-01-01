@@ -51,7 +51,7 @@ class Message extends BaseModel
     {
         $participantModel = $this->participation->messageable;
 
-        if (!isset($participantModel)) {
+        if (! isset($participantModel)) {
             return null;
         }
 
@@ -132,7 +132,7 @@ class Message extends BaseModel
      * Creates an entry in the message_notification table for each participant
      * This will be used to determine if a message is read or deleted.
      *
-     * @param Message $message
+     * @param  Message  $message
      */
     protected function createNotifications($message)
     {
