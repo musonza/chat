@@ -77,9 +77,9 @@ class ConversationController extends Controller
     }
 
     /**
-     * @return ResponseFactory|Response
-     *
      * @throws Exception
+     *
+     * @return ResponseFactory|Response
      */
     public function destroy(DestroyConversation $request, $id): Response
     {
