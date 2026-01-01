@@ -14,13 +14,13 @@ class CommandBus
     public function __construct(Application $app, CommandTranslator $commandTranslator)
     {
         $this->commandTranslator = $commandTranslator;
-        $this->app               = $app;
+        $this->app = $app;
     }
 
     /**
-     * @return mixed
-     *
      * @throws Exception
+     *
+     * @return mixed
      */
     public function execute($command)
     {
