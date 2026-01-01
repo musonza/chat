@@ -43,7 +43,6 @@ jobs:
   code-style:
     runs-on: ubuntu-latest
     name: Code Style
-    continue-on-error: true
 
     steps:
       - name: Checkout code
