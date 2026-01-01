@@ -48,7 +48,6 @@ class MessageService
     /**
      * Set Message type.
      *
-     * @param string type
      * @return $this
      */
     public function type(string $type)
@@ -93,7 +92,7 @@ class MessageService
     /**
      * Get count for unread messages.
      *
-     * @return void
+     * @return int
      */
     public function unreadCount()
     {
