@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 class RouteTest extends TestCase
 {
-    protected function setUp(): void
+    public function setUp(): void
     {
         parent::setUp();
 
