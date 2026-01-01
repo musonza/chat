@@ -2,4 +2,6 @@
 
 namespace Musonza\Chat\Eventing;
 
-class Event {}
+class Event
+{
+}
