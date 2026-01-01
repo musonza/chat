@@ -23,7 +23,7 @@ class StoreParticipation extends FormRequest
     public function participants()
     {
         $participantModels = [];
-        $participants      = $this->input('participants', []);
+        $participants = $this->input('participants', []);
 
         foreach ($participants as $participant) {
             $participantModels[] = app($participant['type'])->find($participant['id']);
