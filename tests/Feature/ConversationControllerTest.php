@@ -25,9 +25,9 @@ class ConversationControllerTest extends TestCase
         $this->withoutExceptionHandling();
 
         /** @var User $userModel */
-        $userModel   = factory(User::class)->create();
+        $userModel = factory(User::class)->create();
         $clientModel = factory(Client::class)->create();
-        $botModel    = factory(Bot::class)->create();
+        $botModel = factory(Bot::class)->create();
 
         $participants = [
             ['id' => $userModel->getKey(), 'type' => $userModel->getMorphClass()],

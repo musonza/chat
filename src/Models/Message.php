@@ -51,17 +51,47 @@ class Message extends BaseModel
     {
         $participantModel = $this->participation->messageable;
 
-        if (! isset($participantModel)) {
+        if (!isset($participantModel)) {
             return null;
         }
 
-        if (method_exists($participantModel, 'getParticipantDetails')) {
+        // Check if model has customized participant details via accessor or explicit override
+        if ($this->hasCustomParticipantDetails($participantModel)) {
             return $participantModel->getParticipantDetails();
         }
 
         $fields = Chat::senderFieldsWhitelist();
 
         return $fields ? $this->participation->messageable->only($fields) : $this->participation->messageable;
+    }
+
+    /**
+     * Check if the model has customized getParticipantDetails.
+     *
+     * Returns true if the model defines getParticipantDetailsAttribute accessor
+     * or explicitly overrides getParticipantDetails method (not from trait).
+     */
+    private function hasCustomParticipantDetails(Model $model): bool
+    {
+        // Check for the accessor (documented customization approach)
+        if (method_exists($model, 'getParticipantDetailsAttribute')) {
+            return true;
+        }
+
+        // Check if getParticipantDetails is explicitly defined in the model class
+        // by comparing the source file with the trait file
+        if (method_exists($model, 'getParticipantDetails')) {
+            $reflection = new \ReflectionMethod($model, 'getParticipantDetails');
+            $sourceFile = $reflection->getFileName();
+
+            // If method comes from a different file than the Messageable trait,
+            // it means the user has overridden it
+            $traitFile = (new \ReflectionClass(\Musonza\Chat\Traits\Messageable::class))->getFileName();
+
+            return $sourceFile !== $traitFile;
+        }
+
+        return false;
     }
 
     public function unreadCount(Model $participant)
@@ -102,7 +132,7 @@ class Message extends BaseModel
      * Creates an entry in the message_notification table for each participant
      * This will be used to determine if a message is read or deleted.
      *
-     * @param  Message  $message
+     * @param Message $message
      */
     protected function createNotifications($message)
     {

@@ -20,7 +20,7 @@ class ConversationTest extends TestCase
     {
         Chat::createConversation([$this->alpha, $this->bravo]);
 
-        $this->assertDatabaseHas($this->prefix . 'conversations', ['id' => 1]);
+        $this->assertDatabaseHas($this->prefix.'conversations', ['id' => 1]);
     }
 
     /** @test */
@@ -65,7 +65,7 @@ class ConversationTest extends TestCase
     public function it_can_update_conversation_details()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $data         = ['title' => 'PHP Channel', 'description' => 'PHP Channel Description'];
+        $data = ['title' => 'PHP Channel', 'description' => 'PHP Channel Description'];
         $conversation->update(['data' => $data]);
 
         $this->assertEquals('PHP Channel', $conversation->data['title']);
@@ -99,7 +99,7 @@ class ConversationTest extends TestCase
     /** @test */
     public function it_can_remove_a_single_participant_from_conversation()
     {
-        $clientModel  = factory(Client::class)->create();
+        $clientModel = factory(Client::class)->create();
         $conversation = Chat::createConversation([$this->alpha, $this->bravo, $clientModel]);
         $conversation = Chat::conversation($conversation)->removeParticipants($this->alpha);
 
@@ -171,7 +171,7 @@ class ConversationTest extends TestCase
     public function it_returns_last_message_as_null_when_the_very_last_message_was_deleted()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message      = Chat::message('Hello & Bye')->from($this->alpha)->to($conversation)->send();
+        $message = Chat::message('Hello & Bye')->from($this->alpha)->to($conversation)->send();
         Chat::message($message)->setParticipant($this->alpha)->delete();
 
         $conversations = Chat::conversations()->setParticipant($this->alpha)->get();
@@ -202,13 +202,13 @@ class ConversationTest extends TestCase
 
         $conversation = Chat::createConversation([$auth, $this->bravo]);
 
-        Chat::message('Hello-' . $conversation->id)->from($auth)->to($conversation)->send();
+        Chat::message('Hello-'.$conversation->id)->from($auth)->to($conversation)->send();
 
         $conversation = Chat::createConversation([$auth, $this->charlie]);
-        Chat::message('Hello-' . $conversation->id)->from($auth)->to($conversation)->send();
+        Chat::message('Hello-'.$conversation->id)->from($auth)->to($conversation)->send();
 
         $conversation = Chat::createConversation([$auth, $this->delta]);
-        Chat::message('Hello-' . $conversation->id)->from($auth)->to($conversation)->send();
+        Chat::message('Hello-'.$conversation->id)->from($auth)->to($conversation)->send();
 
         /** @var Collection $conversations */
         $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->setParticipant($auth)->limit(1)->page(1)->get();
@@ -351,8 +351,52 @@ class ConversationTest extends TestCase
         $this->app['config']->set('musonza_chat.sender_fields_whitelist', ['uid', 'email']);
 
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
+        $message = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
 
         $this->assertSame(['uid', 'email'], array_keys($message->sender));
+    }
+
+    /** @test */
+    public function it_returns_correct_participation_for_specific_conversation()
+    {
+        // Create two conversations with the same participant
+        $conversation1 = Chat::createConversation([$this->alpha, $this->bravo]);
+        $conversation2 = Chat::createConversation([$this->alpha, $this->charlie]);
+
+        // Get participation for each conversation
+        $participation1 = Chat::conversation($conversation1)->getParticipation($this->alpha);
+        $participation2 = Chat::conversation($conversation2)->getParticipation($this->alpha);
+
+        // Verify each participation belongs to the correct conversation
+        $this->assertEquals($conversation1->id, $participation1->conversation_id);
+        $this->assertEquals($conversation2->id, $participation2->conversation_id);
+
+        // Verify they are different participations
+        $this->assertNotEquals($participation1->id, $participation2->id);
+    }
+
+    /** @test */
+    public function it_returns_participant_details_from_messageable_trait()
+    {
+        // User model uses the default getParticipantDetails from trait
+        $this->alpha->name = 'Test User';
+
+        $details = $this->alpha->getParticipantDetails();
+
+        $this->assertIsArray($details);
+        $this->assertEquals(['name' => 'Test User'], $details);
+    }
+
+    /** @test */
+    public function it_returns_custom_participant_details_when_method_is_overridden()
+    {
+        // Client model has a custom getParticipantDetails method
+        $client = factory(\Musonza\Chat\Tests\Helpers\Models\Client::class)->create(['name' => 'Test Client']);
+
+        $details = $client->getParticipantDetails();
+
+        $this->assertIsArray($details);
+        $this->assertEquals('Test Client', $details['name']);
+        $this->assertEquals('bar', $details['foo']);
     }
 }
