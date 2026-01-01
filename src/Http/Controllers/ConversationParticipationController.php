@@ -49,9 +49,9 @@ class ConversationParticipationController extends Controller
 
     public function destroy($conversationId, $participationId)
     {
-        $conversation  = Chat::conversations()->getById($conversationId);
+        $conversation = Chat::conversations()->getById($conversationId);
         $participation = Participation::find($participationId);
-        $conversation  = Chat::conversation($conversation)->removeParticipants([$participation->messageable]);
+        $conversation = Chat::conversation($conversation)->removeParticipants([$participation->messageable]);
 
         return response($conversation->participants);
     }
