@@ -10,7 +10,7 @@ class CommandTranslator
     {
         $handler = str_replace('Command', 'CommandHandler', get_class($command));
 
-        if (!class_exists($handler)) {
+        if (! class_exists($handler)) {
             $message = "Command handler [$handler] does not exist.";
 
             throw new Exception($message);

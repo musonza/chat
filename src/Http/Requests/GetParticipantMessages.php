@@ -38,10 +38,10 @@ class GetParticipantMessages extends BaseRequest
     public function getPaginationParams()
     {
         return [
-            'page'     => $this->page ?? $this->pagination->getPage(),
-            'perPage'  => $this->perPage ?? $this->pagination->getPerPage(),
-            'sorting'  => $this->sorting ?? $this->pagination->getSorting(),
-            'columns'  => $this->columns ?? $this->pagination->getColumns(),
+            'page'     => $this->page     ?? $this->pagination->getPage(),
+            'perPage'  => $this->perPage  ?? $this->pagination->getPerPage(),
+            'sorting'  => $this->sorting  ?? $this->pagination->getSorting(),
+            'columns'  => $this->columns  ?? $this->pagination->getColumns(),
             'pageName' => $this->pageName ?? $this->pagination->getPageName(),
         ];
     }
