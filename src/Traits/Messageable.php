@@ -22,7 +22,7 @@ trait Messageable
     public function joinConversation(Conversation $conversation)
     {
         if ($conversation->isDirectMessage() && $conversation->participants()->count() == 2) {
-            throw new InvalidDirectMessageNumberOfParticipants;
+            throw new InvalidDirectMessageNumberOfParticipants();
         }
 
         $participation = new Participation([
