@@ -39,6 +39,7 @@ Create a Chat application for your multiple Models
   - [Remove participants from a conversation](#remove-participants-from-a-conversation)
   - [Add participants to a conversation](#add-participants-to-a-conversation)
   - [Get messages in a conversation](#get-messages-in-a-conversation)
+  - [Get public conversations for discovery](#get-public-conversations-for-discovery)
   - [Get recent messages](#get-recent-messages)
   - [Get participants in a conversation](#get-participants-in-a-conversation)
   - [Get participation entry for a Model in a conversation](#Get-participation-entry-for-a-Model-in-a-conversation)
@@ -336,6 +337,21 @@ $conversations = Chat::conversations()->setParticipant($participantModel)->isDir
 // all conversations
 $conversations = Chat::conversations()->setParticipant($participantModel)->get();
 ```
+
+#### Get public conversations for discovery
+
+You can list public conversations without being a participant. This is useful for building discovery pages where users can browse and join public chat rooms (similar to Telegram public groups).
+
+```php
+// Get all public conversations (no participant required)
+$conversations = Chat::conversations()
+    ->isPrivate(false)
+    ->limit(10)
+    ->page(1)
+    ->get();
+```
+
+> **Note:** This only works for public conversations. Attempting to list private conversations without setting a participant will throw an `InvalidConversationListException`.
 
 #### Get recent messages
 
