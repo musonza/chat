@@ -16,6 +16,7 @@ use Musonza\Chat\Eventing\ParticipantsJoined;
 use Musonza\Chat\Eventing\ParticipantsLeft;
 use Musonza\Chat\Exceptions\DeletingConversationWithParticipantsException;
 use Musonza\Chat\Exceptions\DirectMessagingExistsException;
+use Musonza\Chat\Exceptions\InvalidConversationListException;
 use Musonza\Chat\Exceptions\InvalidDirectMessageNumberOfParticipants;
 
 class Conversation extends BaseModel
@@ -91,6 +92,21 @@ class Conversation extends BaseModel
     public function getParticipantConversations($participant, array $options)
     {
         return $this->getConversationsList($participant, $options);
+    }
+
+    /**
+     * Get public conversations without requiring a participant.
+     *
+     * @throws InvalidConversationListException
+     */
+    public function getPublicConversations(array $options)
+    {
+        // Only public conversations can be listed without a participant
+        if (isset($options['filters']['private']) && $options['filters']['private'] === true) {
+            throw new InvalidConversationListException('Cannot list private conversations without a participant.');
+        }
+
+        return $this->getPublicConversationsList($options);
     }
 
     public function participantFromSender(Model $sender)
@@ -343,6 +359,31 @@ class Conversation extends BaseModel
             ->distinct('c.updated_at', 'c.id');
 
         return $paginator->paginate($options['perPage'], [$this->tablePrefix . 'participation.*', 'c.*'], $options['pageName'], $options['page'], $total);
+    }
+
+    /**
+     * Get public conversations list without requiring a participant.
+     *
+     * @return mixed
+     */
+    private function getPublicConversationsList(array $options)
+    {
+        $query = self::query()
+            ->where('private', false)
+            ->with([
+                'last_message.participation',
+                'participants.messageable',
+            ]);
+
+        if (isset($options['filters']['direct_message'])) {
+            $query = $query->where('direct_message', (bool) $options['filters']['direct_message']);
+        }
+
+        $query = $query
+            ->orderBy('updated_at', 'DESC')
+            ->orderBy('id', 'DESC');
+
+        return $query->paginate($options['perPage'], ['*'], $options['pageName'], $options['page']);
     }
 
     public function unDeletedCount()

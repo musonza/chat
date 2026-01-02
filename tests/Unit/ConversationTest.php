@@ -6,6 +6,7 @@ use Chat;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Collection;
 use Musonza\Chat\Exceptions\DirectMessagingExistsException;
+use Musonza\Chat\Exceptions\InvalidConversationListException;
 use Musonza\Chat\Exceptions\InvalidDirectMessageNumberOfParticipants;
 use Musonza\Chat\Models\Conversation;
 use Musonza\Chat\Models\Participation;
@@ -398,5 +399,76 @@ class ConversationTest extends TestCase
         $this->assertIsArray($details);
         $this->assertEquals('Test Client', $details['name']);
         $this->assertEquals('bar', $details['foo']);
+    }
+
+    /** @test */
+    public function it_can_list_public_conversations_without_participant()
+    {
+        // Create public conversations
+        Chat::createConversation([$this->alpha, $this->bravo])->makePrivate(false);
+        Chat::createConversation([$this->alpha, $this->charlie])->makePrivate(false);
+
+        // Create private conversations (should not be included)
+        Chat::createConversation([$this->alpha, $this->delta])->makePrivate();
+
+        // Get public conversations without setting a participant
+        $publicConversations = Chat::conversations()->isPrivate(false)->get();
+
+        $this->assertCount(2, $publicConversations);
+    }
+
+    /** @test */
+    public function it_can_list_all_public_conversations_without_participant_even_when_not_member()
+    {
+        // Create public conversations where user is not a member
+        Chat::createConversation([$this->bravo, $this->charlie])->makePrivate(false);
+        Chat::createConversation([$this->charlie, $this->delta])->makePrivate(false);
+
+        // Get public conversations without setting a participant
+        $publicConversations = Chat::conversations()->isPrivate(false)->get();
+
+        $this->assertCount(2, $publicConversations);
+    }
+
+    /** @test */
+    public function it_throws_exception_when_listing_private_conversations_without_participant()
+    {
+        Chat::createConversation([$this->alpha, $this->bravo])->makePrivate();
+
+        $this->expectException(InvalidConversationListException::class);
+
+        // Attempting to list private conversations without a participant should fail
+        Chat::conversations()->isPrivate(true)->get();
+    }
+
+    /** @test */
+    public function it_returns_public_conversations_with_pagination()
+    {
+        // Create 5 public conversations
+        for ($i = 0; $i < 5; $i++) {
+            Chat::createConversation([$this->alpha, $this->bravo])->makePrivate(false);
+        }
+
+        // Get first page with limit 2
+        $firstPage = Chat::conversations()->isPrivate(false)->limit(2)->page(1)->get();
+        $this->assertCount(2, $firstPage);
+
+        // Get second page with limit 2
+        $secondPage = Chat::conversations()->isPrivate(false)->limit(2)->page(2)->get();
+        $this->assertCount(2, $secondPage);
+    }
+
+    /** @test */
+    public function it_returns_public_conversations_with_last_message_and_participants()
+    {
+        $conversation = Chat::createConversation([$this->alpha, $this->bravo])->makePrivate(false);
+        Chat::message('Hello public world')->from($this->alpha)->to($conversation)->send();
+
+        $publicConversations = Chat::conversations()->isPrivate(false)->get();
+
+        $this->assertCount(1, $publicConversations);
+        $this->assertNotNull($publicConversations->first()->last_message);
+        $this->assertEquals('Hello public world', $publicConversations->first()->last_message->body);
+        $this->assertCount(2, $publicConversations->first()->participants);
     }
 }
