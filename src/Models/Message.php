@@ -3,6 +3,7 @@
 namespace Musonza\Chat\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
 use Musonza\Chat\BaseModel;
 use Musonza\Chat\Chat;
 use Musonza\Chat\ConfigurationManager;
@@ -36,8 +37,9 @@ class Message extends BaseModel
      * @var array
      */
     protected $casts = [
-        'flagged' => 'boolean',
-        'data'    => 'array',
+        'flagged'      => 'boolean',
+        'data'         => 'array',
+        'is_encrypted' => 'boolean',
     ];
 
     protected $appends = ['sender'];
@@ -45,6 +47,38 @@ class Message extends BaseModel
     public function participation()
     {
         return $this->belongsTo(Participation::class, 'participation_id');
+    }
+
+    /**
+     * Encrypt the message body if encryption is enabled.
+     *
+     * @param  string|null  $value
+     * @return void
+     */
+    public function setBodyAttribute($value)
+    {
+        if (Chat::shouldEncryptMessages() && $value !== null) {
+            $this->attributes['body']         = Crypt::encryptString($value);
+            $this->attributes['is_encrypted'] = true;
+        } else {
+            $this->attributes['body']         = $value;
+            $this->attributes['is_encrypted'] = false;
+        }
+    }
+
+    /**
+     * Decrypt the message body if it was encrypted.
+     *
+     * @param  string|null  $value
+     * @return string|null
+     */
+    public function getBodyAttribute($value)
+    {
+        if ($this->is_encrypted && $value !== null) {
+            return Crypt::decryptString($value);
+        }
+
+        return $value;
     }
 
     public function getSenderAttribute()

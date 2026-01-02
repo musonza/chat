@@ -134,4 +134,12 @@ class Chat
 
         return (is_array($fields) && ! empty($fields)) ? $fields : null;
     }
+
+    /**
+     * Check if message encryption is enabled.
+     */
+    public static function shouldEncryptMessages(): bool
+    {
+        return (bool) config('musonza_chat.encrypt_messages', false);
+    }
 }

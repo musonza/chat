@@ -10,6 +10,13 @@ return [
     'broadcasts' => false,
 
     /*
+     * Enable encryption for message bodies.
+     * When enabled, new messages will be encrypted using Laravel's Crypt facade.
+     * Existing unencrypted messages will remain readable (hybrid mode).
+     */
+    'encrypt_messages' => false,
+
+    /*
      * Specify the fields that you want to return each time for the sender.
      * If not set or empty, all the columns for the sender will be returned
      *

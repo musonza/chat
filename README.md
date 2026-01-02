@@ -46,6 +46,7 @@ Create a Chat application for your multiple Models
   - [Get participation entry for a Model in a conversation](#Get-participation-entry-for-a-Model-in-a-conversation)
   - [Update participation settings](#Update-participation-settings)
   - [Data Transformers](#Data-Transformers)
+  - [Message Encryption](#message-encryption)
 - [License](#license)
 
 </details>
@@ -410,7 +411,37 @@ file `musonza_chat.php` as follows:
     'participant' => \MyApp\Transformers\ParticipantTransformer::class,
 ]
 ```
-> **Note:** This only applies to responses from package routes. 
+> **Note:** This only applies to responses from package routes.
+
+#### Message Encryption
+
+You can optionally encrypt message bodies at rest using Laravel's built-in encryption. When enabled, messages are encrypted using AES-256-CBC via Laravel's `Crypt` facade.
+
+To enable encryption, set the `encrypt_messages` option in your `musonza_chat.php` config file:
+
+```php
+'encrypt_messages' => true,
+```
+
+**How it works:**
+
+- New messages are automatically encrypted before being stored in the database
+- Messages are automatically decrypted when retrieved via the model
+- Existing unencrypted messages remain readable (hybrid mode)
+- An `is_encrypted` column tracks whether each message is encrypted
+
+```php
+// Sending works the same - encryption is transparent
+$message = Chat::message('Secret message')
+    ->from($user)
+    ->to($conversation)
+    ->send();
+
+// Reading works the same - decryption is automatic
+echo $message->body; // "Secret message"
+```
+
+> **Note:** Encryption uses your application's `APP_KEY`. If you change your `APP_KEY`, previously encrypted messages will become unreadable.
 
 ## License
 

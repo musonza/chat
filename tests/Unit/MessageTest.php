@@ -4,6 +4,8 @@ namespace Musonza\Chat\Tests;
 
 use Chat;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\DB;
+use Musonza\Chat\ConfigurationManager;
 use Musonza\Chat\Models\Conversation;
 use Musonza\Chat\Models\Message;
 use Musonza\Chat\Tests\Helpers\Models\Bot;
@@ -260,5 +262,75 @@ class MessageTest extends TestCase
         Chat::message('Hello')->from($bot)->to($conversation)->send();
 
         $this->assertSame(['name', 'bot_id'], array_keys($conversation->messages[0]->sender));
+    }
+
+    /** @test */
+    public function it_stores_message_unencrypted_when_encryption_disabled()
+    {
+        $this->app['config']->set('musonza_chat.encrypt_messages', false);
+
+        $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
+        $message      = Chat::message('Hello World')->from($this->alpha)->to($conversation)->send();
+
+        // Check the raw database value is not encrypted
+        $rawMessage = DB::table(ConfigurationManager::MESSAGES_TABLE)->where('id', $message->id)->first();
+
+        $this->assertEquals('Hello World', $rawMessage->body);
+        $this->assertFalse((bool) $rawMessage->is_encrypted);
+    }
+
+    /** @test */
+    public function it_encrypts_message_body_when_encryption_enabled()
+    {
+        $this->app['config']->set('musonza_chat.encrypt_messages', true);
+
+        $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
+        $message      = Chat::message('Secret Message')->from($this->alpha)->to($conversation)->send();
+
+        // Check the raw database value is encrypted (not plain text)
+        $rawMessage = DB::table(ConfigurationManager::MESSAGES_TABLE)->where('id', $message->id)->first();
+
+        $this->assertNotEquals('Secret Message', $rawMessage->body);
+        $this->assertTrue((bool) $rawMessage->is_encrypted);
+    }
+
+    /** @test */
+    public function it_decrypts_message_body_when_reading()
+    {
+        $this->app['config']->set('musonza_chat.encrypt_messages', true);
+
+        $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
+        $message      = Chat::message('Secret Message')->from($this->alpha)->to($conversation)->send();
+
+        // Reading the message via model should decrypt it
+        $retrievedMessage = Message::find($message->id);
+
+        $this->assertEquals('Secret Message', $retrievedMessage->body);
+    }
+
+    /** @test */
+    public function it_reads_unencrypted_messages_when_encryption_enabled()
+    {
+        // First, create a message without encryption (simulating existing data)
+        $this->app['config']->set('musonza_chat.encrypt_messages', false);
+
+        $conversation   = Chat::createConversation([$this->alpha, $this->bravo]);
+        $unencryptedMsg = Chat::message('Old Message')->from($this->alpha)->to($conversation)->send();
+
+        // Now enable encryption
+        $this->app['config']->set('musonza_chat.encrypt_messages', true);
+
+        // Create a new encrypted message
+        $encryptedMsg = Chat::message('New Secret')->from($this->bravo)->to($conversation)->send();
+
+        // Both messages should be readable
+        $oldMessage = Message::find($unencryptedMsg->id);
+        $newMessage = Message::find($encryptedMsg->id);
+
+        $this->assertEquals('Old Message', $oldMessage->body);
+        $this->assertFalse($oldMessage->is_encrypted);
+
+        $this->assertEquals('New Secret', $newMessage->body);
+        $this->assertTrue($newMessage->is_encrypted);
     }
 }
