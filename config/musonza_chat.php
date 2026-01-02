@@ -2,6 +2,12 @@
 
 return [
     /*
+     * Database connection to use for chat tables.
+     * Set to null to use the default connection.
+     */
+    'database_connection' => null,
+
+    /*
      * This will allow you to broadcast an event when a message is sent
      * Example:
      * Channel: mc-chat-conversation.2,
