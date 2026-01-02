@@ -137,8 +137,6 @@ class Chat
 
     /**
      * Check if message encryption is enabled.
-     *
-     * @return bool
      */
     public static function shouldEncryptMessages(): bool
     {

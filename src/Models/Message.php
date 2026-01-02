@@ -58,10 +58,10 @@ class Message extends BaseModel
     public function setBodyAttribute($value)
     {
         if (Chat::shouldEncryptMessages() && $value !== null) {
-            $this->attributes['body'] = Crypt::encryptString($value);
+            $this->attributes['body']         = Crypt::encryptString($value);
             $this->attributes['is_encrypted'] = true;
         } else {
-            $this->attributes['body'] = $value;
+            $this->attributes['body']         = $value;
             $this->attributes['is_encrypted'] = false;
         }
     }

@@ -314,8 +314,8 @@ class MessageTest extends TestCase
         // First, create a message without encryption (simulating existing data)
         $this->app['config']->set('musonza_chat.encrypt_messages', false);
 
-        $conversation     = Chat::createConversation([$this->alpha, $this->bravo]);
-        $unencryptedMsg   = Chat::message('Old Message')->from($this->alpha)->to($conversation)->send();
+        $conversation   = Chat::createConversation([$this->alpha, $this->bravo]);
+        $unencryptedMsg = Chat::message('Old Message')->from($this->alpha)->to($conversation)->send();
 
         // Now enable encryption
         $this->app['config']->set('musonza_chat.encrypt_messages', true);
