@@ -14,8 +14,6 @@ Create a Chat application for your multiple Models
 
 ## Table of Contents
 
-<details><summary>Click to expand</summary><p>
-
 - [Introduction](#introduction)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -48,8 +46,6 @@ Create a Chat application for your multiple Models
   - [Data Transformers](#Data-Transformers)
   - [Message Encryption](#message-encryption)
 - [License](#license)
-
-</details>
 
 Checkout a simple [Demo Application](https://github.com/musonza/chat-demo)
 
