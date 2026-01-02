@@ -32,7 +32,7 @@ class Chat
         ConversationService $conversationService,
         MessageNotification $messageNotification
     ) {
-        $this->messageService      = $messageService;
+        $this->messageService = $messageService;
         $this->conversationService = $conversationService;
         $this->messageNotification = $messageNotification;
     }
@@ -64,7 +64,8 @@ class Chat
     /**
      * Sets message.
      *
-     * @param  string  $message
+     * @param string $message
+     *
      * @return MessageService
      */
     public function message($message)
@@ -132,7 +133,7 @@ class Chat
     {
         $fields = config('musonza_chat.sender_fields_whitelist', []);
 
-        return (is_array($fields) && ! empty($fields)) ? $fields : null;
+        return (is_array($fields) && !empty($fields)) ? $fields : null;
     }
 
     /**

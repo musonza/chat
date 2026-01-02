@@ -52,7 +52,8 @@ class Message extends BaseModel
     /**
      * Encrypt the message body if encryption is enabled.
      *
-     * @param  string|null  $value
+     * @param string|null $value
+     *
      * @return void
      */
     public function setBodyAttribute($value)
@@ -69,7 +70,8 @@ class Message extends BaseModel
     /**
      * Decrypt the message body if it was encrypted.
      *
-     * @param  string|null  $value
+     * @param string|null $value
+     *
      * @return string|null
      */
     public function getBodyAttribute($value)
@@ -85,7 +87,7 @@ class Message extends BaseModel
     {
         $participantModel = $this->participation->messageable;
 
-        if (! isset($participantModel)) {
+        if (!isset($participantModel)) {
             return null;
         }
 
@@ -166,7 +168,7 @@ class Message extends BaseModel
      * Creates an entry in the message_notification table for each participant
      * This will be used to determine if a message is read or deleted.
      *
-     * @param  Message  $message
+     * @param Message $message
      */
     protected function createNotifications($message)
     {

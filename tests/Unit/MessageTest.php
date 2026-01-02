@@ -34,8 +34,8 @@ class MessageTest extends TestCase
     {
         /** @var Client $clientModel */
         $clientModel = factory(Client::class)->create();
-        $userModel   = factory(User::class)->create();
-        $botModel    = factory(Bot::class)->create();
+        $userModel = factory(User::class)->create();
+        $botModel = factory(Bot::class)->create();
 
         $conversation = Chat::createConversation([$clientModel, $userModel, $botModel]);
 
@@ -95,9 +95,9 @@ class MessageTest extends TestCase
     public function it_can_delete_a_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message      = Chat::message('Hello there 0')->from($this->alpha)->to($conversation)->send();
-        $perPage      = 5;
-        $page         = 1;
+        $message = Chat::message('Hello there 0')->from($this->alpha)->to($conversation)->send();
+        $perPage = 5;
+        $page = 1;
 
         Chat::message($message)->setParticipant($this->bravo)->delete();
 
@@ -110,10 +110,10 @@ class MessageTest extends TestCase
     public function it_can_list_deleted_messages()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message      = Chat::message('Hello there 0')->from($this->alpha)->to($conversation)->send();
+        $message = Chat::message('Hello there 0')->from($this->alpha)->to($conversation)->send();
 
         $perPage = 5;
-        $page    = 1;
+        $page = 1;
 
         Chat::message($message)->setParticipant($this->bravo)->delete();
 
@@ -142,7 +142,7 @@ class MessageTest extends TestCase
     /** @test */
     public function it_can_tell_message_sender()
     {
-        $bot    = factory(Bot::class)->create();
+        $bot = factory(Bot::class)->create();
         $client = factory(Client::class)->create();
 
         $conversation = Chat::createConversation([$this->alpha, $client, $bot]);
@@ -159,8 +159,8 @@ class MessageTest extends TestCase
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
 
         for ($i = 0; $i < 3; $i++) {
-            Chat::message('Hello ' . $i)->from($this->alpha)->to($conversation)->send();
-            Chat::message('Hello Man ' . $i)->from($this->bravo)->to($conversation)->send();
+            Chat::message('Hello '.$i)->from($this->alpha)->to($conversation)->send();
+            Chat::message('Hello Man '.$i)->from($this->bravo)->to($conversation)->send();
         }
 
         Chat::message('Hello Man')->from($this->bravo)->to($conversation)->send();
@@ -236,7 +236,7 @@ class MessageTest extends TestCase
     public function it_flags_a_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message      = Chat::message('Hello')
+        $message = Chat::message('Hello')
             ->from($this->alpha)
             ->to($conversation)
             ->send();
@@ -255,7 +255,7 @@ class MessageTest extends TestCase
             'name', 'bot_id',
         ]);
 
-        $bot    = factory(Bot::class)->create();
+        $bot = factory(Bot::class)->create();
         $client = factory(Client::class)->create();
 
         $conversation = Chat::createConversation([$client, $bot]);
@@ -270,7 +270,7 @@ class MessageTest extends TestCase
         $this->app['config']->set('musonza_chat.encrypt_messages', false);
 
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message      = Chat::message('Hello World')->from($this->alpha)->to($conversation)->send();
+        $message = Chat::message('Hello World')->from($this->alpha)->to($conversation)->send();
 
         // Check the raw database value is not encrypted
         $rawMessage = DB::table(ConfigurationManager::MESSAGES_TABLE)->where('id', $message->id)->first();
@@ -285,7 +285,7 @@ class MessageTest extends TestCase
         $this->app['config']->set('musonza_chat.encrypt_messages', true);
 
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message      = Chat::message('Secret Message')->from($this->alpha)->to($conversation)->send();
+        $message = Chat::message('Secret Message')->from($this->alpha)->to($conversation)->send();
 
         // Check the raw database value is encrypted (not plain text)
         $rawMessage = DB::table(ConfigurationManager::MESSAGES_TABLE)->where('id', $message->id)->first();
@@ -300,7 +300,7 @@ class MessageTest extends TestCase
         $this->app['config']->set('musonza_chat.encrypt_messages', true);
 
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message      = Chat::message('Secret Message')->from($this->alpha)->to($conversation)->send();
+        $message = Chat::message('Secret Message')->from($this->alpha)->to($conversation)->send();
 
         // Reading the message via model should decrypt it
         $retrievedMessage = Message::find($message->id);
@@ -314,8 +314,8 @@ class MessageTest extends TestCase
         // First, create a message without encryption (simulating existing data)
         $this->app['config']->set('musonza_chat.encrypt_messages', false);
 
-        $conversation     = Chat::createConversation([$this->alpha, $this->bravo]);
-        $unencryptedMsg   = Chat::message('Old Message')->from($this->alpha)->to($conversation)->send();
+        $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
+        $unencryptedMsg = Chat::message('Old Message')->from($this->alpha)->to($conversation)->send();
 
         // Now enable encryption
         $this->app['config']->set('musonza_chat.encrypt_messages', true);

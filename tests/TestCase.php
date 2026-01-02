@@ -2,9 +2,9 @@
 
 namespace Musonza\Chat\Tests;
 
-require __DIR__ . '/../database/migrations/create_chat_tables.php';
-require __DIR__ . '/../database/migrations/add_is_encrypted_to_messages_table.php';
-require __DIR__ . '/Helpers/migrations.php';
+require __DIR__.'/../database/migrations/create_chat_tables.php';
+require __DIR__.'/../database/migrations/add_is_encrypted_to_messages_table.php';
+require __DIR__.'/Helpers/migrations.php';
 
 use AddIsEncryptedToMessagesTable;
 use CreateChatTables;
@@ -41,7 +41,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         parent::setUp();
 
         $this->setUpDatabase();
-        $this->users                                               = $this->createUsers(6);
+        $this->users = $this->createUsers(6);
         [$this->alpha, $this->bravo, $this->charlie, $this->delta] = $this->users;
     }
 
@@ -50,31 +50,32 @@ class TestCase extends \Orchestra\Testbench\TestCase
      */
     protected function setUpDatabase(): void
     {
-        $this->loadMigrationsFrom(__DIR__ . '/Helpers/database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/Helpers/database/migrations');
 
         $config = config('musonza_chat');
         if (isset($config['user_model'])) {
-            $userModel                 = app($config['user_model']);
+            $userModel = app($config['user_model']);
             $this->userModelPrimaryKey = $userModel->getKeyName();
         }
 
-        (new CreateChatTables)->up();
-        (new AddIsEncryptedToMessagesTable)->up();
-        (new CreateTestTables)->up();
+        (new CreateChatTables())->up();
+        (new AddIsEncryptedToMessagesTable())->up();
+        (new CreateTestTables())->up();
 
-        $this->withFactories(__DIR__ . '/Helpers/factories');
+        $this->withFactories(__DIR__.'/Helpers/factories');
     }
 
     /**
      * Define environment setup.
      *
-     * @param  Application  $app
+     * @param Application $app
+     *
      * @return void
      */
     protected function getEnvironmentSetUp($app)
     {
         // Set app key for encryption (required by web middleware)
-        $app['config']->set('app.key', 'base64:' . base64_encode(random_bytes(32)));
+        $app['config']->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
 
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'testbench');
@@ -113,9 +114,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function tearDown(): void
     {
-        (new AddIsEncryptedToMessagesTable)->down();
-        (new CreateChatTables)->down();
-        (new CreateTestTables)->down();
+        (new AddIsEncryptedToMessagesTable())->down();
+        (new CreateChatTables())->down();
+        (new CreateTestTables())->down();
         parent::tearDown();
     }
 }
