@@ -104,12 +104,19 @@ class ConversationService
      */
     public function get()
     {
-        return $this->conversation->getParticipantConversations($this->participant, [
+        $options = [
             'perPage'  => $this->perPage,
             'page'     => $this->page,
             'pageName' => 'page',
             'filters'  => $this->filters,
-        ]);
+        ];
+
+        // If no participant is set, return public conversations only
+        if (is_null($this->participant)) {
+            return $this->conversation->getPublicConversations($options);
+        }
+
+        return $this->conversation->getParticipantConversations($this->participant, $options);
     }
 
     /**
