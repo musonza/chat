@@ -7,6 +7,13 @@ use Musonza\Chat\ConfigurationManager;
 
 class AddIsEncryptedToMessagesTable extends Migration
 {
+    protected function schema()
+    {
+        $connection = config('musonza_chat.database_connection');
+
+        return $connection ? Schema::connection($connection) : Schema::getFacadeRoot();
+    }
+
     /**
      * Run the migrations.
      *
@@ -14,7 +21,7 @@ class AddIsEncryptedToMessagesTable extends Migration
      */
     public function up()
     {
-        Schema::table(ConfigurationManager::MESSAGES_TABLE, function (Blueprint $table) {
+        $this->schema()->table(ConfigurationManager::MESSAGES_TABLE, function (Blueprint $table) {
             $table->boolean('is_encrypted')->default(false)->after('data');
         });
     }
@@ -26,7 +33,7 @@ class AddIsEncryptedToMessagesTable extends Migration
      */
     public function down()
     {
-        Schema::table(ConfigurationManager::MESSAGES_TABLE, function (Blueprint $table) {
+        $this->schema()->table(ConfigurationManager::MESSAGES_TABLE, function (Blueprint $table) {
             $table->dropColumn('is_encrypted');
         });
     }
