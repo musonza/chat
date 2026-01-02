@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/musonza/chat.svg?branch=master)](https://app.travis-ci.com/github/musonza/chat)
 [![Downloads](https://poser.pugx.org/musonza/chat/d/total.svg)](https://packagist.org/packages/musonza/chat)
 [![Packagist](https://img.shields.io/packagist/v/musonza/chat.svg)](https://packagist.org/packages/musonza/chat)
-<a href="https://codeclimate.com/github/musonza/chat/maintainability"><img src="https://api.codeclimate.com/v1/badges/85f152eae2a04b25783d/maintainability" /></a>
+
 ## Chat
 
 Create a Chat application for your multiple Models
