@@ -62,7 +62,13 @@ class ChatServiceProvider extends ServiceProvider
         $stub      = __DIR__ . '/../database/migrations/create_chat_tables.php';
         $target    = $this->app->databasePath() . '/migrations/' . $timestamp . '_create_chat_tables.php';
 
-        $this->publishes([$stub => $target], 'chat.migrations');
+        $encryptionStub   = __DIR__ . '/../database/migrations/add_is_encrypted_to_messages_table.php';
+        $encryptionTarget = $this->app->databasePath() . '/migrations/' . $timestamp . '_add_is_encrypted_to_messages_table.php';
+
+        $this->publishes([
+            $stub           => $target,
+            $encryptionStub => $encryptionTarget,
+        ], 'chat.migrations');
     }
 
     /**
