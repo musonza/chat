@@ -6,6 +6,7 @@ use Chat;
 use Musonza\Chat\Http\Requests\ClearConversation;
 use Musonza\Chat\Http\Requests\DeleteMessage;
 use Musonza\Chat\Http\Requests\GetParticipantMessages;
+use Musonza\Chat\Http\Requests\GetParticipantMessagesWithCursor;
 use Musonza\Chat\Http\Requests\StoreMessage;
 
 class ConversationMessageController extends Controller
@@ -46,6 +47,27 @@ class ConversationMessageController extends Controller
         }
 
         return response($message);
+    }
+
+    /**
+     * Get messages using cursor-based pagination.
+     *
+     * Cursor pagination is more suitable for real-time chat applications
+     * as it avoids duplicate messages when new messages arrive between page loads.
+     */
+    public function indexWithCursor(GetParticipantMessagesWithCursor $request, $conversationId)
+    {
+        $conversation = Chat::conversations()->getById($conversationId);
+        $messages     = Chat::conversation($conversation)
+            ->setParticipant($request->getParticipant())
+            ->setCursorPaginationParams($request->getCursorPaginationParams())
+            ->getMessagesWithCursor();
+
+        if ($this->messageTransformer) {
+            return fractal($messages, $this->messageTransformer)->respond();
+        }
+
+        return response($messages);
     }
 
     public function show(GetParticipantMessages $request, $conversationId, $messageId)

@@ -16,6 +16,10 @@ trait Paginates
 
     protected $deleted = false;
 
+    protected $cursor = null;
+
+    protected $cursorName = 'cursor';
+
     /**
      * Set the limit.
      *
@@ -74,5 +78,45 @@ trait Paginates
             'columns'  => $this->columns,
             'pageName' => $this->pageName,
         ];
+    }
+
+    public function getCursorPaginationParams()
+    {
+        return [
+            'perPage'    => $this->perPage,
+            'sorting'    => $this->sorting,
+            'columns'    => $this->columns,
+            'cursor'     => $this->cursor,
+            'cursorName' => $this->cursorName,
+        ];
+    }
+
+    /**
+     * Set the cursor for cursor-based pagination.
+     *
+     * @param  string|null  $cursor
+     * @return $this
+     */
+    public function cursor($cursor)
+    {
+        $this->cursor = $cursor;
+
+        return $this;
+    }
+
+    /**
+     * Set cursor pagination parameters.
+     *
+     * @return $this
+     */
+    public function setCursorPaginationParams($params)
+    {
+        foreach ($params as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->{$key} = $value;
+            }
+        }
+
+        return $this;
     }
 }

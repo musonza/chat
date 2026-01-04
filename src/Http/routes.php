@@ -32,6 +32,8 @@ Route::group([
         ->name('conversations.messages.store');
     Route::get('/conversations/{id}/messages', 'ConversationMessageController@index')
         ->name('conversations.messages.index');
+    Route::get('/conversations/{id}/messages-cursor', 'ConversationMessageController@indexWithCursor')
+        ->name('conversations.messages.index.cursor');
     Route::get('/conversations/{id}/messages/{message_id}', 'ConversationMessageController@show')
         ->name('conversations.messages.show');
     Route::delete('/conversations/{id}/messages', 'ConversationMessageController@deleteAll')
