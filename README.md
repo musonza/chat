@@ -39,6 +39,7 @@ Create a Chat application for your multiple Models
   - [Remove participants from a conversation](#remove-participants-from-a-conversation)
   - [Add participants to a conversation](#add-participants-to-a-conversation)
   - [Get messages in a conversation](#get-messages-in-a-conversation)
+  - [Get messages with cursor pagination](#get-messages-with-cursor-pagination)
   - [Get public conversations for discovery](#get-public-conversations-for-discovery)
   - [Get recent messages](#get-recent-messages)
   - [Get participants in a conversation](#get-participants-in-a-conversation)
@@ -322,6 +323,44 @@ Chat::conversation($conversation)->addParticipants([$participantModel, $particip
 Chat::conversation($conversation)->setParticipant($participantModel)->getMessages()
 ```
 
+#### Get messages with cursor pagination
+
+For real-time chat applications, cursor-based pagination is recommended over offset-based pagination. This prevents duplicate messages when new messages arrive between page loads.
+
+```php
+// Get first page
+$messages = Chat::conversation($conversation)
+    ->setParticipant($participantModel)
+    ->setCursorPaginationParams([
+        'perPage' => 25,
+        'sorting' => 'asc',
+    ])
+    ->getMessagesWithCursor();
+
+// Get next page using cursor from previous response
+$nextCursor = $messages->nextCursor()?->encode();
+
+$moreMessages = Chat::conversation($conversation)
+    ->setParticipant($participantModel)
+    ->setCursorPaginationParams([
+        'perPage' => 25,
+        'sorting' => 'asc',
+        'cursor' => $nextCursor,
+    ])
+    ->getMessagesWithCursor();
+```
+
+**API Endpoint:** `GET /conversations/{id}/messages-cursor`
+
+Query parameters:
+- `participant_id` (required)
+- `participant_type` (required)
+- `perPage` (optional, default: 25)
+- `sorting` (optional: `asc` or `desc`)
+- `cursor` (optional - from previous response's `next_cursor`)
+
+The response includes `next_cursor` and `prev_cursor` for navigation.
+
 #### Get user conversations by type
 
 ```php
@@ -379,6 +418,8 @@ You can specify the `limit` and `page` as above using the respective functions o
 You don't have to specify all the parameters. If you leave the parameters out, default values will be used.
 `$paginated` above will return `Illuminate\Pagination\LengthAwarePaginator`
 To get the `conversations` simply call `$paginated->items()`
+
+> **Tip:** For paginating messages in real-time chat applications, consider using [cursor pagination](#get-messages-with-cursor-pagination) instead. Cursor pagination prevents duplicate messages when new messages arrive between page loads.
 
 
 #### Get participants in a conversation
