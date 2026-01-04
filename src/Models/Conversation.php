@@ -3,6 +3,7 @@
 namespace Musonza\Chat\Models;
 
 use Chat;
+use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -87,6 +88,21 @@ class Conversation extends BaseModel
     public function getMessages(Model $participant, $paginationParams, $deleted = false)
     {
         return $this->getConversationMessages($participant, $paginationParams, $deleted);
+    }
+
+    /**
+     * Get messages for a conversation using cursor-based pagination.
+     *
+     * Cursor pagination is more suitable for real-time chat applications
+     * as it avoids duplicate messages when new messages arrive between page loads.
+     *
+     * @param  array  $paginationParams
+     * @param  bool  $deleted
+     * @return CursorPaginator
+     */
+    public function getMessagesWithCursor(Model $participant, $paginationParams, $deleted = false)
+    {
+        return $this->getConversationMessagesWithCursor($participant, $paginationParams, $deleted);
     }
 
     public function getParticipantConversations($participant, array $options)
@@ -319,6 +335,37 @@ class Conversation extends BaseModel
                 ],
                 $paginationParams['pageName'],
                 $paginationParams['page']
+            );
+
+        return $messages;
+    }
+
+    /**
+     * Get messages in conversation using cursor-based pagination.
+     *
+     * @return CursorPaginator
+     */
+    private function getConversationMessagesWithCursor(Model $participant, $paginationParams, $deleted)
+    {
+        $messages = $this->messages()
+            ->join($this->tablePrefix . 'message_notifications', $this->tablePrefix . 'message_notifications.message_id', '=', $this->tablePrefix . 'messages.id')
+            ->where($this->tablePrefix . 'message_notifications.messageable_type', $participant->getMorphClass())
+            ->where($this->tablePrefix . 'message_notifications.messageable_id', $participant->getKey());
+        $messages = $deleted ? $messages->whereNotNull($this->tablePrefix . 'message_notifications.deleted_at') : $messages->whereNull($this->tablePrefix . 'message_notifications.deleted_at');
+        $messages = $messages->orderBy($this->tablePrefix . 'messages.id', $paginationParams['sorting'])
+            ->cursorPaginate(
+                $paginationParams['perPage'],
+                [
+                    $this->tablePrefix . 'message_notifications.updated_at as read_at',
+                    $this->tablePrefix . 'message_notifications.deleted_at as deleted_at',
+                    $this->tablePrefix . 'message_notifications.messageable_id',
+                    $this->tablePrefix . 'message_notifications.id as notification_id',
+                    $this->tablePrefix . 'message_notifications.is_seen',
+                    $this->tablePrefix . 'message_notifications.is_sender',
+                    $this->tablePrefix . 'messages.*',
+                ],
+                $paginationParams['cursorName'] ?? 'cursor',
+                $paginationParams['cursor']     ?? null
             );
 
         return $messages;

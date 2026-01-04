@@ -59,6 +59,19 @@ class ConversationService
     }
 
     /**
+     * Get messages in a conversation using cursor-based pagination.
+     *
+     * Cursor pagination is more suitable for real-time chat applications
+     * as it avoids duplicate messages when new messages arrive between page loads.
+     *
+     * @return \Illuminate\Contracts\Pagination\CursorPaginator
+     */
+    public function getMessagesWithCursor()
+    {
+        return $this->conversation->getMessagesWithCursor($this->participant, $this->getCursorPaginationParams(), $this->deleted);
+    }
+
+    /**
      * Clears conversation.
      */
     public function clear()
