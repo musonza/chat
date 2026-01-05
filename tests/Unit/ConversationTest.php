@@ -62,6 +62,59 @@ class ConversationTest extends TestCase
         $this->assertEquals(1, $conversation->unReadNotifications($this->bravo)->count());
     }
 
+    /** @test */
+    public function it_only_marks_received_messages_as_read_not_sent_messages()
+    {
+        $conversation = Chat::createConversation([
+            $this->alpha,
+            $this->bravo,
+        ])->makeDirect();
+
+        // Alpha sends 2 messages
+        Chat::message('Message from Alpha 1')->from($this->alpha)->to($conversation)->send();
+        Chat::message('Message from Alpha 2')->from($this->alpha)->to($conversation)->send();
+
+        // Bravo sends 1 message
+        Chat::message('Message from Bravo')->from($this->bravo)->to($conversation)->send();
+
+        // Get Alpha's notifications before readAll
+        $alphaNotificationsBefore = \Musonza\Chat\Models\MessageNotification::where('messageable_id', $this->alpha->getKey())
+            ->where('messageable_type', $this->alpha->getMorphClass())
+            ->where('conversation_id', $conversation->id)
+            ->get();
+
+        // Alpha has 3 notifications: 2 as sender (is_seen=1), 1 as receiver (is_seen=0)
+        $this->assertEquals(3, $alphaNotificationsBefore->count());
+        $this->assertEquals(2, $alphaNotificationsBefore->where('is_sender', 1)->count());
+        $this->assertEquals(1, $alphaNotificationsBefore->where('is_sender', 0)->count());
+        $this->assertEquals(1, $alphaNotificationsBefore->where('is_sender', 0)->where('is_seen', 0)->count());
+
+        // Manually set is_seen to a special value (2) on sent messages to detect if readAll updates them
+        \Musonza\Chat\Models\MessageNotification::where('messageable_id', $this->alpha->getKey())
+            ->where('messageable_type', $this->alpha->getMorphClass())
+            ->where('conversation_id', $conversation->id)
+            ->where('is_sender', 1)
+            ->update(['is_seen' => 2]);
+
+        // Alpha marks conversation as read
+        Chat::conversation($conversation)->setParticipant($this->alpha)->readAll();
+
+        // Get Alpha's notifications after readAll
+        $alphaNotificationsAfter = \Musonza\Chat\Models\MessageNotification::where('messageable_id', $this->alpha->getKey())
+            ->where('messageable_type', $this->alpha->getMorphClass())
+            ->where('conversation_id', $conversation->id)
+            ->get();
+
+        // The received message should now be marked as read
+        $this->assertEquals(0, $alphaNotificationsAfter->where('is_sender', 0)->where('is_seen', 0)->count());
+        $this->assertEquals(1, $alphaNotificationsAfter->where('is_sender', 0)->where('is_seen', 1)->count());
+
+        // The sent messages should NOT have been updated - they should still have is_seen=2
+        // If readAll() incorrectly updates all notifications, they would have is_seen=1
+        $sentMessagesWithOriginalValue = $alphaNotificationsAfter->where('is_sender', 1)->where('is_seen', 2)->count();
+        $this->assertEquals(2, $sentMessagesWithOriginalValue, 'readAll() should not update sent message notifications');
+    }
+
     /** @test  */
     public function it_can_update_conversation_details()
     {
