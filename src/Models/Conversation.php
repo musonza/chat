@@ -446,7 +446,8 @@ class Conversation extends BaseModel
             ->where('conversation_id', $this->id);
 
         if ($readAll) {
-            return $notifications->update(['is_seen' => 1]);
+            // Only mark received messages as read (not messages sent by the participant)
+            return $notifications->where('is_sender', 0)->update(['is_seen' => 1]);
         }
 
         return $notifications->get();
