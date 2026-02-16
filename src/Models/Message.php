@@ -210,6 +210,7 @@ class Message extends BaseModel
 
         if ($existing) {
             $this->unreact($participant, $reaction);
+
             return ['added' => false, 'reaction' => null];
         }
 

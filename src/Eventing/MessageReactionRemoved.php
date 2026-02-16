@@ -42,10 +42,10 @@ class MessageReactionRemoved implements ShouldBroadcast
      */
     public function __construct(int $messageId, int $conversationId, string $reaction, int $messageableId, string $messageableType)
     {
-        $this->messageId = $messageId;
-        $this->conversationId = $conversationId;
-        $this->reaction = $reaction;
-        $this->messageableId = $messageableId;
+        $this->messageId       = $messageId;
+        $this->conversationId  = $conversationId;
+        $this->reaction        = $reaction;
+        $this->messageableId   = $messageableId;
         $this->messageableType = $messageableType;
     }
 
@@ -69,7 +69,7 @@ class MessageReactionRemoved implements ShouldBroadcast
         return [
             'message_id' => $this->messageId,
             'reaction'   => $this->reaction,
-            'user'       => [
+            'user' => [
                 'id'   => $this->messageableId,
                 'type' => $this->messageableType,
             ],

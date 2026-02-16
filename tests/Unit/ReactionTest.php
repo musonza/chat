@@ -14,7 +14,7 @@ class ReactionTest extends TestCase
     public function it_can_add_a_reaction_to_a_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
+        $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
 
         $reaction = Chat::message($message)->setParticipant($this->bravo)->react('👍');
 
@@ -27,7 +27,7 @@ class ReactionTest extends TestCase
     public function it_can_add_multiple_different_reactions_to_a_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
+        $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
 
         Chat::message($message)->setParticipant($this->bravo)->react('👍');
         Chat::message($message)->setParticipant($this->bravo)->react('❤️');
@@ -40,7 +40,7 @@ class ReactionTest extends TestCase
     public function it_does_not_duplicate_same_reaction_from_same_user()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
+        $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
 
         Chat::message($message)->setParticipant($this->bravo)->react('👍');
         Chat::message($message)->setParticipant($this->bravo)->react('👍');
@@ -52,7 +52,7 @@ class ReactionTest extends TestCase
     public function it_can_remove_a_reaction_from_a_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
+        $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
 
         Chat::message($message)->setParticipant($this->bravo)->react('👍');
         $this->assertEquals(1, $message->reactions()->count());
@@ -67,7 +67,7 @@ class ReactionTest extends TestCase
     public function it_returns_false_when_removing_nonexistent_reaction()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
+        $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
 
         $removed = Chat::message($message)->setParticipant($this->bravo)->unreact('👍');
 
@@ -78,7 +78,7 @@ class ReactionTest extends TestCase
     public function it_can_toggle_a_reaction()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
+        $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
 
         // First toggle adds the reaction
         $result = Chat::message($message)->setParticipant($this->bravo)->toggleReaction('👍');
@@ -95,7 +95,7 @@ class ReactionTest extends TestCase
     public function it_can_get_reactions_summary()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo, $this->charlie]);
-        $message = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
+        $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
 
         Chat::message($message)->setParticipant($this->bravo)->react('👍');
         Chat::message($message)->setParticipant($this->charlie)->react('👍');
@@ -111,7 +111,7 @@ class ReactionTest extends TestCase
     public function it_can_check_if_participant_has_reacted()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
+        $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
 
         Chat::message($message)->setParticipant($this->bravo)->react('👍');
 
@@ -125,7 +125,7 @@ class ReactionTest extends TestCase
     public function it_can_get_all_reactions_on_a_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
+        $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
 
         Chat::message($message)->setParticipant($this->bravo)->react('👍');
         Chat::message($message)->setParticipant($this->bravo)->react('❤️');
@@ -139,7 +139,7 @@ class ReactionTest extends TestCase
     public function it_can_use_text_based_reactions()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
+        $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
 
         $reaction = Chat::message($message)->setParticipant($this->bravo)->react('like');
 
@@ -150,7 +150,7 @@ class ReactionTest extends TestCase
     public function reactions_are_deleted_when_message_is_deleted()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
+        $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
 
         Chat::message($message)->setParticipant($this->bravo)->react('👍');
 
@@ -166,7 +166,7 @@ class ReactionTest extends TestCase
     public function it_can_get_reactions_by_participant()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
-        $message = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
+        $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
 
         $message->react($this->bravo, '👍');
         $message->react($this->bravo, '❤️');
