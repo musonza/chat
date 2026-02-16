@@ -69,7 +69,7 @@ class MessageReactionRemoved implements ShouldBroadcast
         return [
             'message_id' => $this->messageId,
             'reaction'   => $this->reaction,
-            'user' => [
+            'user'       => [
                 'id'   => $this->messageableId,
                 'type' => $this->messageableType,
             ],
