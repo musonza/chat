@@ -35,10 +35,6 @@ class Reaction extends BaseModel
 
     /**
      * Scope to filter by reaction type.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string  $reaction
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeOfType($query, string $reaction)
     {
@@ -47,10 +43,6 @@ class Reaction extends BaseModel
 
     /**
      * Scope to filter by participant.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Model  $participant
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeByParticipant($query, Model $participant)
     {

@@ -33,7 +33,7 @@ class MessageReactionAdded implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('mc-chat-conversation.'.$this->reaction->message->conversation_id);
+        return new PrivateChannel('mc-chat-conversation.' . $this->reaction->message->conversation_id);
     }
 
     /**

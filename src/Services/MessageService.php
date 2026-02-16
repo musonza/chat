@@ -144,9 +144,6 @@ class MessageService
     /**
      * Add a reaction to the message.
      *
-     * @param  string  $reaction  Emoji or reaction type (e.g., '👍', 'like', 'heart')
-     * @return Reaction
-     *
      * @throws Exception
      */
     public function react(string $reaction): Reaction
@@ -160,9 +157,6 @@ class MessageService
 
     /**
      * Remove a reaction from the message.
-     *
-     * @param  string  $reaction  Emoji or reaction type to remove
-     * @return bool
      *
      * @throws Exception
      */
@@ -178,9 +172,6 @@ class MessageService
     /**
      * Toggle a reaction on the message.
      *
-     * @param  string  $reaction
-     * @return array  ['added' => bool, 'reaction' => Reaction|null]
-     *
      * @throws Exception
      */
     public function toggleReaction(string $reaction): array
@@ -194,8 +185,6 @@ class MessageService
 
     /**
      * Get all reactions on the message.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function reactions()
     {
@@ -204,8 +193,6 @@ class MessageService
 
     /**
      * Get reactions summary with counts.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function reactionsSummary()
     {
@@ -214,9 +201,6 @@ class MessageService
 
     /**
      * Check if participant has reacted.
-     *
-     * @param  string|null  $reaction  If null, checks for any reaction
-     * @return bool
      *
      * @throws Exception
      */

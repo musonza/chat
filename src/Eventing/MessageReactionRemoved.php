@@ -56,7 +56,7 @@ class MessageReactionRemoved implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('mc-chat-conversation.'.$this->conversationId);
+        return new PrivateChannel('mc-chat-conversation.' . $this->conversationId);
     }
 
     /**

@@ -153,10 +153,6 @@ class Message extends BaseModel
 
     /**
      * Add a reaction to this message.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $participant
-     * @param  string  $reaction  Emoji or reaction type (e.g., '👍', 'like', 'heart')
-     * @return Reaction
      */
     public function react(Model $participant, string $reaction): Reaction
     {
@@ -178,10 +174,6 @@ class Message extends BaseModel
 
     /**
      * Remove a reaction from this message.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $participant
-     * @param  string  $reaction  Emoji or reaction type to remove
-     * @return bool
      */
     public function unreact(Model $participant, string $reaction): bool
     {
@@ -207,10 +199,6 @@ class Message extends BaseModel
     /**
      * Toggle a reaction on this message.
      * Adds the reaction if not present, removes it if already present.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $participant
-     * @param  string  $reaction
-     * @return array  ['added' => bool, 'reaction' => Reaction|null]
      */
     public function toggleReaction(Model $participant, string $reaction): array
     {
@@ -230,8 +218,6 @@ class Message extends BaseModel
 
     /**
      * Get reactions grouped by reaction type with counts.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getReactionsSummary()
     {
@@ -245,10 +231,6 @@ class Message extends BaseModel
 
     /**
      * Check if a participant has reacted with a specific reaction.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $participant
-     * @param  string|null  $reaction  If null, checks for any reaction
-     * @return bool
      */
     public function hasReacted(Model $participant, ?string $reaction = null): bool
     {
@@ -265,9 +247,6 @@ class Message extends BaseModel
 
     /**
      * Get all reactions by a specific participant on this message.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $participant
-     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getReactionsByParticipant(Model $participant)
     {
