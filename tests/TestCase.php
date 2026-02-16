@@ -4,9 +4,11 @@ namespace Musonza\Chat\Tests;
 
 require __DIR__ . '/../database/migrations/create_chat_tables.php';
 require __DIR__ . '/../database/migrations/add_is_encrypted_to_messages_table.php';
+require __DIR__ . '/../database/migrations/add_reactions_to_messages.php';
 require __DIR__ . '/Helpers/migrations.php';
 
 use AddIsEncryptedToMessagesTable;
+use AddReactionsToMessages;
 use CreateChatTables;
 use CreateTestTables;
 use Illuminate\Foundation\Application;
@@ -60,6 +62,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
         (new CreateChatTables)->up();
         (new AddIsEncryptedToMessagesTable)->up();
+        (new AddReactionsToMessages)->up();
         (new CreateTestTables)->up();
 
         $this->withFactories(__DIR__ . '/Helpers/factories');
@@ -113,6 +116,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function tearDown(): void
     {
+        (new AddReactionsToMessages)->down();
         (new AddIsEncryptedToMessagesTable)->down();
         (new CreateChatTables)->down();
         (new CreateTestTables)->down();

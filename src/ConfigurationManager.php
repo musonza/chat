@@ -12,6 +12,8 @@ class ConfigurationManager
 
     const PARTICIPATION_TABLE = 'chat_participation';
 
+    const REACTIONS_TABLE = 'chat_message_reactions';
+
     public static function paginationDefaultParameters()
     {
         $pagination = config('musonza_chat.pagination', []);
