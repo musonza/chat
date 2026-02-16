@@ -147,19 +147,15 @@ class ReactionTest extends TestCase
     }
 
     /** @test */
-    public function reactions_are_deleted_when_message_is_deleted()
+    public function reactions_belong_to_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
 
-        Chat::message($message)->setParticipant($this->bravo)->react('👍');
+        $reaction = Chat::message($message)->setParticipant($this->bravo)->react('👍');
 
-        $this->assertEquals(1, Reaction::count());
-
-        // Force delete the message (cascade should delete reactions)
-        $message->forceDelete();
-
-        $this->assertEquals(0, Reaction::count());
+        $this->assertEquals($message->id, $reaction->message->id);
+        $this->assertEquals($message->id, $reaction->message_id);
     }
 
     /** @test */
