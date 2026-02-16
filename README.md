@@ -31,6 +31,7 @@ Create a Chat application for your multiple Models
   - [Mark whole conversation as read](#mark-whole-conversation-as-read)
   - [Unread messages count](#unread-messages-count)
   - [Delete a message](#delete-a-message)
+  - [Message Reactions](#message-reactions)
   - [Cleanup Deleted Messages](#cleanup-deleted-messages)
   - [Clear a conversation](#clear-a-conversation)
   - [Get participant conversations](#Get-participant-conversations)
@@ -255,6 +256,66 @@ Chat::conversation($conversation)->setParticipant($participantModel)->unreadCoun
 ```php
 Chat::message($message)->setParticipant($participantModel)->delete();
 ```
+
+#### Message Reactions
+
+Add emoji or text-based reactions to messages:
+
+```php
+// Add a reaction
+Chat::message($message)->setParticipant($participantModel)->react('👍');
+
+// Add multiple different reactions
+Chat::message($message)->setParticipant($participantModel)->react('❤️');
+```
+
+Remove a reaction:
+
+```php
+Chat::message($message)->setParticipant($participantModel)->unreact('👍');
+```
+
+Toggle a reaction (add if not present, remove if present):
+
+```php
+$result = Chat::message($message)->setParticipant($participantModel)->toggleReaction('👍');
+// $result = ['added' => true/false, 'reaction' => Reaction|null]
+```
+
+Get reactions summary with counts:
+
+```php
+$summary = Chat::message($message)->reactionsSummary();
+// ['👍' => 5, '❤️' => 3, '😂' => 1]
+```
+
+Check if participant has reacted:
+
+```php
+// Check for specific reaction
+Chat::message($message)->setParticipant($participantModel)->hasReacted('👍');
+
+// Check for any reaction
+Chat::message($message)->setParticipant($participantModel)->hasReacted();
+```
+
+Get all reactions on a message:
+
+```php
+$reactions = Chat::message($message)->reactions();
+```
+
+You can also access reactions directly on the Message model:
+
+```php
+$message->reactions; // All reactions
+$message->getReactionsSummary(); // Grouped counts
+$message->react($participant, '👍'); // Add
+$message->unreact($participant, '👍'); // Remove
+$message->hasReacted($participant, '👍'); // Check
+```
+
+**Broadcasting**: When broadcasting is enabled, `MessageReactionAdded` and `MessageReactionRemoved` events are broadcast to the conversation channel.
 
 #### Cleanup Deleted Messages
 

@@ -6,6 +6,7 @@ use Exception;
 use Musonza\Chat\Commanding\CommandBus;
 use Musonza\Chat\Messages\SendMessageCommand;
 use Musonza\Chat\Models\Message;
+use Musonza\Chat\Models\Reaction;
 use Musonza\Chat\Traits\SetsParticipants;
 
 class MessageService
@@ -138,5 +139,93 @@ class MessageService
         $command = new SendMessageCommand($this->recipient, $this->body, $this->sender, $this->type, $this->data);
 
         return $this->commandBus->execute($command);
+    }
+
+    /**
+     * Add a reaction to the message.
+     *
+     * @param  string  $reaction  Emoji or reaction type (e.g., '👍', 'like', 'heart')
+     * @return Reaction
+     *
+     * @throws Exception
+     */
+    public function react(string $reaction): Reaction
+    {
+        if (! $this->participant) {
+            throw new Exception('Participant has not been set');
+        }
+
+        return $this->message->react($this->participant, $reaction);
+    }
+
+    /**
+     * Remove a reaction from the message.
+     *
+     * @param  string  $reaction  Emoji or reaction type to remove
+     * @return bool
+     *
+     * @throws Exception
+     */
+    public function unreact(string $reaction): bool
+    {
+        if (! $this->participant) {
+            throw new Exception('Participant has not been set');
+        }
+
+        return $this->message->unreact($this->participant, $reaction);
+    }
+
+    /**
+     * Toggle a reaction on the message.
+     *
+     * @param  string  $reaction
+     * @return array  ['added' => bool, 'reaction' => Reaction|null]
+     *
+     * @throws Exception
+     */
+    public function toggleReaction(string $reaction): array
+    {
+        if (! $this->participant) {
+            throw new Exception('Participant has not been set');
+        }
+
+        return $this->message->toggleReaction($this->participant, $reaction);
+    }
+
+    /**
+     * Get all reactions on the message.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function reactions()
+    {
+        return $this->message->reactions;
+    }
+
+    /**
+     * Get reactions summary with counts.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function reactionsSummary()
+    {
+        return $this->message->getReactionsSummary();
+    }
+
+    /**
+     * Check if participant has reacted.
+     *
+     * @param  string|null  $reaction  If null, checks for any reaction
+     * @return bool
+     *
+     * @throws Exception
+     */
+    public function hasReacted(?string $reaction = null): bool
+    {
+        if (! $this->participant) {
+            throw new Exception('Participant has not been set');
+        }
+
+        return $this->message->hasReacted($this->participant, $reaction);
     }
 }

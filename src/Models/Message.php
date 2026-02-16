@@ -9,6 +9,8 @@ use Musonza\Chat\Chat;
 use Musonza\Chat\ConfigurationManager;
 use Musonza\Chat\Eventing\AllParticipantsDeletedMessage;
 use Musonza\Chat\Eventing\EventGenerator;
+use Musonza\Chat\Eventing\MessageReactionAdded;
+use Musonza\Chat\Eventing\MessageReactionRemoved;
 use Musonza\Chat\Eventing\MessageWasSent;
 
 class Message extends BaseModel
@@ -139,6 +141,140 @@ class Message extends BaseModel
     public function conversation()
     {
         return $this->belongsTo(Conversation::class, 'conversation_id');
+    }
+
+    /**
+     * Get all reactions for this message.
+     */
+    public function reactions()
+    {
+        return $this->hasMany(Reaction::class, 'message_id');
+    }
+
+    /**
+     * Add a reaction to this message.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $participant
+     * @param  string  $reaction  Emoji or reaction type (e.g., '👍', 'like', 'heart')
+     * @return Reaction
+     */
+    public function react(Model $participant, string $reaction): Reaction
+    {
+        $reactionModel = Reaction::updateOrCreate(
+            [
+                'message_id'       => $this->getKey(),
+                'messageable_id'   => $participant->getKey(),
+                'messageable_type' => $participant->getMorphClass(),
+                'reaction'         => $reaction,
+            ]
+        );
+
+        if (Chat::broadcasts()) {
+            broadcast(new MessageReactionAdded($reactionModel))->toOthers();
+        }
+
+        return $reactionModel;
+    }
+
+    /**
+     * Remove a reaction from this message.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $participant
+     * @param  string  $reaction  Emoji or reaction type to remove
+     * @return bool
+     */
+    public function unreact(Model $participant, string $reaction): bool
+    {
+        $deleted = Reaction::where('message_id', $this->getKey())
+            ->where('messageable_id', $participant->getKey())
+            ->where('messageable_type', $participant->getMorphClass())
+            ->where('reaction', $reaction)
+            ->delete();
+
+        if ($deleted && Chat::broadcasts()) {
+            broadcast(new MessageReactionRemoved(
+                $this->getKey(),
+                $this->conversation_id,
+                $reaction,
+                $participant->getKey(),
+                $participant->getMorphClass()
+            ))->toOthers();
+        }
+
+        return $deleted > 0;
+    }
+
+    /**
+     * Toggle a reaction on this message.
+     * Adds the reaction if not present, removes it if already present.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $participant
+     * @param  string  $reaction
+     * @return array  ['added' => bool, 'reaction' => Reaction|null]
+     */
+    public function toggleReaction(Model $participant, string $reaction): array
+    {
+        $existing = Reaction::where('message_id', $this->getKey())
+            ->where('messageable_id', $participant->getKey())
+            ->where('messageable_type', $participant->getMorphClass())
+            ->where('reaction', $reaction)
+            ->first();
+
+        if ($existing) {
+            $this->unreact($participant, $reaction);
+            return ['added' => false, 'reaction' => null];
+        }
+
+        return ['added' => true, 'reaction' => $this->react($participant, $reaction)];
+    }
+
+    /**
+     * Get reactions grouped by reaction type with counts.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getReactionsSummary()
+    {
+        return $this->reactions()
+            ->select('reaction')
+            ->selectRaw('count(*) as count')
+            ->groupBy('reaction')
+            ->get()
+            ->pluck('count', 'reaction');
+    }
+
+    /**
+     * Check if a participant has reacted with a specific reaction.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $participant
+     * @param  string|null  $reaction  If null, checks for any reaction
+     * @return bool
+     */
+    public function hasReacted(Model $participant, ?string $reaction = null): bool
+    {
+        $query = Reaction::where('message_id', $this->getKey())
+            ->where('messageable_id', $participant->getKey())
+            ->where('messageable_type', $participant->getMorphClass());
+
+        if ($reaction !== null) {
+            $query->where('reaction', $reaction);
+        }
+
+        return $query->exists();
+    }
+
+    /**
+     * Get all reactions by a specific participant on this message.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $participant
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getReactionsByParticipant(Model $participant)
+    {
+        return $this->reactions()
+            ->where('messageable_id', $participant->getKey())
+            ->where('messageable_type', $participant->getMorphClass())
+            ->get();
     }
 
     /**
