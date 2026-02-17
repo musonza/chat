@@ -13,7 +13,9 @@ return [
      * Channel: mc-chat-conversation.2,
      * Event: Musonza\Chat\Eventing\MessageWasSent
      */
-    'broadcasts' => false,
+    'broadcasts'           => false,
+    'broadcast_connection' => 'sync',
+    'broadcast_queue'      => 'default',
 
     /*
      * Enable encryption for message bodies.

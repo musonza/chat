@@ -17,10 +17,14 @@ class MessageWasSent extends Event implements ShouldBroadcast
     use SerializesModels;
 
     public $message;
+    public $connection;
+    public $queue;
 
     public function __construct(Message $message)
     {
         $this->message = $message;
+        $this->connection = config('musonza_chat.broadcast_connection', 'sync');
+        $this->queue = config('musonza_chat.broadcast_queue', 'default');
     }
 
     /**
