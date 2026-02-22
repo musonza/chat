@@ -2,9 +2,11 @@ name: Tests
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
   pull_request:
-    branches: [master]
+    branches:
+      - master
 
 jobs:
   test:
@@ -14,16 +16,24 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.2, 8.3, 8.4]
-        laravel: [10.*, 11.*, 12.*]
+        laravel: ['10.*', '11.*', '12.*', '13.*']
         exclude:
           - php: 8.2
             laravel: 12.*
+          - laravel: 13.*
+            php: 8.2
+
+
 
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
+
+
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -32,21 +42,32 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
           coverage: none
 
+
+
       - name: Install dependencies
         run: |
           composer require "illuminate/support:${{ matrix.laravel }}" "illuminate/contracts:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --prefer-dist --no-interaction --no-progress
+
+
 
       - name: Run tests
         run: vendor/bin/phpunit --testdox
 
   code-style:
     runs-on: ubuntu-latest
+
+
+
     name: Code Style
+
+
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -54,19 +75,30 @@ jobs:
           php-version: 8.3
           coverage: none
 
+
+
       - name: Install dependencies
         run: composer update --prefer-dist --no-interaction --no-progress
+
+
 
       - name: Run Pint
         run: vendor/bin/pint --test
 
   static-analysis:
     runs-on: ubuntu-latest
+
+
+
     name: Static Analysis
+
+
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -74,8 +106,12 @@ jobs:
           php-version: 8.3
           coverage: none
 
+
+
       - name: Install dependencies
         run: composer update --prefer-dist --no-interaction --no-progress
+
+
 
       - name: Run PHPStan
         run: vendor/bin/phpstan analyse --error-format=github
