@@ -128,7 +128,7 @@ class MessageService
             throw new Exception('Message sender has not been set');
         }
 
-        if (strlen($this->body) == 0) {
+        if (strlen($this->body) === 0) {
             throw new Exception('Message body has not been set');
         }
 

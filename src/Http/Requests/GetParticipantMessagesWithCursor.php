@@ -17,7 +17,7 @@ class GetParticipantMessagesWithCursor extends BaseRequest
         $this->pagination = $pagination;
     }
 
-    public function authorized()
+    public function authorize()
     {
         return true;
     }

@@ -4,7 +4,7 @@ namespace Musonza\Chat\Http\Requests;
 
 class StoreMessage extends BaseRequest
 {
-    public function authorized()
+    public function authorize()
     {
         return true;
     }

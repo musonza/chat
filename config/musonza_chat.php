@@ -37,6 +37,14 @@ return [
     'sender_fields_whitelist' => [],
 
     /*
+     * Whitelist of allowed participant model classes.
+     * This prevents arbitrary class instantiation via the participant_type request parameter.
+     * Example: [\App\Models\User::class, \App\Models\Bot::class]
+     * If empty, all Eloquent models are allowed (not recommended in production).
+     */
+    'participant_models' => [],
+
+    /*
      * Whether to load the package routes file in your application.
      */
     'should_load_routes' => false,

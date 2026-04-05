@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateConversation extends FormRequest
 {
-    public function authorized()
+    public function authorize()
     {
         return true;
     }
