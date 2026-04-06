@@ -12,6 +12,7 @@ use Musonza\Chat\Eventing\EventGenerator;
 use Musonza\Chat\Eventing\MessageReactionAdded;
 use Musonza\Chat\Eventing\MessageReactionRemoved;
 use Musonza\Chat\Eventing\MessageWasSent;
+use Musonza\Chat\Traits\Messageable;
 
 class Message extends BaseModel
 {
@@ -122,7 +123,7 @@ class Message extends BaseModel
 
             // If method comes from a different file than the Messageable trait,
             // it means the user has overridden it
-            $traitFile = (new \ReflectionClass(\Musonza\Chat\Traits\Messageable::class))->getFileName();
+            $traitFile = (new \ReflectionClass(Messageable::class))->getFileName();
 
             return $sourceFile !== $traitFile;
         }

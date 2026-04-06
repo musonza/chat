@@ -2,6 +2,7 @@
 
 namespace Musonza\Chat\Services;
 
+use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -64,7 +65,7 @@ class ConversationService
      * Cursor pagination is more suitable for real-time chat applications
      * as it avoids duplicate messages when new messages arrive between page loads.
      *
-     * @return \Illuminate\Contracts\Pagination\CursorPaginator
+     * @return CursorPaginator
      */
     public function getMessagesWithCursor()
     {
