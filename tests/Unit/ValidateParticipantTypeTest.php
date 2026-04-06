@@ -124,7 +124,7 @@ class ValidateParticipantTypeTest extends TestCase
 
     private function makeRequest(string $participantType): BaseRequest
     {
-        $request                   = new BaseRequest();
+        $request                   = new BaseRequest;
         $request->participant_type = $participantType;
 
         return $request;
