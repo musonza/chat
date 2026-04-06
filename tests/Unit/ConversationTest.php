@@ -9,6 +9,7 @@ use Musonza\Chat\Exceptions\DirectMessagingExistsException;
 use Musonza\Chat\Exceptions\InvalidConversationListException;
 use Musonza\Chat\Exceptions\InvalidDirectMessageNumberOfParticipants;
 use Musonza\Chat\Models\Conversation;
+use Musonza\Chat\Models\MessageNotification;
 use Musonza\Chat\Models\Participation;
 use Musonza\Chat\Tests\Helpers\Models\Client;
 
@@ -68,7 +69,7 @@ class ConversationTest extends TestCase
         Chat::message('Message from Bravo')->from($this->bravo)->to($conversation)->send();
 
         // Get Alpha's notifications before readAll
-        $alphaNotificationsBefore = \Musonza\Chat\Models\MessageNotification::where('messageable_id', $this->alpha->getKey())
+        $alphaNotificationsBefore = MessageNotification::where('messageable_id', $this->alpha->getKey())
             ->where('messageable_type', $this->alpha->getMorphClass())
             ->where('conversation_id', $conversation->id)
             ->get();
@@ -80,7 +81,7 @@ class ConversationTest extends TestCase
         $this->assertEquals(1, $alphaNotificationsBefore->where('is_sender', 0)->where('is_seen', 0)->count());
 
         // Manually set is_seen to a special value (2) on sent messages to detect if readAll updates them
-        \Musonza\Chat\Models\MessageNotification::where('messageable_id', $this->alpha->getKey())
+        MessageNotification::where('messageable_id', $this->alpha->getKey())
             ->where('messageable_type', $this->alpha->getMorphClass())
             ->where('conversation_id', $conversation->id)
             ->where('is_sender', 1)
@@ -90,7 +91,7 @@ class ConversationTest extends TestCase
         Chat::conversation($conversation)->setParticipant($this->alpha)->readAll();
 
         // Get Alpha's notifications after readAll
-        $alphaNotificationsAfter = \Musonza\Chat\Models\MessageNotification::where('messageable_id', $this->alpha->getKey())
+        $alphaNotificationsAfter = MessageNotification::where('messageable_id', $this->alpha->getKey())
             ->where('messageable_type', $this->alpha->getMorphClass())
             ->where('conversation_id', $conversation->id)
             ->get();
@@ -391,7 +392,7 @@ class ConversationTest extends TestCase
     public function test_it_returns_custom_participant_details_when_method_is_overridden()
     {
         // Client model has a custom getParticipantDetails method
-        $client = factory(\Musonza\Chat\Tests\Helpers\Models\Client::class)->create(['name' => 'Test Client']);
+        $client = factory(Client::class)->create(['name' => 'Test Client']);
 
         $details = $client->getParticipantDetails();
 

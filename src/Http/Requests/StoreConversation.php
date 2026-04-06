@@ -2,11 +2,9 @@
 
 namespace Musonza\Chat\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class StoreConversation extends FormRequest
+class StoreConversation extends BaseRequest
 {
-    public function authorized()
+    public function authorize()
     {
         return true;
     }
@@ -27,6 +25,7 @@ class StoreConversation extends FormRequest
         $participants      = $this->input('participants', []);
 
         foreach ($participants as $participant) {
+            $this->validateParticipantType($participant['type']);
             $participantModels[] = app($participant['type'])->find($participant['id']);
         }
 

@@ -15,7 +15,9 @@ class MessageNotification extends BaseModel
 
     protected $fillable = ['messageable_id', 'messageable_type', 'message_id', 'conversation_id'];
 
-    protected $dates = ['deleted_at'];
+    protected $casts = [
+        'deleted_at' => 'datetime',
+    ];
 
     /**
      * Creates a new notification.
@@ -52,19 +54,21 @@ class MessageNotification extends BaseModel
                 'created_at'       => $message->created_at,
             ];
             $i++;
-            if ($i > 1000) {
+            if ($i >= 1000) {
                 self::insert($notification);
                 $i            = 0;
                 $notification = [];
             }
         }
-        self::insert($notification);
+
+        if (! empty($notification)) {
+            self::insert($notification);
+        }
     }
 
     public function markAsRead()
     {
         $this->is_seen = 1;
-        $this->update(['is_seen' => 1]);
         $this->save();
     }
 }
