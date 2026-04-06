@@ -9,9 +9,7 @@ use Musonza\Chat\Models\Reaction;
 class ReactionTest extends TestCase
 {
     use DatabaseMigrations;
-
-    /** @test */
-    public function it_can_add_a_reaction_to_a_message()
+    public function test_it_can_add_a_reaction_to_a_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
@@ -22,9 +20,7 @@ class ReactionTest extends TestCase
         $this->assertEquals('👍', $reaction->reaction);
         $this->assertEquals($this->bravo->getKey(), $reaction->messageable_id);
     }
-
-    /** @test */
-    public function it_can_add_multiple_different_reactions_to_a_message()
+    public function test_it_can_add_multiple_different_reactions_to_a_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
@@ -35,9 +31,7 @@ class ReactionTest extends TestCase
 
         $this->assertEquals(3, $message->reactions()->count());
     }
-
-    /** @test */
-    public function it_does_not_duplicate_same_reaction_from_same_user()
+    public function test_it_does_not_duplicate_same_reaction_from_same_user()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
@@ -47,9 +41,7 @@ class ReactionTest extends TestCase
 
         $this->assertEquals(1, $message->reactions()->count());
     }
-
-    /** @test */
-    public function it_can_remove_a_reaction_from_a_message()
+    public function test_it_can_remove_a_reaction_from_a_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
@@ -62,9 +54,7 @@ class ReactionTest extends TestCase
         $this->assertTrue($removed);
         $this->assertEquals(0, $message->reactions()->count());
     }
-
-    /** @test */
-    public function it_returns_false_when_removing_nonexistent_reaction()
+    public function test_it_returns_false_when_removing_nonexistent_reaction()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
@@ -73,9 +63,7 @@ class ReactionTest extends TestCase
 
         $this->assertFalse($removed);
     }
-
-    /** @test */
-    public function it_can_toggle_a_reaction()
+    public function test_it_can_toggle_a_reaction()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
@@ -90,9 +78,7 @@ class ReactionTest extends TestCase
         $this->assertFalse($result['added']);
         $this->assertNull($result['reaction']);
     }
-
-    /** @test */
-    public function it_can_get_reactions_summary()
+    public function test_it_can_get_reactions_summary()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo, $this->charlie]);
         $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
@@ -106,9 +92,7 @@ class ReactionTest extends TestCase
         $this->assertEquals(2, $summary['👍']);
         $this->assertEquals(1, $summary['❤️']);
     }
-
-    /** @test */
-    public function it_can_check_if_participant_has_reacted()
+    public function test_it_can_check_if_participant_has_reacted()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
@@ -120,9 +104,7 @@ class ReactionTest extends TestCase
         $this->assertTrue(Chat::message($message)->setParticipant($this->bravo)->hasReacted()); // any reaction
         $this->assertFalse(Chat::message($message)->setParticipant($this->alpha)->hasReacted());
     }
-
-    /** @test */
-    public function it_can_get_all_reactions_on_a_message()
+    public function test_it_can_get_all_reactions_on_a_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
@@ -134,9 +116,7 @@ class ReactionTest extends TestCase
 
         $this->assertEquals(2, $reactions->count());
     }
-
-    /** @test */
-    public function it_can_use_text_based_reactions()
+    public function test_it_can_use_text_based_reactions()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
@@ -145,9 +125,7 @@ class ReactionTest extends TestCase
 
         $this->assertEquals('like', $reaction->reaction);
     }
-
-    /** @test */
-    public function reactions_belong_to_message()
+    public function test_reactions_belong_to_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
@@ -157,9 +135,7 @@ class ReactionTest extends TestCase
         $this->assertEquals($message->id, $reaction->message->id);
         $this->assertEquals($message->id, $reaction->message_id);
     }
-
-    /** @test */
-    public function it_can_get_reactions_by_participant()
+    public function test_it_can_get_reactions_by_participant()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         $message      = Chat::message('Hello')->from($this->alpha)->to($conversation)->send();
