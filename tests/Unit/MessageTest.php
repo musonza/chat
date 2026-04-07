@@ -16,8 +16,7 @@ class MessageTest extends TestCase
 {
     use DatabaseMigrations;
 
-    /** @test */
-    public function it_can_send_a_message()
+    public function test_it_can_send_a_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
 
@@ -29,8 +28,7 @@ class MessageTest extends TestCase
         $this->assertEquals($conversation->messages->count(), 1);
     }
 
-    /** @test */
-    public function it_can_send_a_message_between_models()
+    public function test_it_can_send_a_message_between_models()
     {
         /** @var Client $clientModel */
         $clientModel = factory(Client::class)->create();
@@ -47,8 +45,7 @@ class MessageTest extends TestCase
         $this->assertEquals($conversation->messages->count(), 1);
     }
 
-    /** @test */
-    public function it_returns_a_message_given_the_id()
+    public function test_it_returns_a_message_given_the_id()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
 
@@ -62,8 +59,7 @@ class MessageTest extends TestCase
         $this->assertEquals($message->id, $m->id);
     }
 
-    /** @test */
-    public function it_can_send_a_message_and_specificy_type()
+    public function test_it_can_send_a_message_and_specificy_type()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
 
@@ -76,8 +72,7 @@ class MessageTest extends TestCase
         $this->assertEquals('image', $message->type);
     }
 
-    /** @test */
-    public function it_can_mark_a_message_as_read()
+    public function test_it_can_mark_a_message_as_read()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
 
@@ -91,8 +86,7 @@ class MessageTest extends TestCase
         $this->assertNotNull($message->getNotification($this->alpha)->read_at);
     }
 
-    /** @test */
-    public function it_can_delete_a_message()
+    public function test_it_can_delete_a_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         $message      = Chat::message('Hello there 0')->from($this->alpha)->to($conversation)->send();
@@ -106,8 +100,7 @@ class MessageTest extends TestCase
         $this->assertEquals(0, $messages->count());
     }
 
-    /** @test */
-    public function it_can_list_deleted_messages()
+    public function test_it_can_list_deleted_messages()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         $message      = Chat::message('Hello there 0')->from($this->alpha)->to($conversation)->send();
@@ -125,8 +118,7 @@ class MessageTest extends TestCase
         $this->assertEquals(1, $messages->count());
     }
 
-    /** @test */
-    public function it_can_tell_message_sender_participation()
+    public function test_it_can_tell_message_sender_participation()
     {
         /** @var Conversation $conversation */
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
@@ -139,8 +131,7 @@ class MessageTest extends TestCase
         );
     }
 
-    /** @test */
-    public function it_can_tell_message_sender()
+    public function test_it_can_tell_message_sender()
     {
         $bot    = factory(Bot::class)->create();
         $client = factory(Client::class)->create();
@@ -153,8 +144,7 @@ class MessageTest extends TestCase
         $this->assertInstanceOf(Bot::class, $conversation->messages[1]->sender);
     }
 
-    /** @test */
-    public function it_can_return_paginated_messages_in_a_conversation()
+    public function test_it_can_return_paginated_messages_in_a_conversation()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
 
@@ -172,8 +162,7 @@ class MessageTest extends TestCase
         $this->assertEquals(0, Chat::conversation($conversation)->setParticipant($this->alpha)->perPage(3)->page(4)->getMessages()->count());
     }
 
-    /** @test */
-    public function it_can_return_recent_user_messsages()
+    public function test_it_can_return_recent_user_messsages()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         Chat::message('Hello 1')->from($this->bravo)->to($conversation)->send();
@@ -201,8 +190,7 @@ class MessageTest extends TestCase
         $this->assertCount(1, $recent_messages);
     }
 
-    /** @test */
-    public function it_return_unread_messages_count_for_user()
+    public function test_it_return_unread_messages_count_for_user()
     {
         [$this->alpha, $this->bravo] = $this->users;
 
@@ -219,8 +207,7 @@ class MessageTest extends TestCase
         $this->assertEquals(1, Chat::messages()->setParticipant($this->bravo)->unreadCount());
     }
 
-    /** @test */
-    public function it_gets_a_message_by_id()
+    public function test_it_gets_a_message_by_id()
     {
         [$this->alpha, $this->bravo] = $this->users;
 
@@ -232,8 +219,7 @@ class MessageTest extends TestCase
         $this->assertEquals(1, $message->id);
     }
 
-    /** @test */
-    public function it_flags_a_message()
+    public function test_it_flags_a_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
         $message      = Chat::message('Hello')
@@ -248,8 +234,7 @@ class MessageTest extends TestCase
         $this->assertFalse(Chat::message($message)->setParticipant($this->bravo)->flagged());
     }
 
-    /** @test */
-    public function it_specifies_fields_to_return_for_sender()
+    public function test_it_specifies_fields_to_return_for_sender()
     {
         $this->app['config']->set('musonza_chat.sender_fields_whitelist', [
             'name', 'bot_id',
@@ -264,8 +249,7 @@ class MessageTest extends TestCase
         $this->assertSame(['name', 'bot_id'], array_keys($conversation->messages[0]->sender));
     }
 
-    /** @test */
-    public function it_stores_message_unencrypted_when_encryption_disabled()
+    public function test_it_stores_message_unencrypted_when_encryption_disabled()
     {
         $this->app['config']->set('musonza_chat.encrypt_messages', false);
 
@@ -279,8 +263,7 @@ class MessageTest extends TestCase
         $this->assertFalse((bool) $rawMessage->is_encrypted);
     }
 
-    /** @test */
-    public function it_encrypts_message_body_when_encryption_enabled()
+    public function test_it_encrypts_message_body_when_encryption_enabled()
     {
         $this->app['config']->set('musonza_chat.encrypt_messages', true);
 
@@ -294,8 +277,7 @@ class MessageTest extends TestCase
         $this->assertTrue((bool) $rawMessage->is_encrypted);
     }
 
-    /** @test */
-    public function it_decrypts_message_body_when_reading()
+    public function test_it_decrypts_message_body_when_reading()
     {
         $this->app['config']->set('musonza_chat.encrypt_messages', true);
 
@@ -308,8 +290,7 @@ class MessageTest extends TestCase
         $this->assertEquals('Secret Message', $retrievedMessage->body);
     }
 
-    /** @test */
-    public function it_reads_unencrypted_messages_when_encryption_enabled()
+    public function test_it_reads_unencrypted_messages_when_encryption_enabled()
     {
         // First, create a message without encryption (simulating existing data)
         $this->app['config']->set('musonza_chat.encrypt_messages', false);

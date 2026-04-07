@@ -9,8 +9,7 @@ class PaginationTest extends TestCase
 {
     use DatabaseMigrations;
 
-    /** @test */
-    public function it_can_set_pagination_params()
+    public function test_it_can_set_pagination_params()
     {
         $chat = Chat::conversations()->setPaginationParams([
             'perPage'  => 30,

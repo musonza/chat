@@ -11,8 +11,7 @@ use Musonza\Chat\Tests\TestCase;
 
 class ValidateParticipantTypeTest extends TestCase
 {
-    /** @test */
-    public function it_allows_valid_eloquent_model_class()
+    public function test_it_allows_valid_eloquent_model_class()
     {
         $request = $this->makeRequest(User::class);
 
@@ -21,8 +20,7 @@ class ValidateParticipantTypeTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
-    public function it_rejects_nonexistent_class()
+    public function test_it_rejects_nonexistent_class()
     {
         $this->expectException(ValidationException::class);
 
@@ -31,8 +29,7 @@ class ValidateParticipantTypeTest extends TestCase
         $this->invokeValidateParticipantType($request, 'App\\Models\\NonExistent');
     }
 
-    /** @test */
-    public function it_rejects_non_model_class()
+    public function test_it_rejects_non_model_class()
     {
         $this->expectException(ValidationException::class);
 
@@ -41,8 +38,7 @@ class ValidateParticipantTypeTest extends TestCase
         $this->invokeValidateParticipantType($request, \stdClass::class);
     }
 
-    /** @test */
-    public function it_rejects_class_not_in_whitelist()
+    public function test_it_rejects_class_not_in_whitelist()
     {
         config(['musonza_chat.participant_models' => [User::class]]);
 
@@ -53,8 +49,7 @@ class ValidateParticipantTypeTest extends TestCase
         $this->invokeValidateParticipantType($request, Client::class);
     }
 
-    /** @test */
-    public function it_allows_class_in_whitelist()
+    public function test_it_allows_class_in_whitelist()
     {
         config(['musonza_chat.participant_models' => [User::class, Client::class]]);
 
@@ -65,8 +60,7 @@ class ValidateParticipantTypeTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
-    public function it_allows_any_model_when_whitelist_is_empty()
+    public function test_it_allows_any_model_when_whitelist_is_empty()
     {
         config(['musonza_chat.participant_models' => []]);
 
@@ -77,8 +71,7 @@ class ValidateParticipantTypeTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
-    public function it_rejects_nonexistent_class_even_with_empty_whitelist()
+    public function test_it_rejects_nonexistent_class_even_with_empty_whitelist()
     {
         config(['musonza_chat.participant_models' => []]);
 
@@ -89,8 +82,7 @@ class ValidateParticipantTypeTest extends TestCase
         $this->invokeValidateParticipantType($request, 'App\\Models\\Fake');
     }
 
-    /** @test */
-    public function it_returns_correct_validation_message_for_disallowed_type()
+    public function test_it_returns_correct_validation_message_for_disallowed_type()
     {
         config(['musonza_chat.participant_models' => [User::class]]);
 
@@ -105,8 +97,7 @@ class ValidateParticipantTypeTest extends TestCase
         }
     }
 
-    /** @test */
-    public function it_returns_correct_validation_message_for_invalid_model()
+    public function test_it_returns_correct_validation_message_for_invalid_model()
     {
         $request = $this->makeRequest(\stdClass::class);
 
