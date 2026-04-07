@@ -17,6 +17,8 @@ class MessageWasSent extends Event implements ShouldBroadcast
     use SerializesModels;
 
     public $message;
+    public $connection;
+    public $queue;
 
     public function __construct(Message $message)
     {
