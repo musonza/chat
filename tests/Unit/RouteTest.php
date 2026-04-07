@@ -15,6 +15,7 @@ class RouteTest extends TestCase
         $this->assertTrue(Route::has('conversations.update'));
         $this->assertTrue(Route::has('conversations.destroy'));
     }
+
     public function test_conversation_routes_return_correct_responses(): void
     {
         $response = $this->get('/chat/conversations');

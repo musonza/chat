@@ -16,12 +16,14 @@ use Musonza\Chat\Tests\Helpers\Models\Client;
 class ConversationTest extends TestCase
 {
     use DatabaseMigrations;
+
     public function test_it_creates_a_conversation()
     {
         Chat::createConversation([$this->alpha, $this->bravo]);
 
         $this->assertDatabaseHas($this->prefix . 'conversations', ['id' => 1]);
     }
+
     public function test_it_returns_a_conversation_given_the_id()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
@@ -30,6 +32,7 @@ class ConversationTest extends TestCase
 
         $this->assertEquals($conversation->id, $c->id);
     }
+
     public function test_it_returns_participant_conversations()
     {
         Chat::createConversation([$this->alpha, $this->bravo]);
@@ -37,6 +40,7 @@ class ConversationTest extends TestCase
 
         $this->assertEquals(2, $this->alpha->conversations()->count());
     }
+
     public function test_it_can_mark_a_conversation_as_read()
     {
         /** @var Conversation $conversation */
@@ -54,6 +58,7 @@ class ConversationTest extends TestCase
         $this->assertEquals(0, $conversation->unReadNotifications($this->alpha)->count());
         $this->assertEquals(1, $conversation->unReadNotifications($this->bravo)->count());
     }
+
     public function test_it_only_marks_received_messages_as_read_not_sent_messages()
     {
         $conversation = Chat::createConversation([
@@ -105,6 +110,7 @@ class ConversationTest extends TestCase
         $sentMessagesWithOriginalValue = $alphaNotificationsAfter->where('is_sender', 1)->where('is_seen', 2)->count();
         $this->assertEquals(2, $sentMessagesWithOriginalValue, 'readAll() should not update sent message notifications');
     }
+
     public function test_it_can_update_conversation_details()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
@@ -114,6 +120,7 @@ class ConversationTest extends TestCase
         $this->assertEquals('PHP Channel', $conversation->data['title']);
         $this->assertEquals('PHP Channel Description', $conversation->data['description']);
     }
+
     public function test_it_can_clear_a_conversation()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
@@ -128,12 +135,14 @@ class ConversationTest extends TestCase
 
         $this->assertEquals($messages->count(), 0);
     }
+
     public function test_it_can_create_a_conversation_between_two_users()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
 
         $this->assertCount(2, $conversation->participants);
     }
+
     public function test_it_can_remove_a_single_participant_from_conversation()
     {
         $clientModel  = factory(Client::class)->create();
@@ -145,6 +154,7 @@ class ConversationTest extends TestCase
         $conversation = Chat::conversation($conversation)->removeParticipants($clientModel);
         $this->assertEquals(1, $conversation->fresh()->participants()->count());
     }
+
     public function test_it_can_remove_multiple_users_from_conversation()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
@@ -153,6 +163,7 @@ class ConversationTest extends TestCase
 
         $this->assertEquals(0, $conversation->fresh()->participants->count());
     }
+
     public function test_it_can_add_a_single_user_to_conversation()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
@@ -165,6 +176,7 @@ class ConversationTest extends TestCase
 
         $this->assertEquals($conversation->fresh()->participants->count(), 3);
     }
+
     public function test_it_can_add_multiple_users_to_conversation()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
@@ -177,6 +189,7 @@ class ConversationTest extends TestCase
 
         $this->assertEquals($conversation->fresh()->participants->count(), 7);
     }
+
     public function test_it_can_return_conversation_recent_messsage()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
@@ -195,6 +208,7 @@ class ConversationTest extends TestCase
 
         $this->assertEquals($message7->id, $conversation2->last_message->id);
     }
+
     public function test_it_returns_last_message_as_null_when_the_very_last_message_was_deleted()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
@@ -205,6 +219,7 @@ class ConversationTest extends TestCase
 
         $this->assertNull($conversations->first()->last_message);
     }
+
     public function test_it_returns_correct_attributes_in_last_message()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
@@ -219,6 +234,7 @@ class ConversationTest extends TestCase
 
         $this->assertFalse((bool) $conversations->first()->conversation->last_message->is_seen);
     }
+
     public function test_it_returns_the_correct_order_of_conversations_when_updated_at_is_duplicated()
     {
         $auth = $this->alpha;
@@ -243,6 +259,7 @@ class ConversationTest extends TestCase
         $conversations = Chat::conversations()->setPaginationParams(['sorting' => 'desc'])->setParticipant($auth)->limit(1)->page(3)->get();
         $this->assertEquals('Hello-1', $conversations->first()->conversation->last_message->body);
     }
+
     public function test_it_allows_setting_private_or_public_conversation()
     {
         /** @var Conversation $conversation */
@@ -260,7 +277,6 @@ class ConversationTest extends TestCase
 
     /**
      * DIRECT MESSAGING.
-     *
      */
     public function test_it_creates_direct_messaging()
     {
@@ -269,6 +285,7 @@ class ConversationTest extends TestCase
 
         $this->assertTrue($conversation->direct_message);
     }
+
     public function test_it_does_not_duplicate_direct_messaging()
     {
         Chat::createConversation([$this->alpha, $this->bravo])
@@ -279,6 +296,7 @@ class ConversationTest extends TestCase
         Chat::createConversation([$this->alpha, $this->bravo])
             ->makeDirect();
     }
+
     public function test_it_prevents_additional_participants_to_direct_conversation()
     {
         /** @var Conversation $conversation */
@@ -288,6 +306,7 @@ class ConversationTest extends TestCase
         $this->expectException(InvalidDirectMessageNumberOfParticipants::class);
         $conversation->addParticipants([$this->charlie]);
     }
+
     public function test_it_can_return_a_conversation_between_users()
     {
         /** @var Conversation $conversation */
@@ -303,6 +322,7 @@ class ConversationTest extends TestCase
         $c3 = Chat::conversations()->between($this->alpha, $this->delta);
         $this->assertEquals($conversation3->id, $c3->id);
     }
+
     public function test_it_filters_conversations_by_type()
     {
         Chat::createConversation([$this->alpha, $this->bravo])->makePrivate();
@@ -326,7 +346,6 @@ class ConversationTest extends TestCase
 
     /**
      * Conversation Settings.
-     *
      */
     public function test_it_can_update_participant_conversation_settings()
     {
@@ -344,6 +363,7 @@ class ConversationTest extends TestCase
             $this->alpha->participation->where('conversation_id', $conversation->id)->first()->settings
         );
     }
+
     public function test_it_can_get_participation_info_for_a_model()
     {
         /** @var Conversation $conversation */
@@ -353,6 +373,7 @@ class ConversationTest extends TestCase
 
         $this->assertInstanceOf(Participation::class, $participation);
     }
+
     public function test_it_specifies_fields_to_return_for_sender()
     {
         $this->app['config']->set('musonza_chat.sender_fields_whitelist', ['uid', 'email']);
@@ -362,6 +383,7 @@ class ConversationTest extends TestCase
 
         $this->assertSame(['uid', 'email'], array_keys($message->sender));
     }
+
     public function test_it_returns_correct_participation_for_specific_conversation()
     {
         // Create two conversations with the same participant
@@ -379,6 +401,7 @@ class ConversationTest extends TestCase
         // Verify they are different participations
         $this->assertNotEquals($participation1->id, $participation2->id);
     }
+
     public function test_it_returns_participant_details_from_messageable_trait()
     {
         // User model uses the default getParticipantDetails from trait
@@ -389,6 +412,7 @@ class ConversationTest extends TestCase
         $this->assertIsArray($details);
         $this->assertEquals(['name' => 'Test User'], $details);
     }
+
     public function test_it_returns_custom_participant_details_when_method_is_overridden()
     {
         // Client model has a custom getParticipantDetails method
@@ -400,6 +424,7 @@ class ConversationTest extends TestCase
         $this->assertEquals('Test Client', $details['name']);
         $this->assertEquals('bar', $details['foo']);
     }
+
     public function test_it_can_list_public_conversations_without_participant()
     {
         // Create public conversations
@@ -414,6 +439,7 @@ class ConversationTest extends TestCase
 
         $this->assertCount(2, $publicConversations);
     }
+
     public function test_it_can_list_all_public_conversations_without_participant_even_when_not_member()
     {
         // Create public conversations where user is not a member
@@ -425,6 +451,7 @@ class ConversationTest extends TestCase
 
         $this->assertCount(2, $publicConversations);
     }
+
     public function test_it_throws_exception_when_listing_private_conversations_without_participant()
     {
         Chat::createConversation([$this->alpha, $this->bravo])->makePrivate();
@@ -434,6 +461,7 @@ class ConversationTest extends TestCase
         // Attempting to list private conversations without a participant should fail
         Chat::conversations()->isPrivate(true)->get();
     }
+
     public function test_it_returns_public_conversations_with_pagination()
     {
         // Create 5 public conversations
@@ -449,6 +477,7 @@ class ConversationTest extends TestCase
         $secondPage = Chat::conversations()->isPrivate(false)->limit(2)->page(2)->get();
         $this->assertCount(2, $secondPage);
     }
+
     public function test_it_returns_public_conversations_with_last_message_and_participants()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo])->makePrivate(false);

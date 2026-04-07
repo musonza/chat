@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 class PaginationTest extends TestCase
 {
     use DatabaseMigrations;
+
     public function test_it_can_set_pagination_params()
     {
         $chat = Chat::conversations()->setPaginationParams([

@@ -9,6 +9,7 @@ use Musonza\Chat\Models\Conversation;
 class NotificationsTest extends TestCase
 {
     use DatabaseMigrations;
+
     public function test_it_creates_message_notification()
     {
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
@@ -25,6 +26,7 @@ class NotificationsTest extends TestCase
         $this->assertEquals(6, $conversation->getNotifications($this->alpha)->count());
         $this->assertEquals(0, $conversation->getNotifications($this->charlie)->count());
     }
+
     public function test_it_gets_all_unread_notifications()
     {
         $conversation1 = Chat::createConversation([$this->alpha, $this->bravo]);
@@ -37,6 +39,7 @@ class NotificationsTest extends TestCase
 
         $this->assertEquals(3, $notifications->count());
     }
+
     public function test_it_gets_unread_notifications_per_conversation()
     {
         /** @var Conversation $conversation1 */
