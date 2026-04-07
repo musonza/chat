@@ -16,6 +16,13 @@ return [
     'broadcasts' => false,
 
     /*
+     * Customize the broadcast connection and queue for MessageWasSent event.
+     * Set to null to use the application defaults.
+     */
+    'broadcast_connection' => null,
+    'broadcast_queue'      => null,
+
+    /*
      * Enable encryption for message bodies.
      * When enabled, new messages will be encrypted using Laravel's Crypt facade.
      * Existing unencrypted messages will remain readable (hybrid mode).
