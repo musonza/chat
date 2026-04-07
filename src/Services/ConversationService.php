@@ -122,6 +122,7 @@ class ConversationService
             'perPage'  => $this->perPage,
             'page'     => $this->page,
             'pageName' => 'page',
+            'sorting'  => $this->sorting,
             'filters'  => $this->filters,
         ];
 

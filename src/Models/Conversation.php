@@ -400,9 +400,11 @@ class Conversation extends BaseModel
 
         $total = $paginator->distinct('c.id')->toBase()->getCountForPagination();
 
+        $sorting = $options['sorting'] ?? 'DESC';
+
         $paginator = $paginator
-            ->orderBy('c.updated_at', 'DESC')
-            ->orderBy('c.id', 'DESC')
+            ->orderBy('c.updated_at', $sorting)
+            ->orderBy('c.id', $sorting)
             ->distinct('c.updated_at', 'c.id');
 
         return $paginator->paginate($options['perPage'], [$this->tablePrefix . 'participation.*', 'c.*'], $options['pageName'], $options['page'], $total);
@@ -426,9 +428,11 @@ class Conversation extends BaseModel
             $query = $query->where('direct_message', (bool) $options['filters']['direct_message']);
         }
 
+        $sorting = $options['sorting'] ?? 'DESC';
+
         $query = $query
-            ->orderBy('updated_at', 'DESC')
-            ->orderBy('id', 'DESC');
+            ->orderBy('updated_at', $sorting)
+            ->orderBy('id', $sorting);
 
         return $query->paginate($options['perPage'], ['*'], $options['pageName'], $options['page']);
     }
