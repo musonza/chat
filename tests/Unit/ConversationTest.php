@@ -544,7 +544,7 @@ class ConversationTest extends TestCase
         // Should return bravo, charlie, and delta
         $this->assertCount(3, $partners);
 
-        $partnerIds = $partners->pluck('id')->sort()->values()->toArray();
+        $partnerIds  = $partners->pluck('id')->sort()->values()->toArray();
         $expectedIds = collect([$this->bravo->id, $this->charlie->id, $this->delta->id])->sort()->values()->toArray();
 
         $this->assertEquals($expectedIds, $partnerIds);

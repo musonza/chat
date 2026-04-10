@@ -3,6 +3,7 @@
 namespace Musonza\Chat\Traits;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 use Musonza\Chat\Exceptions\InvalidDirectMessageNumberOfParticipants;
 use Musonza\Chat\Models\Conversation;
 use Musonza\Chat\Models\Participation;
@@ -67,7 +68,7 @@ trait Messageable
     /**
      * Get all unique models that this model has ever been in a conversation with.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function conversationPartners()
     {
