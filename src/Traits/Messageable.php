@@ -63,4 +63,27 @@ trait Messageable
             'conversation_id'  => $conversationId,
         ])->delete();
     }
+
+    /**
+     * Get all unique models that this model has ever been in a conversation with.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function conversationPartners()
+    {
+        $conversationIds = $this->participation()->pluck('conversation_id');
+
+        return Participation::whereIn('conversation_id', $conversationIds)
+            ->where(function ($query) {
+                $query->where('messageable_id', '!=', $this->getKey())
+                    ->orWhere('messageable_type', '!=', $this->getMorphClass());
+            })
+            ->with('messageable')
+            ->get()
+            ->pluck('messageable')
+            ->unique(function ($model) {
+                return $model->getMorphClass() . '-' . $model->getKey();
+            })
+            ->values();
+    }
 }
