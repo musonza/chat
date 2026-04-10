@@ -41,6 +41,7 @@ Create a Chat application for your multiple Models
   - [Remove participants from a conversation](#remove-participants-from-a-conversation)
   - [Add participants to a conversation](#add-participants-to-a-conversation)
   - [Get messages in a conversation](#get-messages-in-a-conversation)
+  - [Filter messages by type](#filter-messages-by-type)
   - [Get messages with cursor pagination](#get-messages-with-cursor-pagination)
   - [Filter conversations by name](#filter-conversations-by-name)
   - [Get public conversations for discovery](#get-public-conversations-for-discovery)
@@ -401,6 +402,30 @@ Chat::conversation($conversation)->addParticipants([$participantModel, $particip
 
 ```php
 Chat::conversation($conversation)->setParticipant($participantModel)->getMessages()
+```
+
+#### Filter messages by type
+
+You can filter messages by their type (e.g., `text`, `image`, `attachment`) using the `ofType` method.
+
+```php
+// Get only image messages
+$messages = Chat::conversation($conversation)
+    ->setParticipant($participant)
+    ->ofType('image')
+    ->getMessages();
+
+// Get only attachment messages
+$messages = Chat::conversation($conversation)
+    ->setParticipant($participant)
+    ->ofType('attachment')
+    ->getMessages();
+
+// Also works with cursor pagination
+$messages = Chat::conversation($conversation)
+    ->setParticipant($participant)
+    ->ofType('image')
+    ->getMessagesWithCursor();
 ```
 
 #### Get messages with cursor pagination

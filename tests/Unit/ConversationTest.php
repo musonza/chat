@@ -576,4 +576,56 @@ class ConversationTest extends TestCase
         $this->assertEquals(1, $bravoCount);
         $this->assertCount(2, $partners);
     }
+
+    public function test_it_filters_messages_by_type()
+    {
+        $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
+
+        Chat::message('Hello')->type('text')->from($this->alpha)->to($conversation)->send();
+        Chat::message('photo.jpg')->type('image')->from($this->alpha)->to($conversation)->send();
+        Chat::message('file.pdf')->type('attachment')->from($this->alpha)->to($conversation)->send();
+        Chat::message('another photo')->type('image')->from($this->bravo)->to($conversation)->send();
+
+        $imageMessages = Chat::conversation($conversation)
+            ->setParticipant($this->alpha)
+            ->ofType('image')
+            ->getMessages();
+
+        $this->assertEquals(2, $imageMessages->count());
+
+        foreach ($imageMessages as $message) {
+            $this->assertEquals('image', $message->type);
+        }
+
+        $textMessages = Chat::conversation($conversation)
+            ->setParticipant($this->alpha)
+            ->ofType('text')
+            ->getMessages();
+
+        $this->assertEquals(1, $textMessages->count());
+        $this->assertEquals('text', $textMessages->first()->type);
+
+        $attachmentMessages = Chat::conversation($conversation)
+            ->setParticipant($this->alpha)
+            ->ofType('attachment')
+            ->getMessages();
+
+        $this->assertEquals(1, $attachmentMessages->count());
+        $this->assertEquals('attachment', $attachmentMessages->first()->type);
+    }
+
+    public function test_it_returns_all_messages_without_type_filter()
+    {
+        $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
+
+        Chat::message('Hello')->type('text')->from($this->alpha)->to($conversation)->send();
+        Chat::message('photo.jpg')->type('image')->from($this->alpha)->to($conversation)->send();
+        Chat::message('file.pdf')->type('attachment')->from($this->alpha)->to($conversation)->send();
+
+        $allMessages = Chat::conversation($conversation)
+            ->setParticipant($this->alpha)
+            ->getMessages();
+
+        $this->assertEquals(3, $allMessages->count());
+    }
 }
