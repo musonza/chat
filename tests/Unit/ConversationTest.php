@@ -490,4 +490,45 @@ class ConversationTest extends TestCase
         $this->assertEquals('Hello public world', $publicConversations->first()->last_message->body);
         $this->assertCount(2, $publicConversations->first()->participants);
     }
+
+    public function test_it_creates_a_conversation_with_a_name()
+    {
+        $conversation = Chat::createConversation([$this->alpha, $this->bravo], [], 'general');
+
+        $this->assertEquals('general', $conversation->name);
+        $this->assertDatabaseHas($this->prefix . 'conversations', ['name' => 'general']);
+    }
+
+    public function test_it_filters_conversations_by_name()
+    {
+        Chat::createConversation([$this->alpha, $this->bravo], [], 'general');
+        Chat::createConversation([$this->alpha, $this->charlie], [], 'random');
+        Chat::createConversation([$this->alpha, $this->delta]);
+
+        $filtered = Chat::conversations()->setParticipant($this->alpha)->name('general')->get();
+        $this->assertCount(1, $filtered);
+
+        $filtered = Chat::conversations()->setParticipant($this->alpha)->name('random')->get();
+        $this->assertCount(1, $filtered);
+
+        $filtered = Chat::conversations()->setParticipant($this->alpha)->name('nonexistent')->get();
+        $this->assertCount(0, $filtered);
+    }
+
+    public function test_it_filters_public_conversations_by_name()
+    {
+        Chat::createConversation([$this->alpha, $this->bravo], [], 'announcements')->makePrivate(false);
+        Chat::createConversation([$this->alpha, $this->charlie], [], 'events')->makePrivate(false);
+
+        $filtered = Chat::conversations()->isPrivate(false)->name('announcements')->get();
+        $this->assertCount(1, $filtered);
+        $this->assertEquals('announcements', $filtered->first()->name);
+    }
+
+    public function test_it_allows_null_name()
+    {
+        $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
+
+        $this->assertNull($conversation->name);
+    }
 }

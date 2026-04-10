@@ -207,6 +207,19 @@ class ConversationService
         return $this;
     }
 
+    /**
+     * Filter conversations by name.
+     *
+     * @param  string  $name
+     * @return $this
+     */
+    public function name($name)
+    {
+        $this->filters['name'] = $name;
+
+        return $this;
+    }
+
     public function getParticipation($participant = null)
     {
         $participant = $participant ?? $this->participant;

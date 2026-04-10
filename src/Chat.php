@@ -43,12 +43,13 @@ class Chat
      *
      * @return Conversation
      */
-    public function createConversation(array $participants, array $data = [])
+    public function createConversation(array $participants, array $data = [], ?string $name = null)
     {
         $payload = [
             'participants'   => $participants,
             'data'           => $data,
             'direct_message' => $this->conversationService->directMessage,
+            'name'           => $name,
         ];
 
         return $this->conversationService->start($payload);

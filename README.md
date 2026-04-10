@@ -21,6 +21,7 @@ Create a Chat application for your multiple Models
   - [Enable the routes](#enable-the-routes)
   - [Get participant details](#get-participant-details)
   - [Creating a conversation](#creating-a-conversation)
+  - [Creating a named conversation](#creating-a-named-conversation)
   - [Get a conversation by Id](#get-a-conversation-by-id)
   - [Update conversation details](#update-conversation-details)
   - [Send a text message](#send-a-text-message)
@@ -41,6 +42,7 @@ Create a Chat application for your multiple Models
   - [Add participants to a conversation](#add-participants-to-a-conversation)
   - [Get messages in a conversation](#get-messages-in-a-conversation)
   - [Get messages with cursor pagination](#get-messages-with-cursor-pagination)
+  - [Filter conversations by name](#filter-conversations-by-name)
   - [Get public conversations for discovery](#get-public-conversations-for-discovery)
   - [Get recent messages](#get-recent-messages)
   - [Get participants in a conversation](#get-participants-in-a-conversation)
@@ -162,6 +164,22 @@ $conversation = Chat::makeDirect()->createConversation($participants);
 
 > **Note:** You will not be able to add additional participants to a direct conversation. 
 Additionally you can't remove a participant from a direct conversation.
+
+#### Creating a named conversation
+
+You can assign a name to a conversation, which is useful for chatrooms or any scenario where you need to look up a conversation by a human-readable identifier.
+
+```php
+$participants = [$model1, $model2];
+
+// Create a named conversation
+$conversation = Chat::createConversation($participants, [], 'general');
+
+// The name is accessible on the conversation
+echo $conversation->name; // 'general'
+```
+
+The `name` column is nullable, so existing conversations and conversations created without a name are unaffected.
 
 #### Get a conversation by id
 ```php
@@ -436,6 +454,16 @@ $conversations = Chat::conversations()->setParticipant($participantModel)->isDir
 
 // all conversations
 $conversations = Chat::conversations()->setParticipant($participantModel)->get();
+```
+
+#### Filter conversations by name
+
+```php
+// Filter a participant's conversations by name
+$conversations = Chat::conversations()->setParticipant($participantModel)->name('general')->get();
+
+// Filter public conversations by name
+$conversations = Chat::conversations()->isPrivate(false)->name('announcements')->get();
 ```
 
 #### Get public conversations for discovery
