@@ -3,6 +3,7 @@
 namespace Musonza\Chat\Traits;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 use Musonza\Chat\Exceptions\InvalidDirectMessageNumberOfParticipants;
 use Musonza\Chat\Models\Conversation;
 use Musonza\Chat\Models\Participation;
@@ -62,5 +63,28 @@ trait Messageable
             'messageable_type' => $this->getMorphClass(),
             'conversation_id'  => $conversationId,
         ])->delete();
+    }
+
+    /**
+     * Get all unique models that this model has ever been in a conversation with.
+     *
+     * @return Collection
+     */
+    public function conversationPartners()
+    {
+        $conversationIds = $this->participation()->pluck('conversation_id');
+
+        return Participation::whereIn('conversation_id', $conversationIds)
+            ->where(function ($query) {
+                $query->where('messageable_id', '!=', $this->getKey())
+                    ->orWhere('messageable_type', '!=', $this->getMorphClass());
+            })
+            ->with('messageable')
+            ->get()
+            ->pluck('messageable')
+            ->unique(function ($model) {
+                return $model->getMorphClass() . '-' . $model->getKey();
+            })
+            ->values();
     }
 }

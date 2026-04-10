@@ -531,4 +531,49 @@ class ConversationTest extends TestCase
 
         $this->assertNull($conversation->name);
     }
+
+    public function test_it_returns_all_unique_conversation_partners()
+    {
+        // Alpha has conversations with bravo, charlie, and delta
+        Chat::createConversation([$this->alpha, $this->bravo]);
+        Chat::createConversation([$this->alpha, $this->charlie]);
+        Chat::createConversation([$this->alpha, $this->bravo, $this->delta]);
+
+        $partners = $this->alpha->conversationPartners();
+
+        // Should return bravo, charlie, and delta
+        $this->assertCount(3, $partners);
+
+        $partnerIds  = $partners->pluck('id')->sort()->values()->toArray();
+        $expectedIds = collect([$this->bravo->id, $this->charlie->id, $this->delta->id])->sort()->values()->toArray();
+
+        $this->assertEquals($expectedIds, $partnerIds);
+    }
+
+    public function test_conversation_partners_excludes_self()
+    {
+        Chat::createConversation([$this->alpha, $this->bravo]);
+
+        $partners = $this->alpha->conversationPartners();
+
+        $this->assertCount(1, $partners);
+        $this->assertEquals($this->bravo->id, $partners->first()->id);
+    }
+
+    public function test_conversation_partners_returns_unique_models_across_multiple_conversations()
+    {
+        // Bravo appears in two conversations with alpha
+        Chat::createConversation([$this->alpha, $this->bravo]);
+        Chat::createConversation([$this->alpha, $this->bravo, $this->charlie]);
+
+        $partners = $this->alpha->conversationPartners();
+
+        // Bravo should appear only once
+        $bravoCount = $partners->filter(function ($partner) {
+            return $partner->id === $this->bravo->id;
+        })->count();
+
+        $this->assertEquals(1, $bravoCount);
+        $this->assertCount(2, $partners);
+    }
 }

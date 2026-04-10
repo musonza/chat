@@ -46,6 +46,7 @@ Create a Chat application for your multiple Models
   - [Get public conversations for discovery](#get-public-conversations-for-discovery)
   - [Get recent messages](#get-recent-messages)
   - [Get participants in a conversation](#get-participants-in-a-conversation)
+  - [Get all conversation partners](#get-all-conversation-partners)
   - [Get participation entry for a Model in a conversation](#Get-participation-entry-for-a-Model-in-a-conversation)
   - [Update participation settings](#Update-participation-settings)
   - [Data Transformers](#Data-Transformers)
@@ -516,6 +517,17 @@ To get the `conversations` simply call `$paginated->items()`
 ```php
 $participants = $conversation->getParticipants();
 ```
+
+#### Get all conversation partners
+
+Get all unique models that a user has ever been in a conversation with:
+
+```php
+// Get all models that a user has ever conversed with
+$partners = $user->conversationPartners();
+```
+
+This returns a collection of unique models, excluding the user themselves. If the same partner appears in multiple conversations, they will only be included once.
 
 #### Get participation entry for a Model in a conversation
 
