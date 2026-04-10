@@ -18,6 +18,8 @@ class ConversationService
 
     protected $filters = [];
 
+    protected $messageType;
+
     /**
      * @var Conversation
      */
@@ -52,11 +54,23 @@ class ConversationService
     }
 
     /**
+     * Filter messages by type.
+     *
+     * @return $this
+     */
+    public function ofType(string $type)
+    {
+        $this->messageType = $type;
+
+        return $this;
+    }
+
+    /**
      * Get messages in a conversation.
      */
     public function getMessages()
     {
-        return $this->conversation->getMessages($this->participant, $this->getPaginationParams(), $this->deleted);
+        return $this->conversation->getMessages($this->participant, $this->getPaginationParams(), $this->deleted, $this->messageType);
     }
 
     /**
@@ -69,7 +83,7 @@ class ConversationService
      */
     public function getMessagesWithCursor()
     {
-        return $this->conversation->getMessagesWithCursor($this->participant, $this->getCursorPaginationParams(), $this->deleted);
+        return $this->conversation->getMessagesWithCursor($this->participant, $this->getCursorPaginationParams(), $this->deleted, $this->messageType);
     }
 
     /**
