@@ -23,7 +23,10 @@ class AddArchivedAtToParticipationTable extends Migration
     {
         $this->schema()->table(ConfigurationManager::PARTICIPATION_TABLE, function (Blueprint $table) {
             $table->timestamp('archived_at')->nullable()->after('settings');
-            $table->index(['conversation_id', 'messageable_id', 'messageable_type', 'archived_at'], 'participation_archived_index');
+            // Leads with the participant identity columns because the listing
+            // query in Conversation::getConversationsList filters by participant
+            // and archived_at across many conversations.
+            $table->index(['messageable_id', 'messageable_type', 'archived_at'], 'participation_archived_index');
         });
     }
 

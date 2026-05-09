@@ -38,16 +38,10 @@ class MessageNotification extends BaseModel
 
     public static function createCustomNotifications($message, $conversation)
     {
-        $notification            = [];
-        $i                       = 0;
-        $recipientIdsToUnarchive = [];
-
+        $notification = [];
+        $i            = 0;
         foreach ($conversation->participants as $participation) {
             $is_sender = ($message->participation_id == $participation->id) ? 1 : 0;
-
-            if (! $is_sender && $participation->archived_at !== null) {
-                $recipientIdsToUnarchive[] = $participation->id;
-            }
 
             $notification[] = [
                 'messageable_id'   => $participation->messageable_id,
@@ -71,8 +65,20 @@ class MessageNotification extends BaseModel
             self::insert($notification);
         }
 
-        if ($recipientIdsToUnarchive && config('musonza_chat.unarchive_on_new_message', true)) {
-            Participation::whereIn('id', $recipientIdsToUnarchive)->update(['archived_at' => null]);
+        if (config('musonza_chat.unarchive_on_new_message', true)) {
+            // Unarchive all recipients in one query, sourced from the DB rather
+            // than the (possibly stale) in-memory $conversation->participants
+            // collection. The sender's own row is excluded; if there is no
+            // sender (system message with null participation_id) all archived
+            // participations are restored.
+            $query = Participation::where('conversation_id', $conversation->id)
+                ->whereNotNull('archived_at');
+
+            if ($message->participation_id !== null) {
+                $query->where('id', '!=', $message->participation_id);
+            }
+
+            $query->update(['archived_at' => null]);
         }
     }
 

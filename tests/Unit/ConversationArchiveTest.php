@@ -31,13 +31,20 @@ class ConversationArchiveTest extends TestCase
         $conversation = Chat::createConversation([$this->alpha, $this->bravo]);
 
         Chat::conversation($conversation)->setParticipant($this->alpha)->archive();
-        $first = Chat::conversation($conversation)->getParticipation($this->alpha)->archived_at;
+        $first = Chat::conversation($conversation)->getParticipation($this->alpha);
 
-        // Re-archive should not change archived_at timestamp
+        // Re-archive should be a no-op: neither archived_at nor updated_at should move.
         Chat::conversation($conversation)->setParticipant($this->alpha)->archive();
-        $second = Chat::conversation($conversation)->getParticipation($this->alpha)->archived_at;
+        $second = Chat::conversation($conversation)->getParticipation($this->alpha);
 
-        $this->assertEquals($first->toDateTimeString(), $second->toDateTimeString());
+        $this->assertTrue(
+            $first->archived_at->equalTo($second->archived_at),
+            'archived_at must not change on a no-op re-archive'
+        );
+        $this->assertTrue(
+            $first->updated_at->equalTo($second->updated_at),
+            'updated_at must not change on a no-op re-archive (the row should not be re-saved)'
+        );
     }
 
     public function test_unarchive_restores_a_conversation()
