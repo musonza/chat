@@ -38,10 +38,16 @@ class MessageNotification extends BaseModel
 
     public static function createCustomNotifications($message, $conversation)
     {
-        $notification = [];
-        $i            = 0;
+        $notification        = [];
+        $i                   = 0;
+        $recipientIdsToUnarchive = [];
+
         foreach ($conversation->participants as $participation) {
             $is_sender = ($message->participation_id == $participation->id) ? 1 : 0;
+
+            if (! $is_sender && $participation->archived_at !== null) {
+                $recipientIdsToUnarchive[] = $participation->id;
+            }
 
             $notification[] = [
                 'messageable_id'   => $participation->messageable_id,
@@ -63,6 +69,10 @@ class MessageNotification extends BaseModel
 
         if (! empty($notification)) {
             self::insert($notification);
+        }
+
+        if ($recipientIdsToUnarchive && config('musonza_chat.unarchive_on_new_message', true)) {
+            Participation::whereIn('id', $recipientIdsToUnarchive)->update(['archived_at' => null]);
         }
     }
 

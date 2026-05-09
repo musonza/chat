@@ -30,6 +30,13 @@ return [
     'encrypt_messages' => false,
 
     /*
+     * When true, sending a new message in a conversation automatically
+     * unarchives the recipients' participation rows (Mail-style behavior).
+     * The sender's own participation is never auto-modified.
+     */
+    'unarchive_on_new_message' => true,
+
+    /*
      * Specify the fields that you want to return each time for the sender.
      * If not set or empty, all the columns for the sender will be returned
      *

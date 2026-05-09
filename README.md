@@ -351,6 +351,31 @@ Listen for `\Musonza\Chat\Eventing\AllParticipantsDeletedMessage` and
 Chat::conversation($conversation)->setParticipant($participantModel)->clear();
 ```
 
+#### Archive a conversation (per participant)
+
+Archiving is per-participant — like Gmail/Outlook — so one user can archive a thread without hiding it for the others. By default, archived conversations are excluded from a participant's listings. A new incoming message auto-unarchives the recipient (configurable).
+
+```php
+// Archive / unarchive for a single participant
+Chat::conversation($conversation)->setParticipant($participantModel)->archive();
+Chat::conversation($conversation)->setParticipant($participantModel)->unarchive();
+
+// Or directly on the model
+$conversation->archive($participantModel);
+$conversation->unarchive($participantModel);
+
+// Default listing excludes archived
+Chat::conversations()->setParticipant($participantModel)->get();
+
+// Show only archived conversations (e.g. an "Archive" inbox)
+Chat::conversations()->setParticipant($participantModel)->archived()->get();
+
+// Show both archived and non-archived together
+Chat::conversations()->setParticipant($participantModel)->withArchived()->get();
+```
+
+To disable auto-unarchive on incoming messages, set `unarchive_on_new_message => false` in `config/musonza_chat.php`.
+
 #### Get participant conversations
 
 ```php
