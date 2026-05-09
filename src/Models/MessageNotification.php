@@ -38,8 +38,8 @@ class MessageNotification extends BaseModel
 
     public static function createCustomNotifications($message, $conversation)
     {
-        $notification        = [];
-        $i                   = 0;
+        $notification            = [];
+        $i                       = 0;
         $recipientIdsToUnarchive = [];
 
         foreach ($conversation->participants as $participation) {
