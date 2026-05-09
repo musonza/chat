@@ -6,8 +6,10 @@ require __DIR__ . '/../database/migrations/create_chat_tables.php';
 require __DIR__ . '/../database/migrations/add_is_encrypted_to_messages_table.php';
 require __DIR__ . '/../database/migrations/add_reactions_to_messages.php';
 require __DIR__ . '/../database/migrations/add_name_to_conversations_table.php';
+require __DIR__ . '/../database/migrations/add_archived_at_to_participation_table.php';
 require __DIR__ . '/Helpers/migrations.php';
 
+use AddArchivedAtToParticipationTable;
 use AddIsEncryptedToMessagesTable;
 use AddNameToConversationsTable;
 use AddReactionsToMessages;
@@ -66,6 +68,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         (new AddIsEncryptedToMessagesTable)->up();
         (new AddReactionsToMessages)->up();
         (new AddNameToConversationsTable)->up();
+        (new AddArchivedAtToParticipationTable)->up();
         (new CreateTestTables)->up();
 
         $this->withFactories(__DIR__ . '/Helpers/factories');
@@ -119,6 +122,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function tearDown(): void
     {
+        (new AddArchivedAtToParticipationTable)->down();
         (new AddNameToConversationsTable)->down();
         (new AddReactionsToMessages)->down();
         (new AddIsEncryptedToMessagesTable)->down();

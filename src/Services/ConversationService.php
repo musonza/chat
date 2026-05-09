@@ -242,4 +242,46 @@ class ConversationService
             ->where('conversation_id', $this->conversation->getKey())
             ->first();
     }
+
+    /**
+     * Filter to only archived conversations for the participant.
+     * Pass false to filter to only non-archived (the default behavior).
+     *
+     * @param  bool  $archived
+     * @return $this
+     */
+    public function archived($archived = true)
+    {
+        $this->filters['archived'] = (bool) $archived;
+
+        return $this;
+    }
+
+    /**
+     * Include both archived and non-archived conversations.
+     *
+     * @return $this
+     */
+    public function withArchived()
+    {
+        $this->filters['archived'] = 'all';
+
+        return $this;
+    }
+
+    /**
+     * Archive the current conversation for the set participant.
+     */
+    public function archive(): Conversation
+    {
+        return $this->conversation->archive($this->participant);
+    }
+
+    /**
+     * Unarchive the current conversation for the set participant.
+     */
+    public function unarchive(): Conversation
+    {
+        return $this->conversation->unarchive($this->participant);
+    }
 }

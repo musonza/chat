@@ -293,6 +293,35 @@ class Conversation extends BaseModel
     }
 
     /**
+     * Archives the conversation for a single participant (Mail-style).
+     * No-op if the participant is not in the conversation or already archived.
+     */
+    public function archive(Model $participant): self
+    {
+        $participation = $this->participantFromSender($participant);
+
+        if ($participation) {
+            $participation->archive();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Unarchives the conversation for a single participant.
+     */
+    public function unarchive(Model $participant): self
+    {
+        $participation = $this->participantFromSender($participant);
+
+        if ($participation) {
+            $participation->unarchive();
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears participant conversation.
      */
     public function clear($participant): void
@@ -412,6 +441,14 @@ class Conversation extends BaseModel
 
         if (isset($options['filters']['name'])) {
             $paginator = $paginator->where('c.name', $options['filters']['name']);
+        }
+
+        $archivedFilter = $options['filters']['archived'] ?? false;
+
+        if ($archivedFilter === true) {
+            $paginator = $paginator->whereNotNull($this->tablePrefix . 'participation.archived_at');
+        } elseif ($archivedFilter !== 'all') {
+            $paginator = $paginator->whereNull($this->tablePrefix . 'participation.archived_at');
         }
 
         $total = $paginator->distinct('c.id')->toBase()->getCountForPagination();

@@ -64,6 +64,22 @@ class MessageNotification extends BaseModel
         if (! empty($notification)) {
             self::insert($notification);
         }
+
+        if (config('musonza_chat.unarchive_on_new_message', true)) {
+            // Unarchive all recipients in one query, sourced from the DB rather
+            // than the (possibly stale) in-memory $conversation->participants
+            // collection. The sender's own row is excluded; if there is no
+            // sender (system message with null participation_id) all archived
+            // participations are restored.
+            $query = Participation::where('conversation_id', $conversation->id)
+                ->whereNotNull('archived_at');
+
+            if ($message->participation_id !== null) {
+                $query->where('id', '!=', $message->participation_id);
+            }
+
+            $query->update(['archived_at' => null]);
+        }
     }
 
     public function markAsRead()
