@@ -71,11 +71,15 @@ class ChatServiceProvider extends ServiceProvider
         $nameStub   = __DIR__ . '/../database/migrations/add_name_to_conversations_table.php';
         $nameTarget = $this->app->databasePath() . '/migrations/' . $timestamp . '_add_name_to_conversations_table.php';
 
+        $archivedAtStub   = __DIR__ . '/../database/migrations/add_archived_at_to_participation_table.php';
+        $archivedAtTarget = $this->app->databasePath() . '/migrations/' . $timestamp . '_add_archived_at_to_participation_table.php';
+
         $this->publishes([
             $stub           => $target,
             $encryptionStub => $encryptionTarget,
             $reactionsStub  => $reactionsTarget,
             $nameStub       => $nameTarget,
+            $archivedAtStub => $archivedAtTarget,
         ], 'chat.migrations');
     }
 
