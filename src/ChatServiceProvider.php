@@ -68,10 +68,14 @@ class ChatServiceProvider extends ServiceProvider
         $reactionsStub   = __DIR__ . '/../database/migrations/add_reactions_to_messages.php';
         $reactionsTarget = $this->app->databasePath() . '/migrations/' . $timestamp . '_add_reactions_to_messages.php';
 
+        $nameStub   = __DIR__ . '/../database/migrations/add_name_to_conversations_table.php';
+        $nameTarget = $this->app->databasePath() . '/migrations/' . $timestamp . '_add_name_to_conversations_table.php';
+
         $this->publishes([
             $stub           => $target,
             $encryptionStub => $encryptionTarget,
             $reactionsStub  => $reactionsTarget,
+            $nameStub       => $nameTarget,
         ], 'chat.migrations');
     }
 
